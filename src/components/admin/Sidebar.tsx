@@ -79,9 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onClo
               {t('panel')}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
-              <div className="w-6 h-6 rounded-lg bg-zinc-950 flex items-center justify-center text-white font-black text-xs">
-                A
-              </div>
+              <img src="/logo.png" alt="Aurabio" className="w-7 h-7 object-contain drop-shadow-sm" />
               <h1 className="text-xl font-extrabold tracking-tight text-zinc-900">
                 Aurabio
               </h1>

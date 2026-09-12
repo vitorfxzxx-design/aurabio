@@ -12,7 +12,6 @@ import {
   ShieldCheck, 
   ShieldAlert, 
   Trash2, 
-  Lock, 
   LayoutDashboard,
   Upload,
   Save,
@@ -147,8 +146,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-center space-y-6">
-          <div className="w-14 h-14 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center mx-auto text-white shadow-inner">
-            <Lock size={24} className="text-zinc-300" />
+          <div className="flex justify-center">
+            <img src="/logo.png" alt="Aurabio Logo" className="w-14 h-14 object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]" />
           </div>
 
           <div>
@@ -231,13 +230,16 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
       {/* Top Header */}
       <header className="bg-white border-b border-zinc-200 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div>
-            <div className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400">
-              MASTER
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Aurabio Logo" className="w-9 h-9 object-contain" />
+            <div>
+              <div className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400">
+                MASTER
+              </div>
+              <h1 className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight">
+                Administração
+              </h1>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight">
-              Administração
-            </h1>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-2.5">

@@ -54,8 +54,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onOpenPublicView }) => {
         <div className="w-full max-w-md bg-zinc-900/90 border border-zinc-800 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10">
           {/* Logo & Header */}
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-white font-black text-xl mx-auto mb-3 shadow-lg">
-              A
+            <div className="flex justify-center mb-3">
+              <img src="/logo.png" alt="Aurabio" className="w-12 h-12 object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]" />
             </div>
             <h1 className="text-2xl font-black tracking-tight text-white">
               {masterBranding?.appName || 'Aurabio'}

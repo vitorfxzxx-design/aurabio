@@ -73,11 +73,7 @@ export const SalesLandingPage: React.FC = () => {
         <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={handleGoToApp}>
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 p-0.5 shadow-[0_0_20px_rgba(147,51,234,0.4)] flex items-center justify-center">
-              <div className="w-full h-full bg-black rounded-[14px] flex items-center justify-center font-black text-lg text-white">
-                A
-              </div>
-            </div>
+            <img src="/logo.png" alt="Aurabio Logo" className="w-9 h-9 object-contain drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
             <span className="font-extrabold text-xl tracking-tight text-white">Aurabio</span>
           </div>
 
@@ -550,9 +546,7 @@ export const SalesLandingPage: React.FC = () => {
       <footer className="border-t border-zinc-900 bg-black py-12 px-6 mt-16 text-xs text-zinc-500">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="w-5 h-5 rounded-md bg-purple-600 flex items-center justify-center text-white font-bold text-[10px]">
-              A
-            </div>
+            <img src="/logo.png" alt="Aurabio" className="w-5 h-5 object-contain" />
             <span>© {new Date().getFullYear()} Aurabio · Feito com obsessão por design</span>
           </div>
 

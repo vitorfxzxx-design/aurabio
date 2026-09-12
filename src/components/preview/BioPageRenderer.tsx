@@ -5,7 +5,6 @@ import { SocialIcon } from '../ui/SocialIcons';
 import { 
   CheckCircle, 
   ExternalLink, 
-  Sparkles, 
   Flame, 
   ArrowRight, 
   ArrowUpRight,
@@ -590,9 +589,9 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       {/* FOOTER BRANDING (Removível pelo painel) */}
       {/* ------------------------------------------------------------- */}
       {!page.hideBranding && (
-        <footer className="w-full mt-auto pt-8 pb-3 flex flex-col items-center justify-center gap-1 opacity-50 hover:opacity-100 transition-opacity shrink-0">
+        <footer className="w-full mt-auto pt-8 pb-3 flex flex-col items-center justify-center gap-1 opacity-60 hover:opacity-100 transition-opacity shrink-0">
           <div className="flex items-center gap-1.5 text-[11px] font-medium tracking-wide">
-            <Sparkles size={12} style={{ color: accentColor }} />
+            <img src="/logo.png" alt="Aurabio" className="w-3.5 h-3.5 object-contain" />
             <span>{dict.made_with} <strong className="font-extrabold">Aurabio</strong></span>
           </div>
         </footer>
