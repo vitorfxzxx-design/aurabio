@@ -22,7 +22,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onCloseMobile }) => {
-  const { activePage, restoreDefaults, t } = useBio();
+  const { activePage, restoreDefaults, logoutUser, t } = useBio();
 
   const menuItems: { id: AdminTab; title: string; subtitle: string; icon: React.ReactNode }[] = [
     {
@@ -173,9 +173,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onClo
 
         <button
           onClick={() => {
-            alert(t('session_ended'));
+            if (confirm('Deseja realmente sair da sua conta?')) {
+              logoutUser();
+            }
           }}
-          className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+          className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-zinc-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
         >
           <LogOut size={14} />
           <span>{t('logout')}</span>

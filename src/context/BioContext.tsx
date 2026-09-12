@@ -43,6 +43,12 @@ interface BioContextType {
   notification: string | null;
   showNotification: (msg: string) => void;
 
+  // User Authentication
+  isUserAuthenticated: boolean;
+  currentUserEmail: string;
+  loginUser: (email: string, pass?: string) => boolean;
+  logoutUser: () => void;
+
   // Master Admin Area
   isMasterAuthenticated: boolean;
   masterAdminEmail: string;
@@ -69,6 +75,8 @@ const MEMBERS_KEY = 'aurabio_members_v2';
 const WEBHOOKS_KEY = 'aurabio_webhooks_v2';
 const MASTER_BRANDING_KEY = 'aurabio_master_branding_v2';
 const MASTER_AUTH_KEY = 'aurabio_master_auth_v2';
+const USER_AUTH_KEY = 'aurabio_user_auth_v2';
+const USER_EMAIL_KEY = 'aurabio_user_email_v2';
 
 const BioContext = createContext<BioContextType | undefined>(undefined);
 
@@ -163,9 +171,44 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem(MASTER_BRANDING_KEY, JSON.stringify(masterBranding));
   }, [masterBranding]);
 
+  // User Authentication State
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(() => {
+    const auth = localStorage.getItem(USER_AUTH_KEY);
+    return auth !== 'false'; // Default to true on first load, but when logged out remains false
+  });
+
+  const [currentUserEmail, setCurrentUserEmail] = useState<string>(() => {
+    return localStorage.getItem(USER_EMAIL_KEY) || 'membro@aurabio.link';
+  });
+
   useEffect(() => {
-    localStorage.setItem(MASTER_AUTH_KEY, isMasterAuthenticated ? 'true' : 'false');
-  }, [isMasterAuthenticated]);
+    localStorage.setItem(USER_AUTH_KEY, isUserAuthenticated ? 'true' : 'false');
+  }, [isUserAuthenticated]);
+
+  useEffect(() => {
+    localStorage.setItem(USER_EMAIL_KEY, currentUserEmail);
+  }, [currentUserEmail]);
+
+  const loginUser = (email: string, pass?: string): boolean => {
+    const cleanEmail = email.trim();
+    if (!cleanEmail) {
+      showNotification('Por favor, informe seu e-mail de acesso.');
+      return false;
+    }
+    if (!pass || pass.length < 3) {
+      showNotification('Senha inválida.');
+      return false;
+    }
+    setIsUserAuthenticated(true);
+    setCurrentUserEmail(cleanEmail);
+    showNotification(`Bem-vindo de volta!`);
+    return true;
+  };
+
+  const logoutUser = () => {
+    setIsUserAuthenticated(false);
+    showNotification('Sessão encerrada com sucesso.');
+  };
 
   const loginMaster = (email: string, pass?: string): boolean => {
     const cleanEmail = email.trim().toLowerCase();
@@ -531,6 +574,12 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         recordClick,
         notification,
         showNotification,
+
+        // User Auth
+        isUserAuthenticated,
+        currentUserEmail,
+        loginUser,
+        logoutUser,
 
         // Master
         isMasterAuthenticated,
