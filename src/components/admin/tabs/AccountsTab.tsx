@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useBio } from '../../../context/BioContext';
-import { Plus, Trash2, Info, Star } from 'lucide-react';
+import { Plus, Trash2, Info, Star, User } from 'lucide-react';
 
 export const AccountsTab: React.FC = () => {
   const { pages, activePageId, setActivePageId, createPage, deletePage } = useBio();
@@ -53,12 +53,18 @@ export const AccountsTab: React.FC = () => {
                 }`}
               >
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 ring-1 ring-zinc-300">
-                    <img
-                      src={page.avatarUrl}
-                      alt={page.name}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 ring-1 ring-zinc-300 bg-zinc-900 flex items-center justify-center text-white">
+                    {page.avatarUrl ? (
+                      <img
+                        src={page.avatarUrl}
+                        alt={page.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center font-black text-sm bg-gradient-to-br from-zinc-800 to-zinc-950 text-zinc-300">
+                        {page.name && page.name.trim() ? page.name.trim().charAt(0).toUpperCase() : <User size={18} />}
+                      </div>
+                    )}
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
