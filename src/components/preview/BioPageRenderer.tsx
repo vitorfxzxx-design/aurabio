@@ -8,7 +8,6 @@ import {
   Sparkles, 
   Flame, 
   ArrowRight, 
-  ChevronRight, 
   Zap,
   User as UserIcon
 } from 'lucide-react';
@@ -454,86 +453,53 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                   />
                 )}
 
-                {/* ---------------- FORMAT: RECTANGULAR BANNER ---------------- */}
+                {/* ---------------- FORMAT: RECTANGULAR FULL BANNER (EDGE-TO-EDGE) ---------------- */}
                 {isRectangular ? (
-                  <div className="flex flex-col w-full">
-                    {link.imageUrl && (
-                      <div className="relative w-full h-44 overflow-hidden bg-black/40">
-                        <img
-                          src={link.imageUrl}
-                          alt={link.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-
-                        {/* Top-left Badges */}
-                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                          {isFeatured && (
-                            <span 
-                              className="inline-flex items-center gap-1 text-[10px] uppercase font-black tracking-wider px-2.5 py-1 rounded-lg text-white shadow-lg border border-white/20 animate-pulse"
-                              style={{ backgroundColor: accentColor }}
-                            >
-                              <Flame size={11} className="fill-current" />
-                              {dict.most_accessed}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Top-right Action Button Indicator */}
-                        <div className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 group-hover:text-white group-hover:scale-110 transition-all shadow-md">
-                          <ExternalLink size={13} />
-                        </div>
-
-                        {/* Title text over image */}
-                        <div className="absolute bottom-2.5 left-3.5 right-3.5 text-left">
-                          <h3 className="text-sm sm:text-base font-black uppercase text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] line-clamp-1">
-                            {link.title}
-                          </h3>
-                        </div>
+                  <div className="relative w-full aspect-4/3 sm:aspect-16/10 rounded-2xl overflow-hidden bg-black/60 shadow-xl group">
+                    {link.imageUrl ? (
+                      <img
+                        src={link.imageUrl}
+                        alt={link.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full min-h-[180px] bg-zinc-900 flex items-center justify-center p-6 text-center">
+                        <span className="text-zinc-600 font-bold text-sm">Sem imagem cadastrada</span>
                       </div>
                     )}
 
-                    {/* Card Subtitle & Call-to-Action Bar */}
-                    <div className="p-3.5 flex items-center justify-between gap-3 text-left">
-                      <div className="flex-1 min-w-0">
-                        {!link.imageUrl && (
-                          <div className="flex items-center gap-2">
-                            {isFeatured && (
-                              <span 
-                                className="inline-flex items-center gap-0.5 text-[9px] uppercase font-black tracking-wider px-2 py-0.5 rounded text-white shadow-sm shrink-0" 
-                                style={{ backgroundColor: accentColor }}
-                              >
-                                <Flame size={9} className="fill-current" />
-                                {dict.most_accessed}
-                              </span>
-                            )}
-                            <h3 className="text-sm sm:text-base font-extrabold tracking-tight truncate">
-                              {link.title}
-                            </h3>
-                          </div>
-                        )}
-                        {link.subtitle && (
-                          <p 
-                            className="text-xs truncate mt-0.5 font-medium"
-                            style={{ color: secondaryTextColor }}
-                          >
-                            {link.subtitle}
-                          </p>
-                        )}
-                      </div>
+                    {/* Gradient shading for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent pointer-events-none" />
 
-                      {/* CTA button with hover animation */}
-                      <div 
-                        className="px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-extrabold shrink-0 transition-transform group-hover:translate-x-1"
-                        style={{
-                          backgroundColor: `${accentColor}20`,
-                          color: accentColor,
-                          border: `1px solid ${accentColor}40`
-                        }}
-                      >
-                        <span>{dict.access_cta}</span>
-                        <ChevronRight size={13} strokeWidth={3} />
+                    {/* Top-left Badges (MAIS ACESSADO / TOP CHOICE) */}
+                    {isFeatured && (
+                      <div className="absolute top-3 left-3 flex items-center gap-1.5 z-20">
+                        <span 
+                          className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] uppercase font-black tracking-wider px-2.5 py-1 rounded-lg text-white shadow-lg border border-white/20 backdrop-blur-md animate-pulse"
+                          style={{ backgroundColor: accentColor }}
+                        >
+                          <Flame size={11} className="fill-current" />
+                          {dict.most_accessed}
+                        </span>
                       </div>
+                    )}
+
+                    {/* Top-right Direct Action Indicator Arrow */}
+                    <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 group-hover:text-white group-hover:scale-110 transition-all shadow-md z-20">
+                      <ExternalLink size={13} />
+                    </div>
+
+                    {/* Bottom Title & Subtitle overlaid directly on the image */}
+                    <div className="absolute bottom-3 left-3.5 right-3.5 text-left z-20">
+                      <h3 className="text-sm sm:text-base font-black uppercase text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] line-clamp-1">
+                        {link.title}
+                      </h3>
+                      {link.subtitle && (
+                        <p className="text-[11px] sm:text-xs text-zinc-300 font-medium line-clamp-1 mt-0.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
+                          {link.subtitle}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ) : (
