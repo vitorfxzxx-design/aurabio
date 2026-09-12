@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useBio } from '../../../context/BioContext';
-import { Upload, Trash2, ShieldCheck, Image as ImageIcon } from 'lucide-react';
+import { Upload, Trash2, ShieldCheck, Image as ImageIcon, Save, Check } from 'lucide-react';
 
 export const ProfileHeroTab: React.FC = () => {
   const { activePage, updateActivePage, showNotification } = useBio();
   const [slugInput, setSlugInput] = useState(activePage.slug);
   const [nameInput, setNameInput] = useState(activePage.name);
   const [bioInput, setBioInput] = useState(activePage.bio);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     setSlugInput(activePage.slug);
@@ -298,6 +299,25 @@ export const ProfileHeroTab: React.FC = () => {
             onChange={(e) => updateActivePage({ verified: e.target.checked })}
             className="w-4 h-4 rounded text-zinc-900 focus:ring-zinc-900 cursor-pointer"
           />
+        </div>
+
+        {/* Save Button */}
+        <div className="pt-3 border-t border-zinc-100">
+          <button
+            onClick={() => {
+              updateActivePage({
+                name: nameInput,
+                bio: bioInput,
+              });
+              setIsSaved(true);
+              showNotification('Alterações salvas com sucesso!');
+              setTimeout(() => setIsSaved(false), 2500);
+            }}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold transition-all shadow-md active:scale-98 cursor-pointer"
+          >
+            {isSaved ? <Check size={15} className="text-emerald-400" /> : <Save size={15} />}
+            <span>{isSaved ? 'Alterações salvas!' : 'Salvar alterações'}</span>
+          </button>
         </div>
       </div>
     </div>
