@@ -79,7 +79,7 @@ export const AccountsTab: React.FC = () => {
                       )}
                     </div>
                     <p className="text-xs text-zinc-500 font-mono mt-0.5">
-                      /u/{page.slug}
+                      /{page.slug}
                     </p>
                   </div>
                 </div>
@@ -125,7 +125,7 @@ export const AccountsTab: React.FC = () => {
         </h3>
         <ul className="space-y-2 text-xs text-zinc-600 list-disc list-inside leading-relaxed">
           <li>Cada conta pode ter até <strong className="text-zinc-900">3 páginas</strong> diferentes.</li>
-          <li>Cada página tem seu próprio endereço (<span className="font-mono text-zinc-800">/u/nome</span>), links, cores e estatísticas.</li>
+          <li>Cada página tem seu próprio endereço (<span className="font-mono text-zinc-800">aurabio.link/nome</span>), links, cores e estatísticas.</li>
           <li>Selecione uma página aqui e edite nas abas ao lado — todas as mudanças são salvas automaticamente.</li>
         </ul>
       </div>
@@ -160,7 +160,7 @@ export const AccountsTab: React.FC = () => {
                 </label>
                 <div className="flex items-center rounded-xl border border-zinc-300 overflow-hidden focus-within:ring-2 focus-within:ring-zinc-900">
                   <span className="px-3 bg-zinc-100 text-zinc-500 text-xs font-mono py-2.5 border-r border-zinc-200">
-                    aurabio.app/u/
+                    aurabio.link/
                   </span>
                   <input
                     type="text"

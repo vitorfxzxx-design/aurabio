@@ -81,7 +81,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     create_new_page: 'Criar nova página',
     how_it_works: 'Como funciona',
     how_it_works_1: 'Cada conta pode ter até 3 páginas diferentes.',
-    how_it_works_2: 'Cada página tem seu próprio endereço (/u/nome), links, cores e estatísticas.',
+    how_it_works_2: 'Cada página tem seu próprio endereço (aurabio.link/nome), links, cores e estatísticas.',
     how_it_works_3: 'Selecione uma página aqui e edite nas abas ao lado — todas as mudanças são salvas automaticamente.',
     create_page_modal_title: 'Criar nova página',
     create_page_modal_sub: 'Defina o nome de exibição e a URL exclusiva da sua nova página de bio.',

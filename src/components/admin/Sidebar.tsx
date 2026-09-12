@@ -108,7 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onClo
             {activePage.name}
           </div>
           <div className="text-[11px] text-zinc-500 font-mono truncate">
-            /u/{activePage.slug}
+            /{activePage.slug}
           </div>
         </div>
 

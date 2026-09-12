@@ -84,7 +84,7 @@ export const PhoneFrame: React.FC = () => {
               </div>
               <div className="bg-zinc-950 px-4 py-1 rounded-md text-[11px] text-zinc-300 font-mono flex items-center gap-2 border border-zinc-800/60">
                 <Sparkles size={11} className="text-red-500" />
-                <span>aurabio.link/u/{activePage.slug}</span>
+                <span>aurabio.link/{activePage.slug}</span>
               </div>
               <div className="w-10" />
             </div>

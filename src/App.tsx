@@ -11,22 +11,51 @@ export function App() {
 
   useEffect(() => {
     const handleRouteChange = () => {
-      const pathname = window.location.pathname.toLowerCase().replace(/\/$/, '');
-      const hash = window.location.hash.replace('#/', '').replace('#', '').toLowerCase();
+      const cleanPath = window.location.pathname.replace(/\/$/, '').toLowerCase();
+      const rawHash = window.location.hash.replace('#/', '').replace('#', '').toLowerCase();
 
-      if (pathname === '/pv' || pathname.startsWith('/pv') || hash === 'pv' || hash.startsWith('pv')) {
+      // Check for Sales Page
+      if (cleanPath === '/pv' || cleanPath.startsWith('/pv') || rawHash === 'pv' || rawHash.startsWith('pv')) {
         setCurrentRoute('pv');
         setRouteSlug(undefined);
-      } else if (hash === 'master' || hash.startsWith('master')) {
+        return;
+      }
+
+      // Check for Master Admin
+      if (cleanPath === '/master' || cleanPath.startsWith('/master') || rawHash === 'master' || rawHash.startsWith('master')) {
         setCurrentRoute('master');
         setRouteSlug(undefined);
-      } else if (hash && hash !== 'painel' && hash !== '') {
-        setCurrentRoute('public');
-        setRouteSlug(hash.replace('u/', ''));
-      } else {
+        return;
+      }
+
+      // Check for Dashboard / Admin
+      if (cleanPath === '/painel' || cleanPath === '/admin' || rawHash === 'painel' || rawHash === 'admin') {
         setCurrentRoute('admin');
         setRouteSlug(undefined);
+        return;
       }
+
+      // Check if hash has a slug (e.g. #/jonathanbrooks or #/u/jonathanbrooks)
+      if (rawHash && rawHash !== 'painel' && rawHash !== '') {
+        const slugFromHash = rawHash.replace(/^u\//, '');
+        setCurrentRoute('public');
+        setRouteSlug(slugFromHash);
+        return;
+      }
+
+      // Check if pathname has a slug (e.g. /jonathanbrooks or /u/jonathanbrooks)
+      if (cleanPath && cleanPath !== '' && cleanPath !== '/' && cleanPath !== '/index.html') {
+        const slugFromPath = cleanPath.replace(/^\/u\//, '').replace(/^\//, '');
+        if (slugFromPath) {
+          setCurrentRoute('public');
+          setRouteSlug(slugFromPath);
+          return;
+        }
+      }
+
+      // Default to Creator Admin Panel
+      setCurrentRoute('admin');
+      setRouteSlug(undefined);
     };
 
     window.addEventListener('hashchange', handleRouteChange);

@@ -12,13 +12,13 @@ export const TopHeader: React.FC<TopHeaderProps> = ({ onOpenMobileMenu, onOpenMo
   const { activePage, showNotification, t } = useBio();
 
   const handleCopyLink = () => {
-    const fullUrl = `${window.location.origin}/#/u/${activePage.slug}`;
+    const fullUrl = `${window.location.origin}/${activePage.slug}`;
     navigator.clipboard.writeText(fullUrl);
     showNotification(`${t('link_copied')} ${fullUrl}`);
   };
 
   const handleOpenPage = () => {
-    const fullUrl = `${window.location.origin}/#/u/${activePage.slug}`;
+    const fullUrl = `${window.location.origin}/${activePage.slug}`;
     window.open(fullUrl, '_blank');
   };
 
@@ -37,7 +37,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({ onOpenMobileMenu, onOpenMo
         <div className="flex items-center gap-2 overflow-hidden">
           <span className="hidden sm:inline text-xs font-semibold text-zinc-400 shrink-0">{t('current_page')}</span>
           <span className="text-xs font-mono font-bold text-zinc-900 bg-zinc-100 px-2 sm:px-2.5 py-1 rounded-md truncate max-w-[150px] sm:max-w-none">
-            aurabio.link/u/{activePage.slug}
+            aurabio.link/{activePage.slug}
           </span>
         </div>
       </div>

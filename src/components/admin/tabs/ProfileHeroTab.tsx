@@ -60,7 +60,7 @@ export const ProfileHeroTab: React.FC = () => {
         <div className="flex items-center gap-2 max-w-lg">
           <div className="flex-1 flex items-center rounded-xl border border-zinc-300 overflow-hidden focus-within:ring-2 focus-within:ring-zinc-900 bg-zinc-50">
             <span className="px-3 text-zinc-500 text-xs font-mono py-2.5 border-r border-zinc-200 select-none">
-              /u/
+              aurabio.link/
             </span>
             <input
               type="text"
