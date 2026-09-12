@@ -71,51 +71,60 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       }}
     >
       {/* ------------------------------------------------------------- */}
-      {/* 1. CINEMATOGRÁFICO LAYOUT */}
+      {/* 1. CINEMATOGRÁFICO LAYOUT (Impacto Máximo com Foto de Alta Resolução) */}
       {/* ------------------------------------------------------------- */}
       {isCinematic && (
-        <header className="w-full relative">
-          <div className="w-full relative h-72 sm:h-80 overflow-hidden shadow-2xl bg-zinc-900 flex items-center justify-center">
+        <header className="w-full relative select-none">
+          {/* Hero Image Container (Tall Portrait Hero) */}
+          <div className="w-full relative h-[420px] sm:h-[460px] overflow-hidden bg-zinc-950 flex items-center justify-center">
             {avatarUrl ? (
               <img 
                 src={avatarUrl} 
                 alt={page.name}
-                className="w-full h-full object-cover object-top scale-105 transform hover:scale-110 transition-transform duration-700"
+                className="w-full h-full object-cover transition-transform duration-700"
+                style={{
+                  objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                  transform: `scale(${page.avatarZoom ?? 1})`
+                }}
               />
             ) : (
               <div className="flex flex-col items-center justify-center text-zinc-700">
-                <UserIcon size={64} />
+                <UserIcon size={72} />
               </div>
             )}
-            {/* Dark contrast gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
 
-            {/* Official Badge */}
+            {/* Smooth Cinematic Edge Gradients */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black via-black/70 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent pointer-events-none" />
+
+            {/* Top Official Badge */}
             {page.verified && (
-              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/15 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg">
-                <CheckCircle size={13} style={{ color: accentColor }} className="fill-current text-black" />
-                <span className="text-[10px] font-bold tracking-wider uppercase text-white font-sans">
+              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xl z-20">
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: page.badgeColor || accentColor }} />
+                <span className="text-[10px] font-black tracking-widest uppercase text-white font-sans">
                   {dict.official_badge}
                 </span>
               </div>
             )}
 
-            {/* Title Overlay */}
-            <div className="absolute bottom-4 left-0 right-0 px-6 text-center">
-              <span className="inline-block text-[9px] uppercase font-black tracking-[0.2em] px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white mb-1.5 border border-white/20">
+            {/* Bottom Floating Title Overlay */}
+            <div className="absolute bottom-6 left-0 right-0 px-6 text-center z-20 flex flex-col items-center">
+              <span className="inline-flex items-center gap-1 text-[9px] uppercase font-black tracking-[0.25em] px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white mb-2 border border-white/25 shadow-lg">
+                <Sparkles size={10} className="text-amber-400" />
                 {dict.featured_profile}
               </span>
-              <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-wider text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+              <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-wider text-white drop-shadow-[0_4px_16px_rgba(0,0,0,1)] leading-tight">
                 {page.name || 'SEU NOME'}
               </h1>
             </div>
           </div>
 
+          {/* Bio Description below hero */}
           {page.bio && (
-            <div className="px-6 pt-3 pb-1 text-center">
+            <div className="px-6 pt-4 pb-2 text-center">
               <div 
-                className="text-xs sm:text-sm font-medium leading-relaxed whitespace-pre-line max-w-sm mx-auto"
+                className="text-xs sm:text-sm font-medium leading-relaxed whitespace-pre-line max-w-sm mx-auto opacity-90"
                 style={{ color: secondaryTextColor }}
               >
                 {page.bio}
