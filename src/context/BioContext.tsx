@@ -118,35 +118,70 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return DEFAULT_PAGES;
   });
 
-  // Fetch all data from Supabase on mount
+  // Fetch and sync data with Supabase smartly
   useEffect(() => {
     async function loadCloudData() {
-      // 1. Pages
-      const cloudPages = await pagesService.getAllPages();
-      if (cloudPages && cloudPages.length > 0) {
-        setPages(cloudPages);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudPages));
-      }
+      try {
+        // 1. Pages
+        const cloudPages = await pagesService.getAllPages();
+        if (cloudPages && cloudPages.length > 0) {
+          setPages(currentLocalPages => {
+            const merged = currentLocalPages.map(localPage => {
+              const cloudMatch = cloudPages.find(cp => cp.id === localPage.id || cp.slug === localPage.slug);
+              if (!cloudMatch) {
+                pagesService.upsertPage(localPage, currentUserEmail);
+                return localPage;
+              }
+              const localTime = new Date(localPage.updatedAt || 0).getTime();
+              const cloudTime = new Date(cloudMatch.updatedAt || 0).getTime();
+              if (cloudTime >= localTime) {
+                return cloudMatch;
+              } else {
+                pagesService.upsertPage(localPage, currentUserEmail);
+                return localPage;
+              }
+            });
 
-      // 2. Members
-      const cloudMembers = await membersService.getAllMembers();
-      if (cloudMembers && cloudMembers.length > 0) {
-        setMembers(cloudMembers);
-        localStorage.setItem(MEMBERS_KEY, JSON.stringify(cloudMembers));
-      }
+            cloudPages.forEach(cp => {
+              if (!merged.some(p => p.id === cp.id || p.slug === cp.slug)) {
+                merged.push(cp);
+              }
+            });
 
-      // 3. Webhooks
-      const cloudWebhooks = await webhooksService.getAllWebhooks();
-      if (cloudWebhooks && cloudWebhooks.length > 0) {
-        setWebhooks(cloudWebhooks);
-        localStorage.setItem(WEBHOOKS_KEY, JSON.stringify(cloudWebhooks));
-      }
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            } catch (err) {
+              console.warn('LocalStorage save error:', err);
+            }
+            return merged;
+          });
+        } else if (pages && pages.length > 0) {
+          // Cloud is empty, seed cloud with local pages
+          pages.forEach(p => pagesService.upsertPage(p, currentUserEmail));
+        }
 
-      // 4. Master Branding
-      const cloudBranding = await masterService.getMasterBranding();
-      if (cloudBranding) {
-        setMasterBranding(cloudBranding);
-        localStorage.setItem(MASTER_BRANDING_KEY, JSON.stringify(cloudBranding));
+        // 2. Members
+        const cloudMembers = await membersService.getAllMembers();
+        if (cloudMembers && cloudMembers.length > 0) {
+          setMembers(cloudMembers);
+          try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(cloudMembers)); } catch {}
+        }
+
+        // 3. Webhooks
+        const cloudWebhooks = await webhooksService.getAllWebhooks();
+        if (cloudWebhooks && cloudWebhooks.length > 0) {
+          setWebhooks(cloudWebhooks);
+          try { localStorage.setItem(WEBHOOKS_KEY, JSON.stringify(cloudWebhooks)); } catch {}
+        }
+
+        // 4. Master Branding
+        const cloudBranding = await masterService.getMasterBranding();
+        if (cloudBranding) {
+          setMasterBranding(cloudBranding);
+          try { localStorage.setItem(MASTER_BRANDING_KEY, JSON.stringify(cloudBranding)); } catch {}
+        }
+      } catch (err) {
+        console.warn('[aurabio] Cloud sync note:', err);
       }
     }
 
@@ -413,9 +448,15 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateActivePage = (updates: Partial<BioPage>) => {
     const updated = { ...activePage, ...updates, updatedAt: new Date().toISOString() };
-    setPages(prevPages =>
-      prevPages.map(page => (page.id === activePage.id ? updated : page))
-    );
+    setPages(prevPages => {
+      const nextPages = prevPages.map(page => (page.id === activePage.id ? updated : page));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextPages));
+      } catch (err) {
+        console.warn('LocalStorage save error:', err);
+      }
+      return nextPages;
+    });
     syncPageToCloud(updated);
   };
 

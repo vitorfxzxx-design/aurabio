@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import type { CardFormat } from '../../../types/bio';
 
+import { compressImageFile } from '../../../utils/imageOptimizer';
+
 export const LinksTab: React.FC = () => {
   const { activePage, addLink, updateLink, deleteLink, reorderLinks, showNotification } = useBio();
 
@@ -48,26 +50,28 @@ export const LinksTab: React.FC = () => {
     setNewIsFeatured(false);
   };
 
-  const handleCardImageUpload = (linkId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCardImageUpload = async (linkId: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        updateLink(linkId, { imageUrl: reader.result as string });
+      try {
+        const optimized = await compressImageFile(file, 1200, 0.85);
+        updateLink(linkId, { imageUrl: optimized });
         showNotification('Imagem do card atualizada!');
-      };
-      reader.readAsDataURL(file);
+      } catch (err) {
+        console.error('Error optimizing card image:', err);
+      }
     }
   };
 
-  const handleNewCardImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewCardImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const optimized = await compressImageFile(file, 1200, 0.85);
+        setNewImage(optimized);
+      } catch (err) {
+        console.error('Error optimizing new image:', err);
+      }
     }
   };
 

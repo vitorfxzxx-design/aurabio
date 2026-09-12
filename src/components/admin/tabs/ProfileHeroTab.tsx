@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useBio } from '../../../context/BioContext';
 import { Upload, Trash2, ShieldCheck, Image as ImageIcon, Save, Check } from 'lucide-react';
 
+import { compressImageFile } from '../../../utils/imageOptimizer';
+
 export const ProfileHeroTab: React.FC = () => {
   const { activePage, updateActivePage, showNotification } = useBio();
   const [slugInput, setSlugInput] = useState(activePage.slug);
@@ -25,15 +27,16 @@ export const ProfileHeroTab: React.FC = () => {
     showNotification('Endereço da página atualizado com sucesso!');
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        updateActivePage({ avatarUrl: reader.result as string });
+      try {
+        const optimized = await compressImageFile(file, 1200, 0.85);
+        updateActivePage({ avatarUrl: optimized });
         showNotification('Foto de perfil atualizada!');
-      };
-      reader.readAsDataURL(file);
+      } catch (err) {
+        console.error('Error optimizing image:', err);
+      }
     }
   };
 
