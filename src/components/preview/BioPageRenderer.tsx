@@ -8,6 +8,7 @@ import {
   Sparkles, 
   Flame, 
   ArrowRight, 
+  ArrowUpRight,
   Zap,
   User as UserIcon
 } from 'lucide-react';
@@ -63,7 +64,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
   return (
     <div 
       className={`w-full flex-1 flex flex-col items-center select-none pb-12 transition-all duration-300 relative ${
-        isMinimal ? 'font-mono' : isEditorial ? 'font-serif' : 'font-sans'
+        isMinimal ? 'font-mono' : isEditorial ? 'font-editorial' : 'font-sans'
       }`}
       style={{
         backgroundColor: bgColor,
@@ -199,70 +200,56 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* 3. EDITORIAL CLEAN LAYOUT (Estilo Revista / Luxo / Serifa) */}
+      {/* 3. EDITORIAL CLEAN LAYOUT (Estilo Revista / Doctor / Autoridade) */}
       {/* ------------------------------------------------------------- */}
       {isEditorial && (
-        <header className="w-full pt-10 pb-4 px-6 flex flex-col items-center text-center relative z-10 font-serif">
-          {/* Avatar com Moldura Suave / Squircle Editorial */}
-          <div className="relative mb-4">
-            <div 
-              className="p-1.5 rounded-[30px] border shadow-2xl bg-white/5 backdrop-blur-md transition-transform duration-500 hover:scale-105"
-              style={{ 
-                borderColor: `${accentColor}80`,
-                boxShadow: `0 12px 35px ${accentColor}25`
-              }}
-            >
-              {avatarUrl ? (
-                <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-[24px] overflow-hidden">
-                  <img
-                    src={avatarUrl}
-                    alt={page.name}
-                    className="w-full h-full object-cover shadow-sm"
-                    style={{
-                      objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
-                      transform: `scale(${page.avatarZoom ?? 1})`
-                    }}
-                  />
-                </div>
-              ) : (
-                <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-[24px] bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800 font-sans">
-                  <UserIcon size={34} />
-                </div>
-              )}
-            </div>
+        <header className="w-full pt-8 pb-4 px-6 flex flex-col items-center text-center relative z-10 font-editorial">
+          {/* Foto Principal em Card Retangular com Cantos Arredondados */}
+          <div className="w-[88%] max-w-[310px] aspect-[4/5] rounded-[32px] overflow-hidden shadow-2xl bg-zinc-900 mx-auto relative group">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={page.name}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                style={{
+                  objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                  transform: `scale(${page.avatarZoom ?? 1})`
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-700">
+                <UserIcon size={56} />
+              </div>
+            )}
 
             {page.verified && (
               <div 
-                className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[9px] uppercase tracking-widest font-sans font-black text-white shadow-lg border border-white/20 flex items-center gap-1"
-                style={{ backgroundColor: accentColor }}
+                className="absolute bottom-3 right-3 w-7 h-7 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
+                style={{ backgroundColor: page.badgeColor || accentColor }}
+                title={dict.official_badge}
               >
-                <CheckCircle size={10} className="fill-current text-white stroke-[2]" />
-                <span>{dict.official_badge}</span>
+                <CheckCircle className="w-4 h-4 fill-white text-zinc-950 stroke-[2.5]" />
               </div>
             )}
           </div>
 
-          <div className="flex items-center gap-2 mb-1.5 opacity-70">
-            <div className="w-4 h-px" style={{ backgroundColor: accentColor }} />
-            <span className="text-[10px] uppercase font-sans tracking-[0.25em] font-semibold">
-              Curated Edition
-            </span>
-            <div className="w-4 h-px" style={{ backgroundColor: accentColor }} />
-          </div>
-
+          {/* Nome em Tipografia Serifa Elegante */}
           <h1 
-            className="text-2xl sm:text-3xl font-serif font-normal tracking-wide drop-shadow-sm"
-            style={{ color: textColor }}
+            className="font-editorial text-2xl sm:text-[28px] font-bold uppercase tracking-[0.06em] text-white text-center mt-5 leading-tight"
           >
             {page.name || 'SEU NOME'}
           </h1>
 
-          <div className="w-12 h-px my-3" style={{ backgroundColor: `${accentColor}70` }} />
+          {/* Linha Vermelha de Destaque Abaixo do Nome */}
+          <div 
+            className="w-10 h-[2px] rounded-full mx-auto my-3" 
+            style={{ backgroundColor: page.badgeColor || accentColor || '#dc2626' }} 
+          />
 
+          {/* Bio / Credenciais */}
           {page.bio && (
             <div 
-              className="text-xs sm:text-sm font-sans font-normal opacity-90 leading-relaxed whitespace-pre-line max-w-sm px-4"
-              style={{ color: secondaryTextColor }}
+              className="text-xs sm:text-[13px] font-editorial leading-relaxed text-zinc-200 max-w-[310px] mx-auto text-center px-2 whitespace-pre-line"
             >
               {page.bio}
             </div>
@@ -445,7 +432,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                   isNeon
                     ? 'rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:scale-[1.02]'
                     : isEditorial
-                    ? 'rounded-2xl border border-zinc-800/60 shadow-md hover:border-zinc-500 hover:scale-[1.015]'
+                    ? 'rounded-[26px] border border-zinc-800/80 shadow-2xl hover:border-zinc-500 hover:scale-[1.015]'
                     : isMinimal
                     ? 'rounded-none border border-zinc-700 hover:border-emerald-400 hover:bg-zinc-900/90'
                     : 'rounded-2xl border border-zinc-800/80 shadow-lg hover:border-zinc-600 hover:scale-[1.02]'
@@ -464,7 +451,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
 
                 {/* ---------------- FORMAT: RECTANGULAR FULL BANNER (EDGE-TO-EDGE) ---------------- */}
                 {isRectangular ? (
-                  <div className="relative w-full aspect-4/3 sm:aspect-16/10 rounded-2xl overflow-hidden bg-black/60 shadow-xl group">
+                  <div className={`relative w-full aspect-4/3 sm:aspect-16/10 overflow-hidden bg-black/60 shadow-xl group ${isEditorial ? 'rounded-[26px]' : 'rounded-2xl'}`}>
                     {link.imageUrl ? (
                       <img
                         src={link.imageUrl}
@@ -478,12 +465,12 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                     )}
 
                     {/* Gradient shading for text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent pointer-events-none" />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent pointer-events-none" />
 
                     {/* Top-left Badges (MAIS ACESSADO / TOP CHOICE) */}
                     {isFeatured && (
-                      <div className="absolute top-3 left-3 flex items-center gap-1.5 z-20">
+                      <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5 z-20">
                         <span 
                           className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] uppercase font-black tracking-wider px-2.5 py-1 rounded-lg text-white shadow-lg border border-white/20 backdrop-blur-md animate-pulse"
                           style={{ backgroundColor: accentColor }}
@@ -495,17 +482,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                     )}
 
                     {/* Top-right Direct Action Indicator Arrow */}
-                    <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 group-hover:text-white group-hover:scale-110 transition-all shadow-md z-20">
-                      <ExternalLink size={13} />
+                    <div className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center text-white/90 group-hover:text-white group-hover:scale-110 transition-all shadow-md z-20">
+                      {isEditorial ? <ArrowUpRight size={16} strokeWidth={2.5} /> : <ExternalLink size={13} />}
                     </div>
 
                     {/* Bottom Title & Subtitle overlaid directly on the image */}
-                    <div className="absolute bottom-3 left-3.5 right-3.5 text-left z-20">
-                      <h3 className="text-sm sm:text-base font-black uppercase text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] line-clamp-1">
+                    <div className="absolute bottom-3.5 left-4 right-4 text-left z-20">
+                      <h3 className={`text-sm sm:text-base uppercase text-white tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,1)] line-clamp-2 ${isEditorial ? 'font-editorial font-bold leading-snug' : 'font-black'}`}>
                         {link.title}
                       </h3>
                       {link.subtitle && (
-                        <p className="text-[11px] sm:text-xs text-zinc-300 font-medium line-clamp-1 mt-0.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
+                        <p className={`text-[11px] sm:text-xs text-zinc-300 line-clamp-1 mt-0.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] ${isEditorial ? 'font-editorial' : 'font-medium'}`}>
                           {link.subtitle}
                         </p>
                       )}
