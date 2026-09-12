@@ -60,7 +60,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onOpenPublicView }) => {
           </main>
 
           {/* Right Live Preview Column */}
-          <aside className="hidden md:flex w-[400px] lg:w-[480px] xl:w-[560px] bg-zinc-100 border-l border-zinc-200/80 items-center justify-center p-6 shrink-0 overflow-y-auto">
+          <aside className="hidden lg:flex flex-1 min-w-[440px] max-w-[760px] bg-zinc-100 border-l border-zinc-200/80 items-center justify-center p-4 xl:p-8 shrink-0 overflow-y-auto overflow-x-hidden">
             <PhoneFrame />
           </aside>
         </div>

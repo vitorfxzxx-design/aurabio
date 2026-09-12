@@ -67,7 +67,7 @@ export const PhoneFrame: React.FC = () => {
           </div>
         ) : (
           /* Desktop Browser Mockup */
-          <div className="relative w-[500px] lg:w-[620px] h-[680px] bg-zinc-950 rounded-2xl p-2 shadow-2xl border border-zinc-800 flex flex-col overflow-hidden">
+          <div className="relative w-full max-w-[540px] xl:max-w-[620px] h-[680px] bg-zinc-950 rounded-2xl p-2 shadow-2xl border border-zinc-800 flex flex-col overflow-hidden transition-all duration-300">
             {/* Browser Header Bar */}
             <div className="w-full px-3 py-2 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between text-xs text-zinc-400 shrink-0 rounded-t-xl">
               <div className="flex items-center gap-1.5">
@@ -84,7 +84,7 @@ export const PhoneFrame: React.FC = () => {
 
             {/* Desktop Screen Content */}
             <div className="w-full flex-1 overflow-y-auto relative scrollbar-thin">
-              <div className="max-w-md mx-auto min-h-full py-4">
+              <div className="w-full max-w-sm sm:max-w-md mx-auto min-h-full py-4">
                 <BioPageRenderer page={activePage} isInteractive={false} />
               </div>
             </div>
