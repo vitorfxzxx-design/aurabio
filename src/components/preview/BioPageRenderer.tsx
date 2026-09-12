@@ -111,10 +111,6 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
 
             {/* Bottom Floating Title Overlay */}
             <div className="absolute bottom-6 left-0 right-0 px-6 text-center z-20 flex flex-col items-center">
-              <span className="inline-flex items-center gap-1 text-[9px] uppercase font-black tracking-[0.25em] px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white mb-2 border border-white/25 shadow-lg">
-                <Sparkles size={10} className="text-amber-400" />
-                {dict.featured_profile}
-              </span>
               <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-wider text-white drop-shadow-[0_4px_16px_rgba(0,0,0,1)] leading-tight">
                 {page.name || 'SEU NOME'}
               </h1>
