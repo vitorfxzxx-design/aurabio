@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Copy, Check, Headphones, ExternalLink, HelpCircle } from 'lucide-react';
+import { Mail, Copy, Check, Headphones, HelpCircle } from 'lucide-react';
 import { useBio } from '../../../context/BioContext';
 
 export const SupportTab: React.FC = () => {
@@ -59,19 +59,11 @@ export const SupportTab: React.FC = () => {
           <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
               onClick={handleCopy}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-bold text-zinc-700 transition-colors shadow-sm cursor-pointer"
+              className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl border border-zinc-300 bg-white hover:bg-zinc-50 text-xs font-bold text-zinc-800 transition-colors shadow-sm cursor-pointer active:scale-95"
             >
               {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
               <span>{copied ? t('copied') : t('copy')}</span>
             </button>
-
-            <a
-              href={`mailto:${supportEmail}`}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-xs font-bold text-white transition-colors shadow-sm"
-            >
-              <ExternalLink size={14} />
-              <span>{t('send_email')}</span>
-            </a>
           </div>
         </div>
       </div>
