@@ -17,7 +17,12 @@ import {
   MASTER_ADMIN_PASSWORD
 } from '../data/defaultData';
 import { TRANSLATIONS, type Language } from '../utils/translations';
-import { supabase } from '../lib/supabase';
+import { 
+  pagesService, 
+  membersService, 
+  webhooksService, 
+  masterService 
+} from '../lib/supabase';
 
 interface BioContextType {
   pages: BioPage[];
@@ -85,7 +90,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // User Authentication State
   const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(() => {
     const auth = localStorage.getItem(USER_AUTH_KEY);
-    return auth !== 'false'; // Default to true on first load, but when logged out remains false
+    return auth !== 'false';
   });
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string>(() => {
@@ -113,85 +118,44 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return DEFAULT_PAGES;
   });
 
-  // Fetch all pages from Supabase on start and whenever user email changes
+  // Fetch all data from Supabase on mount
   useEffect(() => {
-    async function loadCloudPages() {
-      try {
-        const { data, error } = await supabase
-          .from('aurabio_pages')
-          .select('*');
+    async function loadCloudData() {
+      // 1. Pages
+      const cloudPages = await pagesService.getAllPages();
+      if (cloudPages && cloudPages.length > 0) {
+        setPages(cloudPages);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudPages));
+      }
 
-        if (!error && data && data.length > 0) {
-          const formattedPages: BioPage[] = data.map((row: any) => ({
-            id: row.id,
-            slug: row.slug,
-            name: row.name,
-            avatarUrl: row.avatar_url || '',
-            avatarZoom: row.avatar_zoom || 1,
-            avatarPosition: row.avatar_position || { x: 50, y: 50 },
-            verified: !!row.verified,
-            badgeColor: row.badge_color || '#dc2626',
-            bio: row.bio || '',
-            layout: row.layout || 'creator-portrait',
-            theme: row.theme || 'cinema-noir',
-            language: row.language || 'pt',
-            customColors: row.custom_colors || {
-              bgColor: '#000000',
-              textColor: '#ffffff',
-              secondaryTextColor: '#a3a3a3',
-              cardBgColor: '#0a0a0a',
-              accentColor: '#e11d2e',
-            },
-            hideBranding: !!row.hide_branding,
-            links: row.links || [],
-            socialLinks: row.social_links || [],
-            tracking: row.tracking || {},
-            stats: row.stats || { views: 0, ctaClicks: 0, clicks: {} },
-            createdAt: row.created_at || new Date().toISOString(),
-            updatedAt: row.updated_at || new Date().toISOString(),
-          }));
+      // 2. Members
+      const cloudMembers = await membersService.getAllMembers();
+      if (cloudMembers && cloudMembers.length > 0) {
+        setMembers(cloudMembers);
+        localStorage.setItem(MEMBERS_KEY, JSON.stringify(cloudMembers));
+      }
 
-          setPages(formattedPages);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(formattedPages));
-        }
-      } catch (err) {
-        console.warn('Supabase cloud fetch note:', err);
+      // 3. Webhooks
+      const cloudWebhooks = await webhooksService.getAllWebhooks();
+      if (cloudWebhooks && cloudWebhooks.length > 0) {
+        setWebhooks(cloudWebhooks);
+        localStorage.setItem(WEBHOOKS_KEY, JSON.stringify(cloudWebhooks));
+      }
+
+      // 4. Master Branding
+      const cloudBranding = await masterService.getMasterBranding();
+      if (cloudBranding) {
+        setMasterBranding(cloudBranding);
+        localStorage.setItem(MASTER_BRANDING_KEY, JSON.stringify(cloudBranding));
       }
     }
 
-    loadCloudPages();
+    loadCloudData();
   }, [currentUserEmail]);
 
-  // Sync pages to Supabase whenever pages state is updated
+  // Sync pages to Supabase
   const syncPageToCloud = async (pageToSync: BioPage) => {
-    try {
-      await supabase
-        .from('aurabio_pages')
-        .upsert({
-          id: pageToSync.id,
-          slug: pageToSync.slug,
-          name: pageToSync.name,
-          avatar_url: pageToSync.avatarUrl,
-          avatar_zoom: pageToSync.avatarZoom || 1,
-          avatar_position: pageToSync.avatarPosition || { x: 50, y: 50 },
-          verified: pageToSync.verified,
-          badge_color: pageToSync.badgeColor || '#dc2626',
-          bio: pageToSync.bio,
-          layout: pageToSync.layout,
-          theme: pageToSync.theme,
-          language: pageToSync.language,
-          custom_colors: pageToSync.customColors,
-          hide_branding: pageToSync.hideBranding,
-          links: pageToSync.links,
-          social_links: pageToSync.socialLinks,
-          tracking: pageToSync.tracking,
-          stats: pageToSync.stats,
-          user_email: currentUserEmail,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'id' });
-    } catch (err) {
-      console.warn('Cloud sync save note:', err);
-    }
+    await pagesService.upsertPage(pageToSync, currentUserEmail);
   };
 
   const [activePageId, setActivePageIdState] = useState<string>(() => {
@@ -324,6 +288,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       clicks: 0,
     };
     setMembers(prev => [newMember, ...prev]);
+    membersService.upsertMember(newMember);
     showNotification(`Membro ${data.name} adicionado com sucesso!`);
   };
 
@@ -332,8 +297,10 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prev.map(m => {
         if (m.id === memberId) {
           const newStatus = m.status === 'active' ? 'suspended' : 'active';
+          const updated = { ...m, status: newStatus as 'active' | 'suspended' };
+          membersService.upsertMember(updated);
           showNotification(`Membro ${m.name} agora está ${newStatus === 'active' ? 'ATIVO' : 'SUSPENSO'}.`);
-          return { ...m, status: newStatus };
+          return updated;
         }
         return m;
       })
@@ -342,6 +309,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const deleteMember = (memberId: string) => {
     setMembers(prev => prev.filter(m => m.id !== memberId));
+    membersService.deleteMember(memberId);
     showNotification('Membro removido da base.');
   };
 
@@ -352,22 +320,33 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       totalEvents: 0,
     };
     setWebhooks(prev => [...prev, newWebhook]);
+    webhooksService.upsertWebhook(newWebhook);
     showNotification('Novo webhook de integração adicionado!');
   };
 
   const toggleWebhook = (id: string) => {
     setWebhooks(prev =>
-      prev.map(w => (w.id === id ? { ...w, active: !w.active } : w))
+      prev.map(w => {
+        if (w.id === id) {
+          const updated = { ...w, active: !w.active };
+          webhooksService.upsertWebhook(updated);
+          return updated;
+        }
+        return w;
+      })
     );
   };
 
   const deleteWebhook = (id: string) => {
     setWebhooks(prev => prev.filter(w => w.id !== id));
+    webhooksService.deleteWebhook(id);
     showNotification('Webhook removido.');
   };
 
   const updateMasterBranding = (updates: Partial<MasterBrandingConfig>) => {
-    setMasterBranding((prev: MasterBrandingConfig) => ({ ...prev, ...updates }));
+    const updated = { ...masterBranding, ...updates };
+    setMasterBranding(updated);
+    masterService.upsertMasterBranding(updated);
     showNotification('Configurações de Branding Master atualizadas!');
   };
 
@@ -502,7 +481,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setActivePageIdState(remaining[0].id);
     }
     // Delete from Supabase
-    supabase.from('aurabio_pages').delete().eq('id', id).then(() => {});
+    pagesService.deletePage(id);
     showNotification('Página excluída.');
   };
 

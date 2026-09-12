@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useBio } from '../context/BioContext';
 import { BioPageRenderer } from '../components/preview/BioPageRenderer';
 import { THEME_PRESETS } from '../data/defaultData';
+import { pagesService } from '../lib/supabase';
+import type { BioPage } from '../types/bio';
 
 interface PublicBioPageProps {
   slug?: string;
@@ -11,10 +13,20 @@ interface PublicBioPageProps {
 export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
   const { pages, activePage, recordView, recordClick } = useBio();
   const recordedRef = useRef(false);
+  const [cloudPage, setCloudPage] = useState<BioPage | null>(null);
 
   // Match by slug or id, fallback to activePage or first page
   const cleanSlug = (slug || '').toLowerCase().replace(/^u\//, '').replace(/^\//, '');
-  const page = (cleanSlug ? pages.find(p => p.slug.toLowerCase() === cleanSlug || p.id === cleanSlug) : null) || activePage || pages[0];
+  const localPage = cleanSlug ? pages.find(p => p.slug.toLowerCase() === cleanSlug || p.id === cleanSlug) : null;
+  const page = localPage || cloudPage || activePage || pages[0];
+
+  useEffect(() => {
+    if (cleanSlug && !localPage) {
+      pagesService.getPageBySlug(cleanSlug).then((fetched) => {
+        if (fetched) setCloudPage(fetched);
+      });
+    }
+  }, [cleanSlug, localPage]);
 
   const themePreset = THEME_PRESETS.find(t => t.id === page?.theme) || THEME_PRESETS[0];
   const bgColor = page?.customColors?.bgColor || themePreset.bg;
