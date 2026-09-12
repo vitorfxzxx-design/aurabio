@@ -9,7 +9,8 @@ import {
   Flame, 
   ArrowRight, 
   ChevronRight, 
-  Zap
+  Zap,
+  User as UserIcon
 } from 'lucide-react';
 import { THEME_PRESETS } from '../../data/defaultData';
 import { TRANSLATIONS, type Language } from '../../utils/translations';
@@ -58,8 +59,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
   const isNeon = layout === 'neon-glow';
   const isCreatorPortrait = (layout === 'creator-portrait') || (!isCinematic && !isEditorial && !isMinimal && !isNeon);
 
-  const fallbackAvatar = 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=400&auto=format&fit=crop';
-  const avatarUrl = page.avatarUrl || fallbackAvatar;
+  const avatarUrl = page.avatarUrl;
 
   return (
     <div 
@@ -76,15 +76,18 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       {/* ------------------------------------------------------------- */}
       {isCinematic && (
         <header className="w-full relative">
-          <div className="w-full relative h-72 sm:h-80 overflow-hidden shadow-2xl bg-zinc-900">
-            <img 
-              src={avatarUrl} 
-              alt={page.name}
-              className="w-full h-full object-cover object-top scale-105 transform hover:scale-110 transition-transform duration-700"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = fallbackAvatar;
-              }}
-            />
+          <div className="w-full relative h-72 sm:h-80 overflow-hidden shadow-2xl bg-zinc-900 flex items-center justify-center">
+            {avatarUrl ? (
+              <img 
+                src={avatarUrl} 
+                alt={page.name}
+                className="w-full h-full object-cover object-top scale-105 transform hover:scale-110 transition-transform duration-700"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center text-zinc-700">
+                <UserIcon size={64} />
+              </div>
+            )}
             {/* Dark contrast gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
@@ -93,7 +96,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
             {page.verified && (
               <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/15 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg">
                 <CheckCircle size={13} style={{ color: accentColor }} className="fill-current text-black" />
-                <span className="text-[10px] uppercase font-extrabold tracking-widest text-white">
+                <span className="text-[10px] font-bold tracking-wider uppercase text-white font-sans">
                   {dict.official_badge}
                 </span>
               </div>
@@ -105,7 +108,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                 {dict.featured_profile}
               </span>
               <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-wider text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-                {page.name || 'ANDREW PARKER'}
+                {page.name || 'SEU NOME'}
               </h1>
             </div>
           </div>
@@ -137,14 +140,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                 boxShadow: `0 8px 30px ${accentColor}40`
               }}
             >
-              <img
-                src={avatarUrl}
-                alt={page.name}
-                className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover shadow-inner"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = fallbackAvatar;
-                }}
-              />
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={page.name}
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover shadow-inner"
+                />
+              ) : (
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
+                  <UserIcon size={36} />
+                </div>
+              )}
             </div>
 
             {page.verified && (
@@ -163,7 +169,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
             className="text-2xl sm:text-3xl font-black uppercase tracking-tight drop-shadow-sm"
             style={{ color: textColor }}
           >
-            {page.name || 'ANDREW PARKER'}
+            {page.name || 'SEU NOME'}
           </h1>
 
           {/* Bio / Bullet Points */}
@@ -192,14 +198,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                 boxShadow: `0 12px 35px ${accentColor}25`
               }}
             >
-              <img
-                src={avatarUrl}
-                alt={page.name}
-                className="w-24 h-24 sm:w-26 sm:h-26 rounded-[24px] object-cover shadow-sm"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = fallbackAvatar;
-                }}
-              />
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={page.name}
+                  className="w-24 h-24 sm:w-26 sm:h-26 rounded-[24px] object-cover shadow-sm"
+                />
+              ) : (
+                <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-[24px] bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800 font-sans">
+                  <UserIcon size={34} />
+                </div>
+              )}
             </div>
 
             {page.verified && (
@@ -225,7 +234,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
             className="text-2xl sm:text-3xl font-serif font-normal tracking-wide drop-shadow-sm"
             style={{ color: textColor }}
           >
-            {page.name || 'Andrew Parker'}
+            {page.name || 'SEU NOME'}
           </h1>
 
           <div className="w-12 h-px my-3" style={{ backgroundColor: `${accentColor}70` }} />
@@ -248,14 +257,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
         <header className="w-full pt-8 pb-4 px-6 flex flex-col items-center text-center relative z-10 font-mono">
           <div className="relative mb-3">
             <div className="w-18 h-18 rounded-full border-2 border-zinc-700 p-0.5 bg-zinc-900 shadow-md">
-              <img
-                src={avatarUrl}
-                alt={page.name}
-                className="w-full h-full rounded-full object-cover grayscale contrast-125"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = fallbackAvatar;
-                }}
-              />
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={page.name}
+                  className="w-full h-full rounded-full object-cover grayscale contrast-125"
+                />
+              ) : (
+                <div className="w-full h-full rounded-full flex items-center justify-center text-zinc-600 bg-zinc-950">
+                  <UserIcon size={24} />
+                </div>
+              )}
             </div>
             {page.verified && (
               <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-black flex items-center justify-center">
@@ -273,7 +285,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
             className="text-lg sm:text-xl font-bold uppercase tracking-widest"
             style={{ color: textColor }}
           >
-            {page.name || 'ANDREW PARKER'}
+            {page.name || 'SEU NOME'}
           </h1>
 
           {page.bio && (
@@ -303,14 +315,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                 boxShadow: `0 0 35px ${accentColor}60, inset 0 0 15px ${accentColor}30`
               }}
             >
-              <img
-                src={avatarUrl}
-                alt={page.name}
-                className="w-24 h-24 rounded-xl object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = fallbackAvatar;
-                }}
-              />
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={page.name}
+                  className="w-24 h-24 rounded-xl object-cover"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
+                  <UserIcon size={34} />
+                </div>
+              )}
             </div>
 
             {page.verified && (
@@ -330,7 +345,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           <h1 
             className="text-2xl sm:text-3xl font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-100 to-white drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
           >
-            {page.name || 'ANDREW PARKER'}
+            {page.name || 'SEU NOME'}
           </h1>
 
           {page.bio && (

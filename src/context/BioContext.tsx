@@ -338,10 +338,10 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       id: `page-${Date.now()}`,
       slug: cleanSlug,
       name: name || 'NOVA PÁGINA',
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
-      verified: true,
+      avatarUrl: '',
+      verified: false,
       badgeColor: '#dc2626',
-      bio: '✨ Bem-vindo ao meu link na bio\n🚀 Conheça meus links e projetos abaixo',
+      bio: '',
       layout: 'creator-portrait',
       theme: 'cinema-noir',
       language,
@@ -353,26 +353,8 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         accentColor: '#e11d2e',
       },
       hideBranding: false,
-      links: [
-        {
-          id: `link-${Date.now()}-1`,
-          title: 'Meu Principal Conteúdo',
-          subtitle: 'Clique para saber mais',
-          url: 'https://aurabio.app',
-          imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop',
-          format: 'rectangular',
-          active: true,
-          clicks: 0,
-        }
-      ],
-      socialLinks: [
-        {
-          id: `soc-${Date.now()}-1`,
-          platform: 'instagram',
-          url: 'https://instagram.com',
-          active: true,
-        }
-      ],
+      links: [],
+      socialLinks: [],
       tracking: {},
       stats: { views: 0, ctaClicks: 0, clicks: {} },
       createdAt: new Date().toISOString(),

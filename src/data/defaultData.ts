@@ -3,12 +3,12 @@ import type { BioPage } from '../types/bio';
 export const DEFAULT_PAGES: BioPage[] = [
   {
     id: 'page-1',
-    slug: 'andrewparker',
-    name: 'ANDREW PARKER',
-    avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=400&auto=format&fit=crop',
-    verified: true,
+    slug: 'suapagina',
+    name: 'SEU NOME',
+    avatarUrl: '',
+    verified: false,
     badgeColor: '#dc2626',
-    bio: '🩺 Weight Loss Specialist\n⚡ Metabolic Health & Weight Management Expert\n⭐ 37,000+ Patients guided worldwide',
+    bio: '',
     layout: 'creator-portrait',
     theme: 'cinema-noir',
     language: 'pt',
@@ -20,108 +20,11 @@ export const DEFAULT_PAGES: BioPage[] = [
       accentColor: '#e11d2e',
     },
     hideBranding: false,
-    links: [
-      {
-        id: 'link-1',
-        title: 'Original Baking Soda Water Shot',
-        subtitle: 'Receita rápida & protocolo diário de ativação metabólica',
-        url: 'https://slimsodaoriginal.shop',
-        imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop',
-        format: 'rectangular',
-        active: true,
-        isFeatured: true,
-        clicks: 0,
-      },
-      {
-        id: 'link-2',
-        title: 'Protocolo de Jejum Guiado 21 Dias',
-        subtitle: 'Acesse o e-book com o método comprovado',
-        url: 'https://example.com/jejum-guiado',
-        imageUrl: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=1200&auto=format&fit=crop',
-        format: 'square',
-        active: true,
-        isFeatured: false,
-        clicks: 0,
-      }
-    ],
-    socialLinks: [
-      {
-        id: 'soc-1',
-        platform: 'instagram',
-        url: 'https://instagram.com/dr.andrewparker',
-        active: true,
-      },
-      {
-        id: 'soc-2',
-        platform: 'youtube',
-        url: 'https://youtube.com/@dr.andrewparker',
-        active: true,
-      },
-      {
-        id: 'soc-3',
-        platform: 'whatsapp',
-        url: 'https://wa.me/5511999999999',
-        active: true,
-      }
-    ],
+    links: [],
+    socialLinks: [],
     tracking: {
       metaPixelId: '',
     },
-    stats: {
-      views: 0,
-      ctaClicks: 0,
-      clicks: {}
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'page-2',
-    slug: 'vitalix-store',
-    name: 'VITALIX NUTRITION',
-    avatarUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=400&auto=format&fit=crop',
-    verified: true,
-    badgeColor: '#10b981',
-    bio: '🌿 Suplementos Premium 100% Naturais\n🚚 Frete Grátis acima de R$ 199\n⚡ Envio em até 24 horas úteis',
-    layout: 'cinematic',
-    theme: 'emerald-luxe',
-    language: 'pt',
-    customColors: {
-      bgColor: '#06201b',
-      textColor: '#ecfdf5',
-      secondaryTextColor: '#6ee7b7',
-      cardBgColor: '#0b332b',
-      accentColor: '#10b981',
-    },
-    hideBranding: false,
-    links: [
-      {
-        id: 'vital-link-1',
-        title: 'Combo Emagrecimento Turbinado 3x',
-        subtitle: 'Super oferta com 40% OFF hoje',
-        url: 'https://example.com/combo',
-        imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=1200&auto=format&fit=crop',
-        format: 'rectangular',
-        active: true,
-        isFeatured: true,
-        clicks: 0,
-      }
-    ],
-    socialLinks: [
-      {
-        id: 'soc-v1',
-        platform: 'instagram',
-        url: 'https://instagram.com/vitalix',
-        active: true,
-      },
-      {
-        id: 'soc-v2',
-        platform: 'whatsapp',
-        url: 'https://wa.me/5511999999999',
-        active: true,
-      }
-    ],
-    tracking: {},
     stats: {
       views: 0,
       ctaClicks: 0,
