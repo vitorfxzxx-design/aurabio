@@ -62,7 +62,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
 
   return (
     <div 
-      className={`w-full flex-1 flex flex-col items-center select-none pb-12 transition-all duration-300 relative ${
+      className={`w-full min-h-full flex-1 flex flex-col justify-between items-center select-none pb-6 transition-all duration-300 relative ${
         isMinimal ? 'font-mono' : isEditorial ? 'font-editorial' : 'font-sans'
       }`}
       style={{
@@ -70,6 +70,8 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
         color: textColor,
       }}
     >
+      {/* Upper Content Area */}
+      <div className="w-full flex-1 flex flex-col items-center">
       {/* ------------------------------------------------------------- */}
       {/* 1. CINEMATOGRÁFICO LAYOUT (Impacto Máximo com Foto de Alta Resolução) */}
       {/* ------------------------------------------------------------- */}
@@ -582,12 +584,13 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           })
         )}
       </section>
+      </div>
 
       {/* ------------------------------------------------------------- */}
       {/* FOOTER BRANDING (Removível pelo painel) */}
       {/* ------------------------------------------------------------- */}
       {!page.hideBranding && (
-        <footer className="mt-auto pt-8 flex flex-col items-center gap-1 opacity-50 hover:opacity-100 transition-opacity">
+        <footer className="w-full mt-auto pt-8 pb-3 flex flex-col items-center justify-center gap-1 opacity-50 hover:opacity-100 transition-opacity shrink-0">
           <div className="flex items-center gap-1.5 text-[11px] font-medium tracking-wide">
             <Sparkles size={12} style={{ color: accentColor }} />
             <span>{dict.made_with} <strong className="font-extrabold">Aurabio</strong></span>

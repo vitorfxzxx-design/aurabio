@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { Smartphone, Monitor, Wifi, Battery, Sparkles } from 'lucide-react';
 import { useBio } from '../../context/BioContext';
 import { BioPageRenderer } from './BioPageRenderer';
+import { THEME_PRESETS } from '../../data/defaultData';
 
 export const PhoneFrame: React.FC = () => {
   const { activePage } = useBio();
   const [viewMode, setViewMode] = useState<'mobile' | 'desktop'>('mobile');
+
+  const themePreset = THEME_PRESETS.find(t => t.id === activePage.theme) || THEME_PRESETS[0];
+  const bgColor = activePage.customColors?.bgColor || themePreset.bg || '#000000';
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full p-4 select-none">
@@ -58,7 +62,10 @@ export const PhoneFrame: React.FC = () => {
             </div>
 
             {/* Screen Content */}
-            <div className="w-full flex-1 overflow-y-auto rounded-[36px] relative scrollbar-none">
+            <div 
+              className="w-full flex-1 overflow-y-auto rounded-[36px] relative scrollbar-none flex flex-col"
+              style={{ backgroundColor: bgColor }}
+            >
               <BioPageRenderer page={activePage} isInteractive={false} />
             </div>
 
@@ -83,8 +90,11 @@ export const PhoneFrame: React.FC = () => {
             </div>
 
             {/* Desktop Screen Content */}
-            <div className="w-full flex-1 overflow-y-auto relative scrollbar-thin">
-              <div className="w-full max-w-sm sm:max-w-md mx-auto min-h-full py-4">
+            <div 
+              className="w-full flex-1 overflow-y-auto relative scrollbar-thin flex flex-col"
+              style={{ backgroundColor: bgColor }}
+            >
+              <div className="w-full max-w-sm sm:max-w-md mx-auto min-h-full flex flex-col flex-1 py-4">
                 <BioPageRenderer page={activePage} isInteractive={false} />
               </div>
             </div>
