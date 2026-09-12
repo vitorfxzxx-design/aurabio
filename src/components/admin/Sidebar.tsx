@@ -9,7 +9,8 @@ import {
   BarChart2, 
   Headphones,
   RotateCcw, 
-  LogOut
+  LogOut,
+  X
 } from 'lucide-react';
 
 export type AdminTab = 'accounts' | 'profile' | 'links' | 'social' | 'appearance' | 'tracking' | 'support';
@@ -17,9 +18,10 @@ export type AdminTab = 'accounts' | 'profile' | 'links' | 'social' | 'appearance
 interface SidebarProps {
   currentTab: AdminTab;
   onSelectTab: (tab: AdminTab) => void;
+  onCloseMobile?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onCloseMobile }) => {
   const { activePage, restoreDefaults, t } = useBio();
 
   const menuItems: { id: AdminTab; title: string; subtitle: string; icon: React.ReactNode }[] = [
@@ -68,21 +70,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
   ];
 
   return (
-    <aside className="w-64 sm:w-72 bg-white border-r border-zinc-200 flex flex-col justify-between shrink-0 select-none min-h-screen">
+    <aside className="w-full sm:w-72 bg-white border-r border-zinc-200 flex flex-col justify-between shrink-0 select-none h-full md:min-h-screen overflow-y-auto">
       <div>
         {/* Logo and Header */}
-        <div className="p-6 pb-4">
-          <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">
-            {t('panel')}
-          </div>
-          <div className="flex items-center gap-2 mt-0.5">
-            <div className="w-6 h-6 rounded-lg bg-zinc-950 flex items-center justify-center text-white font-black text-xs">
-              A
+        <div className="p-5 sm:p-6 pb-4 flex items-center justify-between">
+          <div>
+            <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">
+              {t('panel')}
             </div>
-            <h1 className="text-xl font-extrabold tracking-tight text-zinc-900">
-              Aurabio
-            </h1>
+            <div className="flex items-center gap-2 mt-0.5">
+              <div className="w-6 h-6 rounded-lg bg-zinc-950 flex items-center justify-center text-white font-black text-xs">
+                A
+              </div>
+              <h1 className="text-xl font-extrabold tracking-tight text-zinc-900">
+                Aurabio
+              </h1>
+            </div>
           </div>
+
+          {/* Close button for mobile drawer */}
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="md:hidden p-1.5 rounded-lg text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+          )}
         </div>
 
         {/* Current Active Page Badge / Indicator */}
