@@ -1,17 +1,43 @@
 import React, { useState } from 'react';
 import { useBio } from '../../../context/BioContext';
-import { Calendar, RotateCcw } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 
 export const TrackingTab: React.FC = () => {
   const { activePage, updateActivePage, resetStats, showNotification } = useBio();
 
-  const [dateFilter, setDateFilter] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [quickFilter, setQuickFilter] = useState<'all' | 'today' | '7d' | '30d'>('all');
   const [pixelId, setPixelId] = useState(activePage.tracking?.metaPixelId || '');
 
   const views = activePage.stats?.views || 0;
   const linkClicks = activePage.links.reduce((acc, l) => acc + (l.clicks || 0), 0);
   const ctaClicks = activePage.stats?.ctaClicks || 0;
   const ctrMedio = views > 0 ? ((linkClicks / views) * 100).toFixed(1) : '0.0';
+
+  const handleQuickPreset = (preset: 'all' | 'today' | '7d' | '30d') => {
+    setQuickFilter(preset);
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
+    if (preset === 'today') {
+      setStartDate(todayStr);
+      setEndDate(todayStr);
+    } else if (preset === '7d') {
+      const d7 = new Date();
+      d7.setDate(today.getDate() - 7);
+      setStartDate(d7.toISOString().split('T')[0]);
+      setEndDate(todayStr);
+    } else if (preset === '30d') {
+      const d30 = new Date();
+      d30.setDate(today.getDate() - 30);
+      setStartDate(d30.toISOString().split('T')[0]);
+      setEndDate(todayStr);
+    } else {
+      setStartDate('');
+      setEndDate('');
+    }
+  };
 
   const handleSavePixel = () => {
     updateActivePage({
@@ -33,21 +59,92 @@ export const TrackingTab: React.FC = () => {
         </p>
       </div>
 
-      {/* Date Filter Input */}
-      <div>
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
-          FILTRAR PERÍODO
-        </label>
-        <div className="relative max-w-xs">
-          <input
-            type="text"
-            placeholder="dd/mm/aaaa"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-zinc-900 bg-white"
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
-            <Calendar size={15} />
+      {/* Date Range Calendar Filter with Quick Selectors */}
+      <div className="bg-white rounded-2xl border border-zinc-200 p-4 shadow-2xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+            FILTRAR PERÍODO POR DATA
+          </label>
+
+          {/* Quick preset buttons */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            <button
+              onClick={() => handleQuickPreset('all')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
+                quickFilter === 'all'
+                  ? 'bg-zinc-900 text-white shadow-2xs'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+              }`}
+            >
+              Tudo
+            </button>
+            <button
+              onClick={() => handleQuickPreset('today')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
+                quickFilter === 'today'
+                  ? 'bg-zinc-900 text-white shadow-2xs'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+              }`}
+            >
+              Hoje
+            </button>
+            <button
+              onClick={() => handleQuickPreset('7d')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
+                quickFilter === '7d'
+                  ? 'bg-zinc-900 text-white shadow-2xs'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+              }`}
+            >
+              Últimos 7 dias
+            </button>
+            <button
+              onClick={() => handleQuickPreset('30d')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
+                quickFilter === '30d'
+                  ? 'bg-zinc-900 text-white shadow-2xs'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+              }`}
+            >
+              30 dias
+            </button>
+          </div>
+        </div>
+
+        {/* Dual Date inputs (Start Date -> End Date) with native Calendar Popup */}
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="relative w-full sm:w-1/2">
+            <span className="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+              Data inicial
+            </span>
+            <div className="relative">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  setQuickFilter('all');
+                }}
+                className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-zinc-900 bg-zinc-50/50 hover:bg-white transition-colors cursor-pointer"
+              />
+            </div>
+          </div>
+
+          <div className="relative w-full sm:w-1/2">
+            <span className="block text-[9px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+              Data final
+            </span>
+            <div className="relative">
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                  setQuickFilter('all');
+                }}
+                className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-zinc-900 bg-zinc-50/50 hover:bg-white transition-colors cursor-pointer"
+              />
+            </div>
           </div>
         </div>
       </div>
