@@ -62,13 +62,13 @@ interface BioContextType {
   totalMasterClicks: number;
 }
 
-const STORAGE_KEY = 'aurabio_pages_v1';
-const ACTIVE_KEY = 'aurabio_active_page_v1';
-const LANG_KEY = 'aurabio_lang_v1';
-const MEMBERS_KEY = 'aurabio_members_v1';
-const WEBHOOKS_KEY = 'aurabio_webhooks_v1';
-const MASTER_BRANDING_KEY = 'aurabio_master_branding_v1';
-const MASTER_AUTH_KEY = 'aurabio_master_auth_v1';
+const STORAGE_KEY = 'aurabio_pages_v2';
+const ACTIVE_KEY = 'aurabio_active_page_v2';
+const LANG_KEY = 'aurabio_lang_v2';
+const MEMBERS_KEY = 'aurabio_members_v2';
+const WEBHOOKS_KEY = 'aurabio_webhooks_v2';
+const MASTER_BRANDING_KEY = 'aurabio_master_branding_v2';
+const MASTER_AUTH_KEY = 'aurabio_master_auth_v2';
 
 const BioContext = createContext<BioContextType | undefined>(undefined);
 
