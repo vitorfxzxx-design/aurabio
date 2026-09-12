@@ -9,7 +9,6 @@ import {
   Flame, 
   ArrowRight, 
   ArrowUpRight,
-  Zap,
   User as UserIcon
 } from 'lucide-react';
 import { THEME_PRESETS } from '../../data/defaultData';
@@ -304,66 +303,91 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* 5. NEON GLOW LAYOUT */}
+      {/* 5. NEON GLOW LAYOUT (Halo Radiante & Tipografia Dual-Tone Neon) */}
       {/* ------------------------------------------------------------- */}
       {isNeon && (
-        <header className="w-full pt-10 pb-4 px-6 flex flex-col items-center text-center relative z-10">
+        <header className="w-full pt-8 pb-4 px-6 flex flex-col items-center text-center relative z-10 font-sans">
+          {/* Ambient Neon Radial Halo Background */}
           <div 
-            className="absolute top-6 w-56 h-56 rounded-full opacity-40 blur-[80px] pointer-events-none"
-            style={{ backgroundColor: accentColor }}
+            className="absolute -top-10 inset-x-0 h-[380px] pointer-events-none opacity-90 blur-[60px]"
+            style={{ 
+              background: `radial-gradient(circle at 50% 35%, ${accentColor}80 0%, ${accentColor}30 45%, transparent 75%)` 
+            }}
           />
 
-          <div className="relative mb-4 group">
-            <div 
-              className="p-1 rounded-2xl backdrop-blur-xl border transition-all duration-500 group-hover:scale-105"
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                borderColor: accentColor,
-                boxShadow: `0 0 35px ${accentColor}60, inset 0 0 15px ${accentColor}30`
-              }}
-            >
+          {/* Squircle Avatar with Soft Shadow */}
+          <div className="relative mb-2 group z-10">
+            <div className="w-36 sm:w-40 aspect-[4/4.8] rounded-[28px] overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.85)] bg-zinc-900 relative">
               {avatarUrl ? (
-                <div className="w-24 h-24 rounded-xl overflow-hidden">
-                  <img
-                    src={avatarUrl}
-                    alt={page.name}
-                    className="w-full h-full object-cover"
-                    style={{
-                      objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
-                      transform: `scale(${page.avatarZoom ?? 1})`
-                    }}
-                  />
-                </div>
+                <img
+                  src={avatarUrl}
+                  alt={page.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  style={{
+                    objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                    transform: `scale(${page.avatarZoom ?? 1})`
+                  }}
+                />
               ) : (
-                <div className="w-24 h-24 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
-                  <UserIcon size={34} />
+                <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-700">
+                  <UserIcon size={48} />
+                </div>
+              )}
+
+              {page.verified && (
+                <div 
+                  className="absolute bottom-2.5 right-2.5 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
+                  style={{ backgroundColor: page.badgeColor || accentColor }}
+                  title={dict.official_badge}
+                >
+                  <CheckCircle className="w-3.5 h-3.5 fill-white text-zinc-950 stroke-[2.5]" />
                 </div>
               )}
             </div>
-
-            {page.verified && (
-              <div 
-                className="absolute -bottom-1.5 -right-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider text-black flex items-center gap-1 shadow-lg"
-                style={{
-                  backgroundColor: accentColor,
-                  boxShadow: `0 0 15px ${accentColor}`
-                }}
-              >
-                <Zap size={10} className="fill-current" />
-                <span>PRO</span>
-              </div>
-            )}
           </div>
 
-          <h1 
-            className="text-2xl sm:text-3xl font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-100 to-white drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
-          >
-            {page.name || 'SEU NOME'}
-          </h1>
+          {/* Two-Tone Stacked Neon Display Typography */}
+          <div className="z-10 mt-3">
+            {(() => {
+              const nameParts = (page.name || 'SEU NOME').trim().split(/\s+/);
+              if (nameParts.length > 1) {
+                const first = nameParts.slice(0, Math.ceil(nameParts.length / 2)).join(' ');
+                const last = nameParts.slice(Math.ceil(nameParts.length / 2)).join(' ');
+                return (
+                  <h1 className="text-3xl sm:text-[36px] font-black uppercase tracking-tight text-center leading-[1.02] flex flex-col items-center">
+                    <span className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+                      {first}
+                    </span>
+                    <span 
+                      className="text-transparent bg-clip-text font-black"
+                      style={{
+                        backgroundImage: `linear-gradient(to bottom, #fb7185 0%, ${accentColor || '#dc2626'} 100%)`,
+                        filter: `drop-shadow(0 0 18px ${accentColor || '#dc2626'}95)`
+                      }}
+                    >
+                      {last}
+                    </span>
+                  </h1>
+                );
+              }
+              return (
+                <h1 
+                  className="text-3xl sm:text-[36px] font-black uppercase tracking-tight text-center leading-tight text-transparent bg-clip-text"
+                  style={{
+                    backgroundImage: `linear-gradient(to bottom, #ffffff 30%, ${accentColor || '#dc2626'} 100%)`,
+                    filter: `drop-shadow(0 0 18px ${accentColor || '#dc2626'}90)`
+                  }}
+                >
+                  {page.name || 'SEU NOME'}
+                </h1>
+              );
+            })()}
+          </div>
 
+          {/* Bio Description */}
           {page.bio && (
             <div 
-              className="mt-2 text-xs sm:text-sm font-medium opacity-90 leading-relaxed whitespace-pre-line max-w-sm text-center"
+              className="mt-3 text-xs sm:text-[13px] font-medium opacity-90 leading-relaxed whitespace-pre-line max-w-[310px] text-center z-10"
               style={{ color: secondaryTextColor }}
             >
               {page.bio}
