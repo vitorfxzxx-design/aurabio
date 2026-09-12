@@ -17,6 +17,7 @@ import {
   MASTER_ADMIN_PASSWORD
 } from '../data/defaultData';
 import { TRANSLATIONS, type Language } from '../utils/translations';
+import { supabase } from '../lib/supabase';
 
 interface BioContextType {
   pages: BioPage[];
@@ -81,6 +82,24 @@ const USER_EMAIL_KEY = 'aurabio_user_email_v2';
 const BioContext = createContext<BioContextType | undefined>(undefined);
 
 export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // User Authentication State
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(() => {
+    const auth = localStorage.getItem(USER_AUTH_KEY);
+    return auth !== 'false'; // Default to true on first load, but when logged out remains false
+  });
+
+  const [currentUserEmail, setCurrentUserEmail] = useState<string>(() => {
+    return localStorage.getItem(USER_EMAIL_KEY) || 'membro@aurabio.link';
+  });
+
+  useEffect(() => {
+    localStorage.setItem(USER_AUTH_KEY, isUserAuthenticated ? 'true' : 'false');
+  }, [isUserAuthenticated]);
+
+  useEffect(() => {
+    localStorage.setItem(USER_EMAIL_KEY, currentUserEmail);
+  }, [currentUserEmail]);
+
   const [pages, setPages] = useState<BioPage[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -93,6 +112,87 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     return DEFAULT_PAGES;
   });
+
+  // Fetch all pages from Supabase on start and whenever user email changes
+  useEffect(() => {
+    async function loadCloudPages() {
+      try {
+        const { data, error } = await supabase
+          .from('aurabio_pages')
+          .select('*');
+
+        if (!error && data && data.length > 0) {
+          const formattedPages: BioPage[] = data.map((row: any) => ({
+            id: row.id,
+            slug: row.slug,
+            name: row.name,
+            avatarUrl: row.avatar_url || '',
+            avatarZoom: row.avatar_zoom || 1,
+            avatarPosition: row.avatar_position || { x: 50, y: 50 },
+            verified: !!row.verified,
+            badgeColor: row.badge_color || '#dc2626',
+            bio: row.bio || '',
+            layout: row.layout || 'creator-portrait',
+            theme: row.theme || 'cinema-noir',
+            language: row.language || 'pt',
+            customColors: row.custom_colors || {
+              bgColor: '#000000',
+              textColor: '#ffffff',
+              secondaryTextColor: '#a3a3a3',
+              cardBgColor: '#0a0a0a',
+              accentColor: '#e11d2e',
+            },
+            hideBranding: !!row.hide_branding,
+            links: row.links || [],
+            socialLinks: row.social_links || [],
+            tracking: row.tracking || {},
+            stats: row.stats || { views: 0, ctaClicks: 0, clicks: {} },
+            createdAt: row.created_at || new Date().toISOString(),
+            updatedAt: row.updated_at || new Date().toISOString(),
+          }));
+
+          setPages(formattedPages);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(formattedPages));
+        }
+      } catch (err) {
+        console.warn('Supabase cloud fetch note:', err);
+      }
+    }
+
+    loadCloudPages();
+  }, [currentUserEmail]);
+
+  // Sync pages to Supabase whenever pages state is updated
+  const syncPageToCloud = async (pageToSync: BioPage) => {
+    try {
+      await supabase
+        .from('aurabio_pages')
+        .upsert({
+          id: pageToSync.id,
+          slug: pageToSync.slug,
+          name: pageToSync.name,
+          avatar_url: pageToSync.avatarUrl,
+          avatar_zoom: pageToSync.avatarZoom || 1,
+          avatar_position: pageToSync.avatarPosition || { x: 50, y: 50 },
+          verified: pageToSync.verified,
+          badge_color: pageToSync.badgeColor || '#dc2626',
+          bio: pageToSync.bio,
+          layout: pageToSync.layout,
+          theme: pageToSync.theme,
+          language: pageToSync.language,
+          custom_colors: pageToSync.customColors,
+          hide_branding: pageToSync.hideBranding,
+          links: pageToSync.links,
+          social_links: pageToSync.socialLinks,
+          tracking: pageToSync.tracking,
+          stats: pageToSync.stats,
+          user_email: currentUserEmail,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'id' });
+    } catch (err) {
+      console.warn('Cloud sync save note:', err);
+    }
+  };
 
   const [activePageId, setActivePageIdState] = useState<string>(() => {
     const savedId = localStorage.getItem(ACTIVE_KEY);
@@ -109,7 +209,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (savedLang && ['pt', 'en', 'es', 'fr', 'de', 'it'].includes(savedLang)) {
       return savedLang;
     }
-    return activePage.language || 'pt';
+    return activePage?.language || 'pt';
   });
 
   const [notification, setNotification] = useState<string | null>(null);
@@ -170,24 +270,6 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem(MASTER_BRANDING_KEY, JSON.stringify(masterBranding));
   }, [masterBranding]);
-
-  // User Authentication State
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(() => {
-    const auth = localStorage.getItem(USER_AUTH_KEY);
-    return auth !== 'false'; // Default to true on first load, but when logged out remains false
-  });
-
-  const [currentUserEmail, setCurrentUserEmail] = useState<string>(() => {
-    return localStorage.getItem(USER_EMAIL_KEY) || 'membro@aurabio.link';
-  });
-
-  useEffect(() => {
-    localStorage.setItem(USER_AUTH_KEY, isUserAuthenticated ? 'true' : 'false');
-  }, [isUserAuthenticated]);
-
-  useEffect(() => {
-    localStorage.setItem(USER_EMAIL_KEY, currentUserEmail);
-  }, [currentUserEmail]);
 
   const loginUser = (email: string, pass?: string): boolean => {
     const cleanEmail = email.trim();
@@ -351,13 +433,11 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateActivePage = (updates: Partial<BioPage>) => {
+    const updated = { ...activePage, ...updates, updatedAt: new Date().toISOString() };
     setPages(prevPages =>
-      prevPages.map(page =>
-        page.id === activePage.id
-          ? { ...page, ...updates, updatedAt: new Date().toISOString() }
-          : page
-      )
+      prevPages.map(page => (page.id === activePage.id ? updated : page))
     );
+    syncPageToCloud(updated);
   };
 
   const createPage = (name: string, slug: string): boolean => {
@@ -406,6 +486,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     setPages(prev => [...prev, newPage]);
     setActivePageIdState(newPage.id);
+    syncPageToCloud(newPage);
     showNotification(`Página "${name}" criada com sucesso!`);
     return true;
   };
@@ -420,6 +501,8 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (activePageId === id) {
       setActivePageIdState(remaining[0].id);
     }
+    // Delete from Supabase
+    supabase.from('aurabio_pages').delete().eq('id', id).then(() => {});
     showNotification('Página excluída.');
   };
 
