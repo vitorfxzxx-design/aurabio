@@ -141,11 +141,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
               }}
             >
               {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt={page.name}
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover shadow-inner"
-                />
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden">
+                  <img
+                    src={avatarUrl}
+                    alt={page.name}
+                    className="w-full h-full object-cover shadow-inner"
+                    style={{
+                      objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                      transform: `scale(${page.avatarZoom ?? 1})`
+                    }}
+                  />
+                </div>
               ) : (
                 <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
                   <UserIcon size={36} />
@@ -199,11 +205,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
               }}
             >
               {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt={page.name}
-                  className="w-24 h-24 sm:w-26 sm:h-26 rounded-[24px] object-cover shadow-sm"
-                />
+                <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-[24px] overflow-hidden">
+                  <img
+                    src={avatarUrl}
+                    alt={page.name}
+                    className="w-full h-full object-cover shadow-sm"
+                    style={{
+                      objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                      transform: `scale(${page.avatarZoom ?? 1})`
+                    }}
+                  />
+                </div>
               ) : (
                 <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-[24px] bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800 font-sans">
                   <UserIcon size={34} />
@@ -256,12 +268,16 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       {isMinimal && (
         <header className="w-full pt-8 pb-4 px-6 flex flex-col items-center text-center relative z-10 font-mono">
           <div className="relative mb-3">
-            <div className="w-18 h-18 rounded-full border-2 border-zinc-700 p-0.5 bg-zinc-900 shadow-md">
+            <div className="w-18 h-18 rounded-full border-2 border-zinc-700 p-0.5 bg-zinc-900 shadow-md overflow-hidden">
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
                   alt={page.name}
                   className="w-full h-full rounded-full object-cover grayscale contrast-125"
+                  style={{
+                    objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                    transform: `scale(${page.avatarZoom ?? 1})`
+                  }}
                 />
               ) : (
                 <div className="w-full h-full rounded-full flex items-center justify-center text-zinc-600 bg-zinc-950">
@@ -316,11 +332,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
               }}
             >
               {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt={page.name}
-                  className="w-24 h-24 rounded-xl object-cover"
-                />
+                <div className="w-24 h-24 rounded-xl overflow-hidden">
+                  <img
+                    src={avatarUrl}
+                    alt={page.name}
+                    className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                      transform: `scale(${page.avatarZoom ?? 1})`
+                    }}
+                  />
+                </div>
               ) : (
                 <div className="w-24 h-24 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
                   <UserIcon size={34} />
