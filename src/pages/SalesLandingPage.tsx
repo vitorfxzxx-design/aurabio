@@ -9,8 +9,6 @@ import {
   Zap, 
   Link2, 
   ShieldCheck, 
-  ChevronDown,
-  ChevronUp,
   ExternalLink,
   Lock
 } from 'lucide-react';
@@ -26,29 +24,6 @@ export const SalesLandingPage: React.FC = () => {
     window.location.hash = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const faqs = [
-    {
-      q: 'Como funciona a cobrança de R$16/mês?',
-      a: 'O plano anual é cobrado em 12x de apenas R$16 sem nenhum reajuste ou taxas ocultas. Você tem acesso ilimitado a todas as ferramentas, novos temas e atualizações.'
-    },
-    {
-      q: 'Posso usar meu próprio domínio ou subdomínio?',
-      a: 'Sim! Você recebe uma URL exclusiva e curta como aurabio.link/seunome, e pode também integrar seu subdomínio personalizado.'
-    },
-    {
-      q: 'Quantos perfis posso criar na mesma conta?',
-      a: 'Você pode criar e gerenciar até 3 páginas/perfis independentes dentro da mesma conta (ex: marca pessoal, agência, loja ou projeto paralelo).'
-    },
-    {
-      q: 'O Meta Pixel e Google Analytics funcionam em tempo real?',
-      a: 'Sim, basta colar o ID do seu Pixel ou Analytics na aba de rastreamento. Todos os eventos de pageview e cliques em links são disparados automaticamente para suas campanhas de retargeting.'
-    },
-    {
-      q: 'Posso cancelar quando quiser?',
-      a: 'Com certeza! O cancelamento pode ser feito a qualquer momento diretamente pelo painel em 1 clique, sem burocracia ou multas.'
-    }
-  ];
 
   const formats = [
     {
@@ -472,33 +447,55 @@ export const SalesLandingPage: React.FC = () => {
       {/* ------------------------------------------------------------- */}
       {/* FAQ ACCORDION SECTION */}
       {/* ------------------------------------------------------------- */}
-      <section id="faq" className="py-20 sm:py-28 px-6 max-w-3xl mx-auto border-t border-zinc-900">
-        <div className="text-center mb-12">
-          <span className="text-xs font-bold uppercase tracking-widest text-purple-400">DÚVIDAS FREQUENTES</span>
-          <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white mt-2">
-            Perguntas & Respostas
+      <section id="faq" className="py-24 sm:py-32 px-6 max-w-3xl mx-auto">
+        <div className="text-center mb-14">
+          <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">PERGUNTAS</span>
+          <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mt-3 leading-tight">
+            Respondemos antes de você <br />
+            perguntar.
           </h2>
         </div>
 
-        <div className="space-y-4">
-          {faqs.map((faq, idx) => (
-            <div 
-              key={idx}
-              className="rounded-2xl bg-zinc-950 border border-zinc-900 overflow-hidden transition-all"
-            >
+        {/* Unified FAQ Card Container */}
+        <div className="rounded-3xl bg-zinc-950 border border-zinc-900 divide-y divide-zinc-900 overflow-hidden shadow-2xl">
+          {[
+            {
+              q: 'Como funcionam os 3 perfis?',
+              a: 'Você cria até 3 páginas independentes na mesma conta — cada uma com seu próprio slug, cores, links e trackeamento. Ideal pra quem tem marca pessoal + negócio + projeto paralelo.'
+            },
+            {
+              q: 'Posso cancelar quando quiser?',
+              a: 'Sim. Um clique dentro do painel e a assinatura cancela no fim do ciclo. Sem burocracia, sem retenção agressiva.'
+            },
+            {
+              q: 'Meus dados ficam salvos se eu cancelar?',
+              a: 'Sua página fica offline após o cancelamento, mas os dados são preservados por 90 dias caso você queira voltar.'
+            },
+            {
+              q: 'Funciona no Instagram, TikTok e YouTube?',
+              a: 'Sim. É só colar o link do seu perfil Aurabio na bio de qualquer rede social.'
+            },
+            {
+              q: 'Precisa de conhecimento técnico?',
+              a: 'Zero. É clicar, arrastar e editar. A gente cuida do resto — hospedagem, SSL, performance, tudo incluído.'
+            },
+            {
+              q: 'Tem garantia?',
+              a: 'Sim. 7 dias de garantia incondicional. Não gostou, devolvemos 100% do valor.'
+            }
+          ].map((faq, idx) => (
+            <div key={idx} className="transition-colors">
               <button
                 onClick={() => toggleFaq(idx)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left font-bold text-sm sm:text-base text-white hover:text-purple-300 transition-colors cursor-pointer"
+                className="w-full px-6 sm:px-8 py-5 sm:py-6 flex items-center justify-between text-left font-bold text-sm sm:text-base text-white hover:text-purple-300 transition-colors cursor-pointer"
               >
                 <span>{faq.q}</span>
-                {openFaq === idx ? (
-                  <ChevronUp size={18} className="text-purple-400 shrink-0" />
-                ) : (
-                  <ChevronDown size={18} className="text-zinc-500 shrink-0" />
-                )}
+                <span className="text-zinc-500 text-lg font-light shrink-0 ml-4">
+                  {openFaq === idx ? '×' : '+'}
+                </span>
               </button>
               {openFaq === idx && (
-                <div className="px-6 pb-5 text-xs sm:text-sm text-zinc-400 leading-relaxed border-t border-zinc-900/60 pt-3">
+                <div className="px-6 sm:px-8 pb-6 text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
                   {faq.a}
                 </div>
               )}
@@ -508,29 +505,63 @@ export const SalesLandingPage: React.FC = () => {
       </section>
 
       {/* ------------------------------------------------------------- */}
+      {/* FINAL BIG CTA CARD SECTION */}
+      {/* ------------------------------------------------------------- */}
+      <section className="py-12 px-6 max-w-4xl mx-auto">
+        <div className="rounded-[36px] bg-zinc-950 border border-zinc-900 p-10 sm:p-16 text-center shadow-[0_20px_70px_rgba(0,0,0,0.9)] relative overflow-hidden flex flex-col items-center">
+          {/* Ambient Glow */}
+          <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-purple-900/20 via-transparent to-transparent pointer-events-none" />
+
+          {/* User Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-zinc-300 mb-6">
+            <span>👥 Junte-se a +2.400 criadores</span>
+          </div>
+
+          {/* Headline */}
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-white leading-tight">
+            Sua bio profissional <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-300 to-indigo-300">
+              começa hoje.
+            </span>
+          </h2>
+
+          <p className="mt-4 text-xs sm:text-sm text-zinc-400 font-medium">
+            R$16/mês. 3 perfis. Trackeamento real. Sem compromisso.
+          </p>
+
+          {/* Big CTA Button */}
+          <button
+            onClick={handleGoToApp}
+            className="mt-8 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_35px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <span>Criar minha conta agora</span>
+            <ArrowRight size={18} />
+          </button>
+
+          <p className="mt-4 text-[11px] text-zinc-500">
+            Garantia de 7 dias · Cancele quando quiser
+          </p>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------- */}
       {/* FOOTER */}
       {/* ------------------------------------------------------------- */}
-      <footer className="border-t border-zinc-900 bg-black py-12 px-6 text-center text-xs text-zinc-600">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-purple-600 flex items-center justify-center text-white font-bold text-xs">
+      <footer className="border-t border-zinc-900 bg-black py-12 px-6 mt-16 text-xs text-zinc-500">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2.5">
+            <div className="w-5 h-5 rounded-md bg-purple-600 flex items-center justify-center text-white font-bold text-[10px]">
               A
             </div>
-            <span className="font-bold text-zinc-300">Aurabio</span>
-            <span>— Links de Alta Conversão</span>
+            <span>© {new Date().getFullYear()} Aurabio · Feito com obsessão por design</span>
           </div>
 
-          <div>
-            © {new Date().getFullYear()} Aurabio. Todos os direitos reservados.
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button onClick={handleGoToApp} className="text-zinc-400 hover:text-white transition-colors cursor-pointer">
-              Área de Membros
+          <div className="flex items-center gap-6 text-zinc-400">
+            <a href="#precos" className="hover:text-white transition-colors">Preços</a>
+            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
+            <button onClick={handleGoToApp} className="hover:text-white transition-colors cursor-pointer">
+              Entrar
             </button>
-            <a href="#/master" className="text-zinc-500 hover:text-amber-400 transition-colors">
-              Master Admin
-            </a>
           </div>
         </div>
       </footer>
