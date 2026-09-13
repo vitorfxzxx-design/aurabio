@@ -32,7 +32,7 @@ interface BioContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string, fallback?: string) => string;
-  updateActivePage: (updates: Partial<BioPage>) => void;
+  updateActivePage: (updates: Partial<BioPage> | ((current: BioPage) => Partial<BioPage>)) => void;
   createPage: (name: string, slug: string) => boolean;
   deletePage: (id: string) => void;
   addLink: (link: Omit<BioLink, 'id'>) => void;
@@ -466,10 +466,15 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const updateActivePage = (updates: Partial<BioPage>) => {
+  const updateActivePage = (updates: Partial<BioPage> | ((current: BioPage) => Partial<BioPage>)) => {
     setPages(prevPages => {
       const current = prevPages.find(p => p.id === activePageId) || prevPages[0] || DEFAULT_PAGES[0];
-      const updated = { ...current, ...updates, updatedAt: new Date().toISOString() };
+      const partial = typeof updates === 'function' ? updates(current) : updates;
+      const updated: BioPage = { 
+        ...current, 
+        ...partial, 
+        updatedAt: new Date().toISOString() 
+      };
       const nextPages = prevPages.map(page => (page.id === current.id ? updated : page));
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(nextPages));
@@ -551,36 +556,42 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newLink: BioLink = {
       ...linkData,
       id: `link-${Date.now()}`,
+      active: linkData.active !== false,
+      isFeatured: !!linkData.isFeatured,
       clicks: 0,
     };
-    updateActivePage({
-      links: [newLink, ...(activePage.links || [])]
-    });
+    updateActivePage(curr => ({
+      links: [newLink, ...(curr.links || [])]
+    }));
     showNotification('Novo card de link adicionado!');
   };
 
   const updateLink = (id: string, updates: Partial<BioLink>) => {
-    updateActivePage({
-      links: (activePage.links || []).map(link =>
+    updateActivePage(curr => ({
+      links: (curr.links || []).map(link =>
         link.id === id ? { ...link, ...updates } : link
       )
-    });
+    }));
   };
 
   const deleteLink = (id: string) => {
-    updateActivePage({
-      links: (activePage.links || []).filter(link => link.id !== id)
-    });
+    updateActivePage(curr => ({
+      links: (curr.links || []).filter(link => link.id !== id)
+    }));
     showNotification('Card removido.');
   };
 
   const reorderLinks = (fromIndex: number, toIndex: number) => {
-    const currentLinks = activePage.links || [];
-    if (fromIndex < 0 || toIndex < 0 || fromIndex >= currentLinks.length || toIndex >= currentLinks.length) return;
-    const newLinks = [...currentLinks];
-    const [moved] = newLinks.splice(fromIndex, 1);
-    newLinks.splice(toIndex, 0, moved);
-    updateActivePage({ links: newLinks });
+    updateActivePage(curr => {
+      const currentLinks = curr.links || [];
+      if (fromIndex < 0 || toIndex < 0 || fromIndex >= currentLinks.length || toIndex >= currentLinks.length) {
+        return {};
+      }
+      const newLinks = [...currentLinks];
+      const [moved] = newLinks.splice(fromIndex, 1);
+      newLinks.splice(toIndex, 0, moved);
+      return { links: newLinks };
+    });
   };
 
   const addSocialLink = (platform: SocialPlatform, url: string) => {
@@ -590,24 +601,24 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       url,
       active: true,
     };
-    updateActivePage({
-      socialLinks: [...(activePage.socialLinks || []), newSocial]
-    });
+    updateActivePage(curr => ({
+      socialLinks: [...(curr.socialLinks || []), newSocial]
+    }));
     showNotification('Rede social adicionada!');
   };
 
   const updateSocialLink = (id: string, updates: Partial<SocialLink>) => {
-    updateActivePage({
-      socialLinks: (activePage.socialLinks || []).map(s =>
+    updateActivePage(curr => ({
+      socialLinks: (curr.socialLinks || []).map(s =>
         s.id === id ? { ...s, ...updates } : s
       )
-    });
+    }));
   };
 
   const deleteSocialLink = (id: string) => {
-    updateActivePage({
-      socialLinks: (activePage.socialLinks || []).filter(s => s.id !== id)
-    });
+    updateActivePage(curr => ({
+      socialLinks: (curr.socialLinks || []).filter(s => s.id !== id)
+    }));
     showNotification('Rede social removida.');
   };
 

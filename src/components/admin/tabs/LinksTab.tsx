@@ -17,7 +17,7 @@ import type { CardFormat } from '../../../types/bio';
 import { compressImageFile } from '../../../utils/imageOptimizer';
 
 export const LinksTab: React.FC = () => {
-  const { activePage, addLink, updateLink, deleteLink, reorderLinks, showNotification } = useBio();
+  const { activePage, updateActivePage, addLink, updateLink, deleteLink, reorderLinks, showNotification } = useBio();
 
   const [newTitle, setNewTitle] = useState('');
   const [newUrl, setNewUrl] = useState('');
@@ -412,8 +412,11 @@ export const LinksTab: React.FC = () => {
       {/* Save Button */}
       <div className="flex justify-end pt-2">
         <button
-          onClick={() => showNotification('Alterações salvas com sucesso!')}
-          className="px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"
+          onClick={() => {
+            updateActivePage(curr => ({ ...curr }));
+            showNotification('Cards e configurações salvas com sucesso!');
+          }}
+          className="px-6 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98 cursor-pointer"
         >
           Salvar Alterações
         </button>
