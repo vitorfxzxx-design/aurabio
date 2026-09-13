@@ -467,17 +467,18 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateActivePage = (updates: Partial<BioPage>) => {
-    const updated = { ...activePage, ...updates, updatedAt: new Date().toISOString() };
     setPages(prevPages => {
-      const nextPages = prevPages.map(page => (page.id === activePage.id ? updated : page));
+      const current = prevPages.find(p => p.id === activePageId) || prevPages[0] || DEFAULT_PAGES[0];
+      const updated = { ...current, ...updates, updatedAt: new Date().toISOString() };
+      const nextPages = prevPages.map(page => (page.id === current.id ? updated : page));
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(nextPages));
       } catch (err) {
         console.warn('LocalStorage save error:', err);
       }
+      syncPageToCloud(updated);
       return nextPages;
     });
-    syncPageToCloud(updated);
   };
 
   const createPage = (name: string, slug: string): boolean => {
@@ -541,7 +542,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (activePageId === id) {
       setActivePageIdState(remaining[0].id);
     }
-    // Delete from Supabase
+    // Delete from Supabase/Firebase
     pagesService.deletePage(id);
     showNotification('Página excluída.');
   };
@@ -553,14 +554,14 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       clicks: 0,
     };
     updateActivePage({
-      links: [newLink, ...activePage.links]
+      links: [newLink, ...(activePage.links || [])]
     });
     showNotification('Novo card de link adicionado!');
   };
 
   const updateLink = (id: string, updates: Partial<BioLink>) => {
     updateActivePage({
-      links: activePage.links.map(link =>
+      links: (activePage.links || []).map(link =>
         link.id === id ? { ...link, ...updates } : link
       )
     });
@@ -568,14 +569,15 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const deleteLink = (id: string) => {
     updateActivePage({
-      links: activePage.links.filter(link => link.id !== id)
+      links: (activePage.links || []).filter(link => link.id !== id)
     });
     showNotification('Card removido.');
   };
 
   const reorderLinks = (fromIndex: number, toIndex: number) => {
-    if (fromIndex < 0 || toIndex < 0 || fromIndex >= activePage.links.length || toIndex >= activePage.links.length) return;
-    const newLinks = [...activePage.links];
+    const currentLinks = activePage.links || [];
+    if (fromIndex < 0 || toIndex < 0 || fromIndex >= currentLinks.length || toIndex >= currentLinks.length) return;
+    const newLinks = [...currentLinks];
     const [moved] = newLinks.splice(fromIndex, 1);
     newLinks.splice(toIndex, 0, moved);
     updateActivePage({ links: newLinks });
@@ -589,14 +591,14 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       active: true,
     };
     updateActivePage({
-      socialLinks: [...activePage.socialLinks, newSocial]
+      socialLinks: [...(activePage.socialLinks || []), newSocial]
     });
     showNotification('Rede social adicionada!');
   };
 
   const updateSocialLink = (id: string, updates: Partial<SocialLink>) => {
     updateActivePage({
-      socialLinks: activePage.socialLinks.map(s =>
+      socialLinks: (activePage.socialLinks || []).map(s =>
         s.id === id ? { ...s, ...updates } : s
       )
     });
@@ -604,7 +606,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const deleteSocialLink = (id: string) => {
     updateActivePage({
-      socialLinks: activePage.socialLinks.filter(s => s.id !== id)
+      socialLinks: (activePage.socialLinks || []).filter(s => s.id !== id)
     });
     showNotification('Rede social removida.');
   };

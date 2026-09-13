@@ -23,7 +23,10 @@ export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
   useEffect(() => {
     let isMounted = true;
     if (cleanSlug) {
-      setIsLoading(true);
+      // If we already have a matching local page with real data, use it immediately so there's zero delay
+      if (localPage && localPage.name !== 'SEU NOME') {
+        setIsLoading(false);
+      }
       pagesService.getPageBySlug(cleanSlug).then((fetched) => {
         if (isMounted) {
           if (fetched) {
@@ -53,7 +56,7 @@ export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
       recordView(page.id);
       document.title = `${page.name} | Aurabio`;
     }
-  }, [page?.id, recordView]);
+  }, [page?.id, page?.name, recordView]);
 
   const handleLinkClick = (linkId: string) => {
     if (page) {
@@ -61,11 +64,10 @@ export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !page) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
-        <div className="w-8 h-8 border-2 border-zinc-700 border-t-white rounded-full animate-spin mb-3" />
-        <span className="text-xs text-zinc-500 font-mono">Carregando perfil...</span>
+      <div className="min-h-screen bg-black flex items-center justify-center text-white">
+        <div className="w-5 h-5 border-2 border-zinc-800 border-t-zinc-400 rounded-full animate-spin" />
       </div>
     );
   }
