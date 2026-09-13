@@ -600,10 +600,16 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       {/* ------------------------------------------------------------- */}
       {!page.hideBranding && (
         <footer className="w-full mt-auto pt-8 pb-3 flex flex-col items-center justify-center gap-1 opacity-60 hover:opacity-100 transition-opacity shrink-0">
-          <div className="flex items-center gap-1.5 text-[11px] font-medium tracking-wide">
+          <a
+            href="/pv"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-[11px] font-medium tracking-wide hover:underline cursor-pointer"
+            title="Criar minha página no Aurabio"
+          >
             <img src="/logo.png" alt="Aurabio" className="w-3.5 h-3.5 object-contain" />
             <span>{dict.made_with} <strong className="font-extrabold">Aurabio</strong></span>
-          </div>
+          </a>
         </footer>
       )}
     </div>
