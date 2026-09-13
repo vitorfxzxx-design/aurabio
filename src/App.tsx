@@ -5,15 +5,23 @@ import { PublicBioPage } from './pages/PublicBioPage';
 import { MasterAdminPage } from './pages/MasterAdminPage';
 import { SalesLandingPage } from './pages/SalesLandingPage';
 import { UpsellPage } from './pages/UpsellPage';
+import { ThankYouPage } from './pages/ThankYouPage';
 
 export function App() {
-  const [currentRoute, setCurrentRoute] = useState<'admin' | 'master' | 'public' | 'pv' | 'upsell'>('admin');
+  const [currentRoute, setCurrentRoute] = useState<'admin' | 'master' | 'public' | 'pv' | 'upsell' | 'obrigado'>('admin');
   const [routeSlug, setRouteSlug] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const handleRouteChange = () => {
       const cleanPath = window.location.pathname.replace(/\/$/, '').toLowerCase();
       const rawHash = window.location.hash.replace('#/', '').replace('#', '').toLowerCase();
+
+      // Check for Thank You Page (/obrigado)
+      if (cleanPath === '/obrigado' || cleanPath.startsWith('/obrigado') || rawHash === 'obrigado' || rawHash.startsWith('obrigado') || cleanPath === '/thank-you' || rawHash === 'thank-you') {
+        setCurrentRoute('obrigado');
+        setRouteSlug(undefined);
+        return;
+      }
 
       // Check for Upsell Page
       if (cleanPath === '/upsell' || cleanPath.startsWith('/upsell') || rawHash === 'upsell' || rawHash.startsWith('upsell')) {
@@ -87,7 +95,9 @@ export function App() {
 
   return (
     <BioProvider>
-      {currentRoute === 'upsell' ? (
+      {currentRoute === 'obrigado' ? (
+        <ThankYouPage />
+      ) : currentRoute === 'upsell' ? (
         <UpsellPage onDecline={handleBackToAdmin} />
       ) : currentRoute === 'pv' ? (
         <SalesLandingPage />
