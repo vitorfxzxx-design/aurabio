@@ -114,18 +114,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onOpenPublicView }) => {
             </button>
           </form>
 
-          {/* Master Admin direct link */}
-          <div className="mt-6 pt-5 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-500">
-            <span className="flex items-center gap-1 text-zinc-400">
-              <ShieldCheck size={13} className="text-emerald-500" />
-              Ambiente Seguro
+          {/* Security badge footer */}
+          <div className="mt-6 pt-5 border-t border-zinc-800/80 flex items-center justify-center text-[11px] text-zinc-500">
+            <span className="flex items-center gap-1.5 text-zinc-400">
+              <ShieldCheck size={14} className="text-emerald-500" />
+              Ambiente Seguro · Aurabio
             </span>
-            <a 
-              href="#/master" 
-              className="text-amber-400 hover:text-amber-300 font-semibold hover:underline"
-            >
-              Área Master
-            </a>
           </div>
         </div>
 

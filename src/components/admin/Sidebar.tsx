@@ -149,14 +149,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onClo
 
       {/* Bottom Footer Actions */}
       <div className="p-4 border-t border-zinc-200 space-y-1">
-        <a
-          href="#/master"
-          className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-amber-700 bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200/80 rounded-xl transition-all cursor-pointer shadow-2xs mb-1"
-        >
-          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-          <span>Área Master (Admin)</span>
-        </a>
-
         <button
           onClick={() => {
             if (confirm('Deseja restaurar todas as configurações para o padrão original?')) {
