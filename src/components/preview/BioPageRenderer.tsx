@@ -119,9 +119,9 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
 
           {/* Bio Description below hero */}
           {page.bio && (
-            <div className="px-5 pt-2 pb-1 text-center">
+            <div className="px-4 pt-3 pb-1 text-center w-full flex justify-center">
               <div 
-                className="text-[11px] sm:text-xs font-normal leading-snug whitespace-pre-line max-w-[300px] mx-auto opacity-85"
+                className="text-xs sm:text-[13px] font-normal leading-relaxed whitespace-pre-line max-w-[420px] w-full mx-auto opacity-90 text-center"
                 style={{ color: secondaryTextColor }}
               >
                 {page.bio}
@@ -186,7 +186,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           {/* Bio / Bullet Points */}
           {page.bio && (
             <div 
-              className="mt-2 max-w-[300px] text-[11px] sm:text-xs font-normal leading-snug whitespace-pre-line text-center px-2 opacity-85"
+              className="mt-2.5 max-w-[420px] w-full text-xs sm:text-[13px] font-normal leading-relaxed whitespace-pre-line text-center px-4 opacity-90"
               style={{ color: secondaryTextColor }}
             >
               {page.bio}
@@ -245,7 +245,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           {/* Bio / Credenciais */}
           {page.bio && (
             <div 
-              className="text-[11px] sm:text-xs font-editorial leading-snug text-zinc-300 max-w-[280px] mx-auto text-center px-2 whitespace-pre-line opacity-90"
+              className="text-xs sm:text-[13px] font-editorial leading-relaxed text-zinc-300 max-w-[420px] w-full mx-auto text-center px-4 whitespace-pre-line opacity-90"
             >
               {page.bio}
             </div>
@@ -296,7 +296,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           </h1>
 
           {page.bio && (
-            <div className="mt-2 text-[10px] sm:text-[11px] text-zinc-400 font-mono whitespace-pre-line max-w-[270px] leading-snug border-l-2 border-zinc-700 pl-2.5 text-left opacity-85">
+            <div className="mt-2 text-[11px] sm:text-xs text-zinc-400 font-mono whitespace-pre-line max-w-[420px] w-full leading-relaxed border-l-2 border-zinc-700 pl-3 text-left opacity-90 mx-auto">
               {page.bio}
             </div>
           )}
@@ -402,7 +402,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           {/* Bio Description */}
           {page.bio && (
             <div 
-              className="mt-2 text-[11px] sm:text-xs font-normal opacity-85 leading-snug whitespace-pre-line max-w-[290px] text-center z-10"
+              className="mt-2.5 text-xs sm:text-[13px] font-normal opacity-90 leading-relaxed whitespace-pre-line max-w-[420px] w-full text-center z-10 px-4"
               style={{ color: secondaryTextColor }}
             >
               {page.bio}
