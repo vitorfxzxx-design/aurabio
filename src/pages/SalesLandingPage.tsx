@@ -260,7 +260,7 @@ export const SalesLandingPage: React.FC = () => {
             Tudo o que outras plataformas cobram <span className="text-zinc-600">R$50/mês.</span>
           </h2>
           <p className="text-zinc-400 text-xs sm:text-base mt-3">
-            Experimente grátis por 7 dias. Depois apenas R$16/mês para manter ativo.
+            Experimente grátis por 7 dias. Depois apenas R$19/mês para manter ativo.
           </p>
         </div>
 
@@ -377,7 +377,7 @@ export const SalesLandingPage: React.FC = () => {
 
         <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">TESTE SEM RISCO</span>
         <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mt-3">
-          7 Dias Grátis. <span className="text-zinc-500">Depois R$16/mês.</span>
+          7 Dias Grátis. <span className="text-zinc-500">Depois R$19/mês.</span>
         </h2>
         <p className="text-zinc-400 text-xs sm:text-base mt-3 max-w-md mx-auto">
           Crie seus perfis e teste todos os recursos sem pagar nada hoje. Cancele quando quiser com 1 clique.
@@ -396,7 +396,7 @@ export const SalesLandingPage: React.FC = () => {
             <span className="text-4xl sm:text-6xl font-black text-white tracking-tight">R$0</span>
             <span className="text-emerald-400 font-bold text-sm sm:text-base">nos primeiros 7 dias</span>
           </div>
-          <p className="text-xs text-zinc-400 mt-1">Após os 7 dias, apenas R$16/mês no plano anual (12x R$16)</p>
+          <p className="text-xs text-zinc-400 mt-1">Após os 7 dias, apenas R$19/mês no plano anual (12x R$19)</p>
 
           <div className="w-full h-px bg-zinc-900 my-5 sm:my-6" />
 
@@ -469,7 +469,7 @@ export const SalesLandingPage: React.FC = () => {
           {[
             {
               q: 'Como funciona o teste gratuito de 7 dias?',
-              a: 'Você cria sua conta e tem 7 dias completos para testar todos os recursos, criar até 3 páginas e publicar seu link. Nenhuma cobrança é feita hoje. Se gostar, a assinatura continua automaticamente por apenas R$16/mês. Se não quiser continuar, basta cancelar antes dos 7 dias em 1 clique no painel sem pagar nada.'
+              a: 'Você cria sua conta e tem 7 dias completos para testar todos os recursos, criar até 3 páginas e publicar seu link. Nenhuma cobrança é feita hoje. Se gostar, a assinatura continua automaticamente por apenas R$19/mês. Se não quiser continuar, basta cancelar antes dos 7 dias em 1 clique no painel sem pagar nada.'
             },
             {
               q: 'Como funcionam os 3 perfis?',
@@ -534,7 +534,7 @@ export const SalesLandingPage: React.FC = () => {
           </h2>
 
           <p className="mt-4 text-xs sm:text-sm text-zinc-400 font-medium max-w-md">
-            Experimente 7 dias grátis. Depois apenas R$16/mês. 3 perfis. Trackeamento real. Sem compromisso.
+            Experimente 7 dias grátis. Depois apenas R$19/mês. 3 perfis. Trackeamento real. Sem compromisso.
           </p>
 
           {/* Big CTA Button */}
@@ -558,7 +558,7 @@ export const SalesLandingPage: React.FC = () => {
       <div className="sm:hidden fixed bottom-0 inset-x-0 z-50 p-3 bg-black/90 backdrop-blur-xl border-t border-white/10 flex items-center justify-between gap-3 shadow-2xl">
         <div className="flex flex-col">
           <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">7 DIAS GRÁTIS</span>
-          <span className="text-xs font-extrabold text-white">Depois R$16/mês</span>
+          <span className="text-xs font-extrabold text-white">Depois R$19/mês</span>
         </div>
         <a
           href={CHECKOUT_URL}
