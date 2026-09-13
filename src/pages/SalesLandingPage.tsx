@@ -21,8 +21,8 @@ export const SalesLandingPage: React.FC = () => {
   };
 
   const handleGoToApp = () => {
-    // Navigate directly to the members login / creator panel
-    window.location.href = '/#/admin';
+    // Navigate directly to the root members login / creator panel
+    window.location.href = '/';
   };
 
   const formats = [
@@ -90,7 +90,7 @@ export const SalesLandingPage: React.FC = () => {
           {/* Action CTAs */}
           <div className="flex items-center gap-3 sm:gap-4">
             <a 
-              href="#/admin"
+              href="/"
               className="text-xs sm:text-sm font-semibold text-zinc-300 hover:text-white transition-colors cursor-pointer px-3 py-1.5 rounded-lg hover:bg-white/5"
             >
               Entrar
@@ -593,7 +593,7 @@ export const SalesLandingPage: React.FC = () => {
           <div className="flex items-center gap-6 text-zinc-400">
             <a href="#precos" className="hover:text-white transition-colors">Preços</a>
             <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
-            <a href="#/admin" className="hover:text-white transition-colors cursor-pointer">
+            <a href="/" className="hover:text-white transition-colors cursor-pointer">
               Entrar
             </a>
           </div>
