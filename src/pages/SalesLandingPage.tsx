@@ -177,12 +177,21 @@ export const SalesLandingPage: React.FC = () => {
           <div className="w-1/3 max-w-[240px] aspect-[9/18] rounded-[28px] sm:rounded-[40px] p-2 sm:p-3 bg-zinc-950 border-2 border-zinc-800 shadow-2xl overflow-hidden transform -rotate-6 translate-y-6 opacity-75 hover:opacity-100 hover:rotate-0 hover:translate-y-0 transition-all duration-500 hidden sm:block">
             <div className="w-full h-full rounded-[22px] sm:rounded-[32px] overflow-hidden bg-gradient-to-b from-purple-600 via-pink-700 to-black p-4 flex flex-col justify-between">
               <div className="pt-2 text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-1.5 ring-2 ring-pink-300 p-0.5 overflow-hidden bg-black shadow-md">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" alt="Joana" className="w-full h-full object-cover rounded-full" />
+                </div>
                 <span className="text-[9px] uppercase tracking-widest text-pink-200 font-bold">FOTÓGRAFA & EDITORA</span>
                 <h4 className="text-sm font-black text-white mt-0.5">@joana.creator</h4>
               </div>
               <div className="space-y-2 pb-2">
-                <div className="w-full h-8 bg-black/50 rounded-xl border border-white/10" />
-                <div className="w-full h-8 bg-black/50 rounded-xl border border-white/10" />
+                <div className="w-full h-8 bg-black/50 backdrop-blur-sm rounded-xl border border-white/10 flex items-center justify-between px-2.5">
+                  <span className="text-[10px] font-bold text-white">Preset Cinema Pack</span>
+                  <ExternalLink size={10} className="text-pink-300" />
+                </div>
+                <div className="w-full h-8 bg-black/50 backdrop-blur-sm rounded-xl border border-white/10 flex items-center justify-between px-2.5">
+                  <span className="text-[10px] font-bold text-white">Portfólio 2026</span>
+                  <ExternalLink size={10} className="text-pink-300" />
+                </div>
               </div>
             </div>
           </div>
@@ -192,7 +201,7 @@ export const SalesLandingPage: React.FC = () => {
             <div className="w-full h-full rounded-[28px] sm:rounded-[38px] overflow-hidden bg-gradient-to-b from-cyan-400 via-blue-700 to-black p-4 flex flex-col justify-between relative">
               <div className="pt-4 text-center">
                 <div className="w-16 h-16 rounded-full mx-auto mb-2 ring-2 ring-cyan-300 p-0.5 overflow-hidden bg-black shadow-lg">
-                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" alt="Avatar" className="w-full h-full object-cover rounded-full" />
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80" alt="Lucas Trader" className="w-full h-full object-cover rounded-full" />
                 </div>
                 <span className="text-[10px] uppercase tracking-widest text-cyan-200 font-bold">TRADER & EDUCADOR</span>
                 <h4 className="text-base font-black text-white mt-0.5">@lucas.trader</h4>
@@ -214,12 +223,21 @@ export const SalesLandingPage: React.FC = () => {
           <div className="w-1/3 max-w-[240px] aspect-[9/18] rounded-[28px] sm:rounded-[40px] p-2 sm:p-3 bg-zinc-950 border-2 border-zinc-800 shadow-2xl overflow-hidden transform rotate-6 translate-y-6 opacity-75 hover:opacity-100 hover:rotate-0 hover:translate-y-0 transition-all duration-500 hidden sm:block">
             <div className="w-full h-full rounded-[22px] sm:rounded-[32px] overflow-hidden bg-gradient-to-b from-amber-500 via-orange-700 to-black p-4 flex flex-col justify-between">
               <div className="pt-2 text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-1.5 ring-2 ring-amber-300 p-0.5 overflow-hidden bg-black shadow-md">
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80" alt="Studio Aura" className="w-full h-full object-cover rounded-full" />
+                </div>
                 <span className="text-[9px] uppercase tracking-widest text-amber-200 font-bold">AGÊNCIA CRIATIVA</span>
                 <h4 className="text-sm font-black text-white mt-0.5">@studio.aura</h4>
               </div>
               <div className="space-y-2 pb-2">
-                <div className="w-full h-8 bg-black/50 rounded-xl border border-white/10" />
-                <div className="w-full h-8 bg-black/50 rounded-xl border border-white/10" />
+                <div className="w-full h-8 bg-black/50 backdrop-blur-sm rounded-xl border border-white/10 flex items-center justify-between px-2.5">
+                  <span className="text-[10px] font-bold text-white">Orçamento WhatsApp</span>
+                  <ExternalLink size={10} className="text-amber-300" />
+                </div>
+                <div className="w-full h-8 bg-black/50 backdrop-blur-sm rounded-xl border border-white/10 flex items-center justify-between px-2.5">
+                  <span className="text-[10px] font-bold text-white">Casos de Sucesso</span>
+                  <ExternalLink size={10} className="text-amber-300" />
+                </div>
               </div>
             </div>
           </div>
