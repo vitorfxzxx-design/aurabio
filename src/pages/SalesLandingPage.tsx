@@ -134,20 +134,13 @@ export const SalesLandingPage: React.FC = () => {
         </p>
 
         {/* CTA Buttons */}
-        <div className="mt-8 sm:mt-9 flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 w-full sm:w-auto max-w-md sm:max-w-none">
+        <div className="mt-8 sm:mt-9 flex flex-col items-center gap-3.5 w-full sm:w-auto">
           <a
             href={CHECKOUT_URL}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base transition-all shadow-[0_0_35px_rgba(255,255,255,0.35)] hover:scale-105 active:scale-95 cursor-pointer group"
           >
             <span>Experimente 7 dias grátis</span>
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </a>
-
-          <a
-            href="#formatos"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 sm:py-4 rounded-full bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 font-bold text-xs sm:text-base border border-zinc-800 transition-all cursor-pointer"
-          >
-            Ver modelos ao vivo
           </a>
         </div>
 
