@@ -118,97 +118,81 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return DEFAULT_PAGES;
   });
 
-  // Fetch and sync data with Supabase smartly
+  // Fetch and sync data with Firestore in Real-Time
   useEffect(() => {
-    async function loadCloudData() {
+    // 1. Subscribe to Real-Time Pages from Cloud
+    const unsubscribePages = pagesService.subscribeToAllPages((cloudPages) => {
+      if (cloudPages && cloudPages.length > 0) {
+        setPages(currentLocalPages => {
+          // If local is default placeholder, adopt cloud immediately
+          const isLocalDefault = currentLocalPages.length === 1 && 
+            (currentLocalPages[0].name === 'SEU NOME' || currentLocalPages[0].slug === 'suapagina');
+
+          if (isLocalDefault) {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudPages)); } catch {}
+            return cloudPages;
+          }
+
+          // Merge by latest updated time or prefer cloud updates
+          const merged = currentLocalPages.map(localPage => {
+            const cloudMatch = cloudPages.find(cp => cp.id === localPage.id || cp.slug === localPage.slug);
+            if (!cloudMatch) return localPage;
+            
+            const localTime = new Date(localPage.updatedAt || 0).getTime();
+            const cloudTime = new Date(cloudMatch.updatedAt || 0).getTime();
+            if (cloudTime >= localTime) {
+              return cloudMatch;
+            }
+            return localPage;
+          });
+
+          cloudPages.forEach(cp => {
+            if (!merged.some(p => p.id === cp.id || p.slug === cp.slug)) {
+              merged.push(cp);
+            }
+          });
+
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch {}
+          return merged;
+        });
+      }
+    });
+
+    async function loadInitialCloudData() {
       try {
-        // 1. Pages
-        const cloudPages = await pagesService.getAllPages();
-        if (cloudPages && cloudPages.length > 0) {
-          setPages(currentLocalPages => {
-            // Check if local pages are just default placeholders
-            const isLocalDefault = currentLocalPages.length === 1 && 
-              (currentLocalPages[0].name === 'SEU NOME' || currentLocalPages[0].slug === 'suapagina');
-
-            if (isLocalDefault) {
-              // Replace default template directly with cloud pages
-              try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudPages));
-              } catch (err) {
-                console.warn('LocalStorage save error:', err);
-              }
-              return cloudPages;
-            }
-
-            const merged = currentLocalPages.map(localPage => {
-              const cloudMatch = cloudPages.find(cp => cp.id === localPage.id || cp.slug === localPage.slug);
-              if (!cloudMatch) {
-                if (localPage.name !== 'SEU NOME') {
-                  pagesService.upsertPage(localPage, currentUserEmail);
-                }
-                return localPage;
-              }
-              const localTime = new Date(localPage.updatedAt || 0).getTime();
-              const cloudTime = new Date(cloudMatch.updatedAt || 0).getTime();
-              if (cloudTime >= localTime || localPage.name === 'SEU NOME') {
-                return cloudMatch;
-              } else {
-                pagesService.upsertPage(localPage, currentUserEmail);
-                return localPage;
-              }
-            });
-
-            cloudPages.forEach(cp => {
-              if (!merged.some(p => p.id === cp.id || p.slug === cp.slug)) {
-                merged.push(cp);
-              }
-            });
-
-            try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-            } catch (err) {
-              console.warn('LocalStorage save error:', err);
-            }
-            return merged;
-          });
-        } else if (pages && pages.length > 0) {
-          // Cloud is empty, seed cloud with local pages only if customized
-          pages.forEach(p => {
-            if (p.name !== 'SEU NOME') {
-              pagesService.upsertPage(p, currentUserEmail);
-            }
-          });
-        }
-
-        // 2. Members
+        // Members
         const cloudMembers = await membersService.getAllMembers();
         if (cloudMembers && cloudMembers.length > 0) {
           setMembers(cloudMembers);
           try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(cloudMembers)); } catch {}
         }
 
-        // 3. Webhooks
+        // Webhooks
         const cloudWebhooks = await webhooksService.getAllWebhooks();
         if (cloudWebhooks && cloudWebhooks.length > 0) {
           setWebhooks(cloudWebhooks);
           try { localStorage.setItem(WEBHOOKS_KEY, JSON.stringify(cloudWebhooks)); } catch {}
         }
 
-        // 4. Master Branding
+        // Master Branding
         const cloudBranding = await masterService.getMasterBranding();
         if (cloudBranding) {
           setMasterBranding(cloudBranding);
           try { localStorage.setItem(MASTER_BRANDING_KEY, JSON.stringify(cloudBranding)); } catch {}
         }
       } catch (err) {
-        console.warn('[aurabio] Cloud sync note:', err);
+        console.warn('[aurabio] Initial cloud sync note:', err);
       }
     }
 
-    loadCloudData();
+    loadInitialCloudData();
+
+    return () => {
+      unsubscribePages();
+    };
   }, [currentUserEmail]);
 
-  // Sync pages to Supabase
+  // Sync pages to Firestore
   const syncPageToCloud = async (pageToSync: BioPage) => {
     await pagesService.upsertPage(pageToSync, currentUserEmail);
   };

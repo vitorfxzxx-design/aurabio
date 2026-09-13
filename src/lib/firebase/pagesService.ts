@@ -7,12 +7,45 @@ import {
   increment,
   deleteDoc, 
   query, 
-  where 
+  where,
+  onSnapshot
 } from 'firebase/firestore';
 import { db } from './client';
 import type { BioPage } from '../../types/bio';
 
 const COLLECTION = 'aurabio_pages';
+
+const mapDocToBioPage = (docSnap: any): BioPage => {
+  const row = docSnap.data();
+  return {
+    id: row.id || docSnap.id,
+    slug: row.slug || '',
+    name: row.name || 'Sem nome',
+    avatarUrl: row.avatarUrl || row.avatar_url || '',
+    avatarZoom: Number(row.avatarZoom ?? row.avatar_zoom) || 1,
+    avatarPosition: row.avatarPosition || row.avatar_position || { x: 50, y: 50 },
+    verified: Boolean(row.verified),
+    badgeColor: row.badgeColor || row.badge_color || '#dc2626',
+    bio: row.bio || '',
+    layout: row.layout || 'creator-portrait',
+    theme: row.theme || 'cinema-noir',
+    language: row.language || 'pt',
+    customColors: row.customColors || row.custom_colors || {
+      bgColor: '#000000',
+      textColor: '#ffffff',
+      secondaryTextColor: '#a3a3a3',
+      cardBgColor: '#0a0a0a',
+      accentColor: '#e11d2e',
+    },
+    hideBranding: Boolean(row.hideBranding ?? row.hide_branding),
+    links: row.links || [],
+    socialLinks: row.socialLinks || row.social_links || [],
+    tracking: row.tracking || {},
+    stats: row.stats || { views: 0, ctaClicks: 0, clicks: {} },
+    createdAt: row.createdAt || row.created_at || new Date().toISOString(),
+    updatedAt: row.updatedAt || row.updated_at || new Date().toISOString(),
+  };
+};
 
 export const firebasePagesService = {
   async getAllPages(): Promise<BioPage[]> {
@@ -21,40 +54,25 @@ export const firebasePagesService = {
       const snapshot = await getDocs(colRef);
       if (snapshot.empty) return [];
 
-      return snapshot.docs.map((docSnap): BioPage => {
-        const row = docSnap.data();
-        return {
-          id: row.id || docSnap.id,
-          slug: row.slug || '',
-          name: row.name || 'Sem nome',
-          avatarUrl: row.avatarUrl || row.avatar_url || '',
-          avatarZoom: Number(row.avatarZoom ?? row.avatar_zoom) || 1,
-          avatarPosition: row.avatarPosition || row.avatar_position || { x: 50, y: 50 },
-          verified: Boolean(row.verified),
-          badgeColor: row.badgeColor || row.badge_color || '#dc2626',
-          bio: row.bio || '',
-          layout: row.layout || 'creator-portrait',
-          theme: row.theme || 'cinema-noir',
-          language: row.language || 'pt',
-          customColors: row.customColors || row.custom_colors || {
-            bgColor: '#000000',
-            textColor: '#ffffff',
-            secondaryTextColor: '#a3a3a3',
-            cardBgColor: '#0a0a0a',
-            accentColor: '#e11d2e',
-          },
-          hideBranding: Boolean(row.hideBranding ?? row.hide_branding),
-          links: row.links || [],
-          socialLinks: row.socialLinks || row.social_links || [],
-          tracking: row.tracking || {},
-          stats: row.stats || { views: 0, ctaClicks: 0, clicks: {} },
-          createdAt: row.createdAt || row.created_at || new Date().toISOString(),
-          updatedAt: row.updatedAt || row.updated_at || new Date().toISOString(),
-        };
-      });
+      return snapshot.docs.map(docSnap => mapDocToBioPage(docSnap));
     } catch (err) {
       console.warn('[aurabio:firebase] Error fetching pages:', err);
       return [];
+    }
+  },
+
+  subscribeToAllPages(callback: (pages: BioPage[]) => void): () => void {
+    try {
+      const colRef = collection(db, COLLECTION);
+      return onSnapshot(colRef, (snapshot) => {
+        const pages = snapshot.docs.map(docSnap => mapDocToBioPage(docSnap));
+        callback(pages);
+      }, (err) => {
+        console.warn('[aurabio:firebase] Realtime sync error:', err);
+      });
+    } catch (err) {
+      console.warn('[aurabio:firebase] Subscribe all pages failed:', err);
+      return () => {};
     }
   },
 
@@ -65,34 +83,29 @@ export const firebasePagesService = {
       const snapshot = await getDocs(q);
 
       if (snapshot.empty) return null;
-      const docSnap = snapshot.docs[0];
-      const data = docSnap.data();
-
-      return {
-        id: data.id || docSnap.id,
-        slug: data.slug || '',
-        name: data.name || '',
-        avatarUrl: data.avatarUrl || data.avatar_url || '',
-        avatarZoom: Number(data.avatarZoom ?? data.avatar_zoom) || 1,
-        avatarPosition: data.avatarPosition || data.avatar_position || { x: 50, y: 50 },
-        verified: Boolean(data.verified),
-        badgeColor: data.badgeColor || data.badge_color || '#dc2626',
-        bio: data.bio || '',
-        layout: data.layout || 'creator-portrait',
-        theme: data.theme || 'cinema-noir',
-        language: data.language || 'pt',
-        customColors: data.customColors || data.custom_colors,
-        hideBranding: Boolean(data.hideBranding ?? data.hide_branding),
-        links: data.links || [],
-        socialLinks: data.socialLinks || data.social_links || [],
-        tracking: data.tracking || {},
-        stats: data.stats || { views: 0, ctaClicks: 0, clicks: {} },
-        createdAt: data.createdAt || data.created_at,
-        updatedAt: data.updatedAt || data.updated_at,
-      };
+      return mapDocToBioPage(snapshot.docs[0]);
     } catch (err) {
       console.warn('[aurabio:firebase] Error fetching page by slug:', err);
       return null;
+    }
+  },
+
+  subscribeToPageBySlug(slug: string, callback: (page: BioPage | null) => void): () => void {
+    try {
+      const colRef = collection(db, COLLECTION);
+      const q = query(colRef, where('slug', '==', slug));
+      return onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+          callback(null);
+        } else {
+          callback(mapDocToBioPage(snapshot.docs[0]));
+        }
+      }, (err) => {
+        console.warn('[aurabio:firebase] Realtime page slug subscription error:', err);
+      });
+    } catch (err) {
+      console.warn('[aurabio:firebase] Subscribe page by slug failed:', err);
+      return () => {};
     }
   },
 

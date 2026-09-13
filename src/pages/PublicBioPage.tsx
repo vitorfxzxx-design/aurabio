@@ -23,26 +23,30 @@ export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
 
   useEffect(() => {
     let isMounted = true;
+    let unsubscribe: (() => void) | undefined;
+
     if (cleanSlug) {
-      // If we already have a matching local page with real data, use it immediately so there's zero delay
       if (localPage && localPage.name !== 'SEU NOME') {
         setIsLoading(false);
       }
-      pagesService.getPageBySlug(cleanSlug).then((fetched) => {
+
+      // Realtime listener from Firestore
+      unsubscribe = pagesService.subscribeToPageBySlug(cleanSlug, (fetched) => {
         if (isMounted) {
           if (fetched) {
             setCloudPage(fetched);
           }
           setIsLoading(false);
         }
-      }).catch((err) => {
-        console.warn('[aurabio] Error fetching slug from cloud:', err);
-        if (isMounted) setIsLoading(false);
       });
     } else {
       setIsLoading(false);
     }
-    return () => { isMounted = false; };
+
+    return () => { 
+      isMounted = false; 
+      if (unsubscribe) unsubscribe();
+    };
   }, [cleanSlug, localPage]);
 
   // Determine final page to display

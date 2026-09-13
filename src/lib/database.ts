@@ -11,8 +11,16 @@ export const dbPagesService = {
     return firebasePagesService.getAllPages();
   },
 
+  subscribeToAllPages(callback: (pages: BioPage[]) => void): () => void {
+    return firebasePagesService.subscribeToAllPages(callback);
+  },
+
   async getPageBySlug(slug: string): Promise<BioPage | null> {
     return firebasePagesService.getPageBySlug(slug);
+  },
+
+  subscribeToPageBySlug(slug: string, callback: (page: BioPage | null) => void): () => void {
+    return firebasePagesService.subscribeToPageBySlug(slug, callback);
   },
 
   async upsertPage(page: BioPage, userEmail?: string): Promise<boolean> {
