@@ -9,14 +9,14 @@ export const AppearanceTab: React.FC = () => {
   const { activePage, updateActivePage, language, setLanguage, t, showNotification } = useBio();
 
   const handleSelectLayout = (layoutId: PageLayout) => {
-    updateActivePage({ layout: layoutId });
+    updateActivePage(() => ({ layout: layoutId }));
     showNotification(`Layout alterado para "${LAYOUT_PRESETS.find(l => l.id === layoutId)?.name}"!`);
   };
 
   const handleSelectTheme = (themeId: PageTheme) => {
     const preset = THEME_PRESETS.find(t => t.id === themeId);
     if (preset) {
-      updateActivePage({
+      updateActivePage(() => ({
         theme: themeId,
         customColors: {
           bgColor: preset.bg,
@@ -25,7 +25,7 @@ export const AppearanceTab: React.FC = () => {
           cardBgColor: preset.cardBg,
           accentColor: preset.accentColor,
         }
-      });
+      }));
       showNotification(`Tema alterado para "${preset.name}"!`);
     }
   };
@@ -39,11 +39,14 @@ export const AppearanceTab: React.FC = () => {
   };
 
   const updateColor = (key: keyof typeof currentColors, val: string) => {
-    updateActivePage({
-      customColors: {
-        ...currentColors,
-        [key]: val,
-      }
+    updateActivePage(curr => {
+      const prevColors = curr.customColors || currentColors;
+      return {
+        customColors: {
+          ...prevColors,
+          [key]: val,
+        }
+      };
     });
   };
 

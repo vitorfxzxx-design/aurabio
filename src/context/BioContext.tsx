@@ -418,13 +418,9 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem(LANG_KEY, lang);
-    setPages(prevPages =>
-      prevPages.map(page =>
-        page.id === activePage.id
-          ? { ...page, language: lang, updatedAt: new Date().toISOString() }
-          : page
-      )
-    );
+    updateActivePage({
+      language: lang
+    });
     const langNames: Record<Language, string> = {
       pt: 'Português',
       en: 'English',
