@@ -135,22 +135,22 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       {/* 2. RETRATO CRIADOR LAYOUT (Padrão de Alta Autoridade) */}
       {/* ------------------------------------------------------------- */}
       {isCreatorPortrait && (
-        <header className="w-full pt-6 pb-2 px-5 flex flex-col items-center text-center relative z-10 font-sans">
+        <header className="w-full pt-7 pb-2 px-5 flex flex-col items-center text-center relative z-10 font-sans">
           {/* Avatar com Borda Iluminada e Selo Verificado */}
-          <div className="relative mb-2.5 group">
+          <div className="relative mb-3 group">
             <div 
-              className="p-1 rounded-full ring-2 shadow-xl transition-transform duration-300 group-hover:scale-105 bg-black/40"
+              className="p-1 rounded-full ring-2 shadow-2xl transition-transform duration-300 group-hover:scale-105 bg-black/40"
               style={{
                 borderColor: accentColor,
-                boxShadow: `0 6px 20px ${accentColor}30`
+                boxShadow: `0 8px 25px ${accentColor}35`
               }}
             >
               {avatarUrl ? (
-                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full overflow-hidden">
+                <div className="w-26 h-26 sm:w-28 sm:h-28 rounded-full overflow-hidden shadow-inner">
                   <img
                     src={avatarUrl}
                     alt={page.name}
-                    className="w-full h-full object-cover shadow-inner"
+                    className="w-full h-full object-cover"
                     style={{
                       objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
                       transform: `scale(${page.avatarZoom ?? 1})`
@@ -158,19 +158,19 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                   />
                 </div>
               ) : (
-                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
-                  <UserIcon size={30} />
+                <div className="w-26 h-26 sm:w-28 sm:h-28 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
+                  <UserIcon size={38} />
                 </div>
               )}
             </div>
 
             {page.verified && (
               <div 
-                className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-zinc-950"
+                className="absolute bottom-0.5 right-0.5 w-7 h-7 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-zinc-950"
                 style={{ backgroundColor: page.badgeColor || accentColor }}
                 title={dict.official_badge}
               >
-                <CheckCircle className="w-3.5 h-3.5 fill-white text-zinc-950 stroke-[2.5]" />
+                <CheckCircle className="w-4 h-4 fill-white text-zinc-950 stroke-[2.5]" />
               </div>
             )}
           </div>
@@ -257,19 +257,19 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       {/* 4. OBSIDIAN MINIMALIST LAYOUT (Ultra-Luxo & Alta Conversão) */}
       {/* ------------------------------------------------------------- */}
       {isMinimal && (
-        <header className="w-full pt-9 pb-3 px-6 flex flex-col items-center text-center relative z-10 font-sans">
+        <header className="w-full pt-8 pb-3 px-6 flex flex-col items-center text-center relative z-10 font-sans">
           {/* Subtle Glow Accent Behind Avatar */}
           <div 
-            className="absolute top-4 w-36 h-36 rounded-full pointer-events-none blur-3xl opacity-25"
+            className="absolute top-4 w-44 h-44 rounded-full pointer-events-none blur-3xl opacity-25"
             style={{ backgroundColor: accentColor }}
           />
 
-          {/* Luxury Rounded Avatar Container */}
-          <div className="relative mb-3.5 group z-10">
+          {/* Luxury Circular Avatar Container */}
+          <div className="relative mb-3 group z-10">
             <div 
-              className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden p-0.5 bg-gradient-to-b from-white/20 via-white/5 to-transparent shadow-2xl transition-transform duration-300 group-hover:scale-105"
+              className="w-26 h-26 sm:w-28 sm:h-28 rounded-full overflow-hidden p-1 bg-gradient-to-b from-white/30 via-white/10 to-transparent shadow-2xl transition-transform duration-300 group-hover:scale-105"
             >
-              <div className="w-full h-full rounded-[14px] overflow-hidden bg-zinc-950 flex items-center justify-center">
+              <div className="w-full h-full rounded-full overflow-hidden bg-zinc-950 flex items-center justify-center ring-1 ring-white/10">
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
@@ -281,18 +281,18 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                     }}
                   />
                 ) : (
-                  <UserIcon size={30} className="text-zinc-600" />
+                  <UserIcon size={38} className="text-zinc-600" />
                 )}
               </div>
             </div>
 
             {page.verified && (
               <div 
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
+                className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
                 style={{ backgroundColor: page.badgeColor || accentColor }}
                 title={dict.official_badge}
               >
-                <CheckCircle size={13} className="fill-white text-black stroke-[2.5]" />
+                <CheckCircle size={14} className="fill-white text-black stroke-[2.5]" />
               </div>
             )}
           </div>
@@ -336,17 +336,17 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
             }} 
           />
 
-          {/* Avatar com Neon Glow Ring */}
-          <div className="relative mb-3.5 group z-10">
+          {/* Avatar com Neon Glow Ring Circular */}
+          <div className="relative mb-3 group z-10">
             <div 
               className="p-1 rounded-full ring-2 shadow-2xl transition-transform duration-300 group-hover:scale-105 bg-black"
               style={{
                 borderColor: accentColor,
-                boxShadow: `0 0 25px ${accentColor}, inset 0 0 15px ${accentColor}40`
+                boxShadow: `0 0 30px ${accentColor}, inset 0 0 15px ${accentColor}40`
               }}
             >
               {avatarUrl ? (
-                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full overflow-hidden">
+                <div className="w-26 h-26 sm:w-28 sm:h-28 rounded-full overflow-hidden">
                   <img
                     src={avatarUrl}
                     alt={page.name}
@@ -358,19 +358,19 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                   />
                 </div>
               ) : (
-                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-zinc-950 flex items-center justify-center text-zinc-600 border border-zinc-900">
-                  <UserIcon size={32} />
+                <div className="w-26 h-26 sm:w-28 sm:h-28 rounded-full bg-zinc-950 flex items-center justify-center text-zinc-600 border border-zinc-900">
+                  <UserIcon size={38} />
                 </div>
               )}
             </div>
 
             {page.verified && (
               <div 
-                className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
+                className="absolute bottom-0.5 right-0.5 w-7 h-7 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
                 style={{ backgroundColor: page.badgeColor || accentColor }}
                 title={dict.official_badge}
               >
-                <CheckCircle className="w-3.5 h-3.5 fill-white text-black stroke-[2.5]" />
+                <CheckCircle className="w-4 h-4 fill-white text-black stroke-[2.5]" />
               </div>
             )}
           </div>
