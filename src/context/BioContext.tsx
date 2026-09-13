@@ -126,15 +126,31 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const cloudPages = await pagesService.getAllPages();
         if (cloudPages && cloudPages.length > 0) {
           setPages(currentLocalPages => {
+            // Check if local pages are just default placeholders
+            const isLocalDefault = currentLocalPages.length === 1 && 
+              (currentLocalPages[0].name === 'SEU NOME' || currentLocalPages[0].slug === 'suapagina');
+
+            if (isLocalDefault) {
+              // Replace default template directly with cloud pages
+              try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudPages));
+              } catch (err) {
+                console.warn('LocalStorage save error:', err);
+              }
+              return cloudPages;
+            }
+
             const merged = currentLocalPages.map(localPage => {
               const cloudMatch = cloudPages.find(cp => cp.id === localPage.id || cp.slug === localPage.slug);
               if (!cloudMatch) {
-                pagesService.upsertPage(localPage, currentUserEmail);
+                if (localPage.name !== 'SEU NOME') {
+                  pagesService.upsertPage(localPage, currentUserEmail);
+                }
                 return localPage;
               }
               const localTime = new Date(localPage.updatedAt || 0).getTime();
               const cloudTime = new Date(cloudMatch.updatedAt || 0).getTime();
-              if (cloudTime >= localTime) {
+              if (cloudTime >= localTime || localPage.name === 'SEU NOME') {
                 return cloudMatch;
               } else {
                 pagesService.upsertPage(localPage, currentUserEmail);
@@ -156,8 +172,12 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             return merged;
           });
         } else if (pages && pages.length > 0) {
-          // Cloud is empty, seed cloud with local pages
-          pages.forEach(p => pagesService.upsertPage(p, currentUserEmail));
+          // Cloud is empty, seed cloud with local pages only if customized
+          pages.forEach(p => {
+            if (p.name !== 'SEU NOME') {
+              pagesService.upsertPage(p, currentUserEmail);
+            }
+          });
         }
 
         // 2. Members

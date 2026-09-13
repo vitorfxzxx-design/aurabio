@@ -308,7 +308,9 @@ export const ProfileHeroTab: React.FC = () => {
         <div className="pt-3 border-t border-zinc-100">
           <button
             onClick={() => {
+              const cleanSlug = slugInput.toLowerCase().replace(/[^a-z0-9_-]/g, '');
               updateActivePage({
+                slug: cleanSlug || activePage.slug,
                 name: nameInput,
                 bio: bioInput,
               });

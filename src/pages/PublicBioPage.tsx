@@ -14,19 +14,38 @@ export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
   const { pages, activePage, recordView, recordClick } = useBio();
   const recordedRef = useRef(false);
   const [cloudPage, setCloudPage] = useState<BioPage | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Match by slug or id, fallback to activePage or first page
   const cleanSlug = (slug || '').toLowerCase().replace(/^u\//, '').replace(/^\//, '');
   const localPage = cleanSlug ? pages.find(p => p.slug.toLowerCase() === cleanSlug || p.id === cleanSlug) : null;
-  const page = localPage || cloudPage || activePage || pages[0];
 
   useEffect(() => {
-    if (cleanSlug && !localPage) {
-      pagesService.getPageBySlug(cleanSlug).then((fetched) => {
-        if (fetched) setCloudPage(fetched);
-      });
+    let isMounted = true;
+    if (cleanSlug) {
+      if (localPage && localPage.name !== 'SEU NOME') {
+        setIsLoading(false);
+      } else {
+        setIsLoading(true);
+        pagesService.getPageBySlug(cleanSlug).then((fetched) => {
+          if (isMounted) {
+            if (fetched) {
+              setCloudPage(fetched);
+            }
+            setIsLoading(false);
+          }
+        }).catch(() => {
+          if (isMounted) setIsLoading(false);
+        });
+      }
+    } else {
+      setIsLoading(false);
     }
+    return () => { isMounted = false; };
   }, [cleanSlug, localPage]);
+
+  // Determine final page to display
+  const page = cloudPage || (localPage && localPage.name !== 'SEU NOME' ? localPage : null) || (cleanSlug ? (cloudPage || localPage) : (activePage || pages[0]));
 
   const themePreset = THEME_PRESETS.find(t => t.id === page?.theme) || THEME_PRESETS[0];
   const bgColor = page?.customColors?.bgColor || themePreset.bg;
@@ -44,6 +63,15 @@ export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
       recordClick(page.id, linkId);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
+        <div className="w-8 h-8 border-2 border-zinc-700 border-t-white rounded-full animate-spin mb-3" />
+        <span className="text-xs text-zinc-500 font-mono">Carregando perfil...</span>
+      </div>
+    );
+  }
 
   if (!page) {
     return (
