@@ -40,12 +40,13 @@ export const TrackingTab: React.FC = () => {
   };
 
   const handleSavePixel = () => {
-    updateActivePage({
+    const cleanPixel = pixelId.trim().replace(/[^0-9]/g, '');
+    updateActivePage(curr => ({
       tracking: {
-        ...activePage.tracking,
-        metaPixelId: pixelId.trim(),
+        ...(curr.tracking || {}),
+        metaPixelId: cleanPixel,
       }
-    });
+    }));
     showNotification('ID do Meta Pixel salvo com sucesso!');
   };
 

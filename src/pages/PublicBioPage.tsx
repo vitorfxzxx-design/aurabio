@@ -3,6 +3,7 @@ import { useBio } from '../context/BioContext';
 import { BioPageRenderer } from '../components/preview/BioPageRenderer';
 import { THEME_PRESETS } from '../data/defaultData';
 import { dbPagesService as pagesService } from '../lib/database';
+import { initMetaPixel, trackMetaPixelEvent } from '../utils/pixel';
 import type { BioPage } from '../types/bio';
 
 interface PublicBioPageProps {
@@ -55,12 +56,25 @@ export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
       recordedRef.current = true;
       recordView(page.id);
       document.title = `${page.name} | Aurabio`;
+
+      // Trigger Meta Pixel PageView if Pixel ID is configured
+      if (page.tracking?.metaPixelId) {
+        initMetaPixel(page.tracking.metaPixelId);
+      }
     }
-  }, [page?.id, page?.name, recordView]);
+  }, [page?.id, page?.name, page?.tracking?.metaPixelId, recordView]);
 
   const handleLinkClick = (linkId: string) => {
     if (page) {
       recordClick(page.id, linkId);
+      if (page.tracking?.metaPixelId) {
+        const clickedLink = (page.links || []).find(l => l.id === linkId);
+        trackMetaPixelEvent('Lead', {
+          content_name: clickedLink?.title || 'Link Click',
+          content_category: 'Bio Link',
+          content_id: linkId
+        });
+      }
     }
   };
 
