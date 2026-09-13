@@ -4,15 +4,23 @@ import { AdminPanel } from './pages/AdminPanel';
 import { PublicBioPage } from './pages/PublicBioPage';
 import { MasterAdminPage } from './pages/MasterAdminPage';
 import { SalesLandingPage } from './pages/SalesLandingPage';
+import { UpsellPage } from './pages/UpsellPage';
 
 export function App() {
-  const [currentRoute, setCurrentRoute] = useState<'admin' | 'master' | 'public' | 'pv'>('admin');
+  const [currentRoute, setCurrentRoute] = useState<'admin' | 'master' | 'public' | 'pv' | 'upsell'>('admin');
   const [routeSlug, setRouteSlug] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const handleRouteChange = () => {
       const cleanPath = window.location.pathname.replace(/\/$/, '').toLowerCase();
       const rawHash = window.location.hash.replace('#/', '').replace('#', '').toLowerCase();
+
+      // Check for Upsell Page
+      if (cleanPath === '/upsell' || cleanPath.startsWith('/upsell') || rawHash === 'upsell' || rawHash.startsWith('upsell')) {
+        setCurrentRoute('upsell');
+        setRouteSlug(undefined);
+        return;
+      }
 
       // Check for Sales Page
       if (cleanPath === '/pv' || cleanPath.startsWith('/pv') || rawHash === 'pv' || rawHash.startsWith('pv')) {
@@ -79,7 +87,9 @@ export function App() {
 
   return (
     <BioProvider>
-      {currentRoute === 'pv' ? (
+      {currentRoute === 'upsell' ? (
+        <UpsellPage onDecline={handleBackToAdmin} />
+      ) : currentRoute === 'pv' ? (
         <SalesLandingPage />
       ) : currentRoute === 'master' ? (
         <MasterAdminPage onBackToCreatorPanel={handleBackToAdmin} />
