@@ -119,9 +119,9 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
 
           {/* Bio Description below hero */}
           {page.bio && (
-            <div className="px-6 pt-4 pb-2 text-center">
+            <div className="px-5 pt-2 pb-1 text-center">
               <div 
-                className="text-xs sm:text-sm font-medium leading-relaxed whitespace-pre-line max-w-sm mx-auto opacity-90"
+                className="text-[11px] sm:text-xs font-normal leading-snug whitespace-pre-line max-w-[300px] mx-auto opacity-85"
                 style={{ color: secondaryTextColor }}
               >
                 {page.bio}
@@ -135,18 +135,18 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       {/* 2. RETRATO CRIADOR LAYOUT (Padrão de Alta Autoridade) */}
       {/* ------------------------------------------------------------- */}
       {isCreatorPortrait && (
-        <header className="w-full pt-8 pb-3 px-6 flex flex-col items-center text-center relative z-10 font-sans">
+        <header className="w-full pt-6 pb-2 px-5 flex flex-col items-center text-center relative z-10 font-sans">
           {/* Avatar com Borda Iluminada e Selo Verificado */}
-          <div className="relative mb-3.5 group">
+          <div className="relative mb-2.5 group">
             <div 
-              className="p-1 rounded-full ring-2 shadow-2xl transition-transform duration-300 group-hover:scale-105 bg-black/40"
+              className="p-1 rounded-full ring-2 shadow-xl transition-transform duration-300 group-hover:scale-105 bg-black/40"
               style={{
                 borderColor: accentColor,
-                boxShadow: `0 8px 30px ${accentColor}40`
+                boxShadow: `0 6px 20px ${accentColor}30`
               }}
             >
               {avatarUrl ? (
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden">
+                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full overflow-hidden">
                   <img
                     src={avatarUrl}
                     alt={page.name}
@@ -158,26 +158,26 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                   />
                 </div>
               ) : (
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
-                  <UserIcon size={36} />
+                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-600 border border-zinc-800">
+                  <UserIcon size={30} />
                 </div>
               )}
             </div>
 
             {page.verified && (
               <div 
-                className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-zinc-950"
+                className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-zinc-950"
                 style={{ backgroundColor: page.badgeColor || accentColor }}
                 title={dict.official_badge}
               >
-                <CheckCircle className="w-4 h-4 fill-white text-zinc-950 stroke-[2.5]" />
+                <CheckCircle className="w-3.5 h-3.5 fill-white text-zinc-950 stroke-[2.5]" />
               </div>
             )}
           </div>
 
           {/* Nome do Perfil */}
           <h1 
-            className="text-2xl sm:text-3xl font-black uppercase tracking-tight drop-shadow-sm"
+            className="text-xl sm:text-2xl font-black uppercase tracking-tight drop-shadow-sm"
             style={{ color: textColor }}
           >
             {page.name || 'SEU NOME'}
@@ -186,7 +186,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           {/* Bio / Bullet Points */}
           {page.bio && (
             <div 
-              className="mt-2.5 max-w-sm text-xs sm:text-sm font-medium leading-relaxed whitespace-pre-line text-center px-2"
+              className="mt-2 max-w-[300px] text-[11px] sm:text-xs font-normal leading-snug whitespace-pre-line text-center px-2 opacity-85"
               style={{ color: secondaryTextColor }}
             >
               {page.bio}
@@ -245,7 +245,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           {/* Bio / Credenciais */}
           {page.bio && (
             <div 
-              className="text-xs sm:text-[13px] font-editorial leading-relaxed text-zinc-200 max-w-[310px] mx-auto text-center px-2 whitespace-pre-line"
+              className="text-[11px] sm:text-xs font-editorial leading-snug text-zinc-300 max-w-[280px] mx-auto text-center px-2 whitespace-pre-line opacity-90"
             >
               {page.bio}
             </div>
@@ -296,7 +296,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           </h1>
 
           {page.bio && (
-            <div className="mt-2 text-[11px] text-zinc-400 font-mono whitespace-pre-line max-w-xs leading-relaxed border-l-2 border-zinc-700 pl-3 text-left">
+            <div className="mt-2 text-[10px] sm:text-[11px] text-zinc-400 font-mono whitespace-pre-line max-w-[270px] leading-snug border-l-2 border-zinc-700 pl-2.5 text-left opacity-85">
               {page.bio}
             </div>
           )}
@@ -313,67 +313,81 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
             className="absolute -top-10 inset-x-0 h-[380px] pointer-events-none opacity-90 blur-[60px]"
             style={{ 
               background: `radial-gradient(circle at 50% 35%, ${accentColor}80 0%, ${accentColor}30 45%, transparent 75%)` 
-            }}
+            }} 
           />
 
-          {/* Squircle Avatar with Soft Shadow */}
-          <div className="relative mb-2 group z-10">
-            <div className="w-36 sm:w-40 aspect-[4/4.8] rounded-[28px] overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.85)] bg-zinc-900 relative">
+          {/* Avatar com Neon Glow Ring */}
+          <div className="relative mb-3.5 group z-10">
+            <div 
+              className="p-1 rounded-full ring-2 shadow-2xl transition-transform duration-300 group-hover:scale-105 bg-black"
+              style={{
+                borderColor: accentColor,
+                boxShadow: `0 0 25px ${accentColor}, inset 0 0 15px ${accentColor}40`
+              }}
+            >
               {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt={page.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  style={{
-                    objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
-                    transform: `scale(${page.avatarZoom ?? 1})`
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-700">
-                  <UserIcon size={48} />
+                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full overflow-hidden">
+                  <img
+                    src={avatarUrl}
+                    alt={page.name}
+                    className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                      transform: `scale(${page.avatarZoom ?? 1})`
+                    }}
+                  />
                 </div>
-              )}
-
-              {page.verified && (
-                <div 
-                  className="absolute bottom-2.5 right-2.5 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
-                  style={{ backgroundColor: page.badgeColor || accentColor }}
-                  title={dict.official_badge}
-                >
-                  <CheckCircle className="w-3.5 h-3.5 fill-white text-zinc-950 stroke-[2.5]" />
+              ) : (
+                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-zinc-950 flex items-center justify-center text-zinc-600 border border-zinc-900">
+                  <UserIcon size={32} />
                 </div>
               )}
             </div>
+
+            {page.verified && (
+              <div 
+                className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
+                style={{ backgroundColor: page.badgeColor || accentColor }}
+                title={dict.official_badge}
+              >
+                <CheckCircle className="w-3.5 h-3.5 fill-white text-black stroke-[2.5]" />
+              </div>
+            )}
           </div>
 
-          {/* Two-Tone Stacked Neon Display Typography */}
-          <div className="z-10 mt-3">
+          {/* Nome do Perfil com Tipografia Neon Dual-Tone */}
+          <div className="relative z-10">
             {(() => {
-              const nameParts = (page.name || 'SEU NOME').trim().split(/\s+/);
-              if (nameParts.length > 1) {
-                const first = nameParts.slice(0, Math.ceil(nameParts.length / 2)).join(' ');
-                const last = nameParts.slice(Math.ceil(nameParts.length / 2)).join(' ');
+              const nameParts = (page.name || 'SEU NOME').trim().split(' ');
+              if (nameParts.length >= 2) {
+                const firstName = nameParts[0];
+                const restName = nameParts.slice(1).join(' ');
                 return (
-                  <h1 className="text-3xl sm:text-[36px] font-black uppercase tracking-tight text-center leading-[1.02] flex flex-col items-center">
-                    <span className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-                      {first}
-                    </span>
+                  <h1 className="flex flex-col items-center leading-tight tracking-tight uppercase">
                     <span 
-                      className="text-transparent bg-clip-text font-black"
+                      className="text-2xl sm:text-[28px] font-black text-transparent bg-clip-text"
                       style={{
-                        backgroundImage: `linear-gradient(to bottom, #fb7185 0%, ${accentColor || '#dc2626'} 100%)`,
-                        filter: `drop-shadow(0 0 18px ${accentColor || '#dc2626'}95)`
+                        backgroundImage: `linear-gradient(to bottom, #ffffff 40%, ${accentColor || '#dc2626'} 100%)`,
+                        filter: `drop-shadow(0 0 12px ${accentColor || '#dc2626'}80)`
                       }}
                     >
-                      {last}
+                      {firstName}
+                    </span>
+                    <span 
+                      className="text-xl sm:text-[22px] font-extrabold tracking-wider mt-0.5 text-transparent bg-clip-text"
+                      style={{
+                        backgroundImage: `linear-gradient(to bottom, ${accentColor || '#dc2626'} 20%, #ffffff 100%)`,
+                        filter: `drop-shadow(0 0 16px ${accentColor || '#dc2626'})`
+                      }}
+                    >
+                      {restName}
                     </span>
                   </h1>
                 );
               }
               return (
                 <h1 
-                  className="text-3xl sm:text-[36px] font-black uppercase tracking-tight text-center leading-tight text-transparent bg-clip-text"
+                  className="text-2xl sm:text-[28px] font-black uppercase tracking-tight text-center leading-tight text-transparent bg-clip-text"
                   style={{
                     backgroundImage: `linear-gradient(to bottom, #ffffff 30%, ${accentColor || '#dc2626'} 100%)`,
                     filter: `drop-shadow(0 0 18px ${accentColor || '#dc2626'}90)`
@@ -388,7 +402,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
           {/* Bio Description */}
           {page.bio && (
             <div 
-              className="mt-3 text-xs sm:text-[13px] font-medium opacity-90 leading-relaxed whitespace-pre-line max-w-[310px] text-center z-10"
+              className="mt-2 text-[11px] sm:text-xs font-normal opacity-85 leading-snug whitespace-pre-line max-w-[290px] text-center z-10"
               style={{ color: secondaryTextColor }}
             >
               {page.bio}
