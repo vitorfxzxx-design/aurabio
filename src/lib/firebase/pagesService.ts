@@ -3,6 +3,8 @@ import {
   doc, 
   getDocs, 
   setDoc, 
+  updateDoc,
+  increment,
   deleteDoc, 
   query, 
   where 
@@ -139,6 +141,31 @@ export const firebasePagesService = {
     } catch (err) {
       console.warn('[aurabio:firebase] Error deleting page:', err);
       return false;
+    }
+  },
+
+  async incrementView(pageId: string): Promise<void> {
+    try {
+      const docRef = doc(db, COLLECTION, pageId);
+      await updateDoc(docRef, {
+        'stats.views': increment(1),
+        updatedAt: new Date().toISOString()
+      });
+    } catch (err) {
+      console.warn('[aurabio:firebase] Error incrementing view:', err);
+    }
+  },
+
+  async incrementClick(pageId: string, linkId: string): Promise<void> {
+    try {
+      const docRef = doc(db, COLLECTION, pageId);
+      await updateDoc(docRef, {
+        'stats.ctaClicks': increment(1),
+        [`stats.clicks.${linkId}`]: increment(1),
+        updatedAt: new Date().toISOString()
+      });
+    } catch (err) {
+      console.warn('[aurabio:firebase] Error incrementing click:', err);
     }
   }
 };

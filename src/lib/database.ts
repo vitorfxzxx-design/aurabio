@@ -21,6 +21,14 @@ export const dbPagesService = {
 
   async deletePage(id: string): Promise<boolean> {
     return firebasePagesService.deletePage(id);
+  },
+
+  async incrementView(pageId: string): Promise<void> {
+    return firebasePagesService.incrementView(pageId);
+  },
+
+  async incrementClick(pageId: string, linkId: string): Promise<void> {
+    return firebasePagesService.incrementClick(pageId, linkId);
   }
 };
 

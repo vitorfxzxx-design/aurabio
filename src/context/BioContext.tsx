@@ -644,6 +644,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setPages(prev =>
       prev.map(p => {
         if (p.id === slugOrId || p.slug === slugOrId) {
+          pagesService.incrementView(p.id);
           return {
             ...p,
             stats: {
@@ -661,13 +662,15 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setPages(prev =>
       prev.map(p => {
         if (p.id === slugOrId || p.slug === slugOrId) {
+          pagesService.incrementClick(p.id, linkId);
           const currentClicks = p.stats?.clicks || {};
-          const updatedLinks = p.links.map(l => l.id === linkId ? { ...l, clicks: (l.clicks || 0) + 1 } : l);
+          const updatedLinks = (p.links || []).map(l => l.id === linkId ? { ...l, clicks: (l.clicks || 0) + 1 } : l);
           return {
             ...p,
             links: updatedLinks,
             stats: {
               ...p.stats,
+              ctaClicks: (p.stats?.ctaClicks || 0) + 1,
               clicks: {
                 ...currentClicks,
                 [linkId]: (currentClicks[linkId] || 0) + 1,
