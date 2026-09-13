@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useBio } from '../context/BioContext';
 import { BioPageRenderer } from '../components/preview/BioPageRenderer';
 import { THEME_PRESETS } from '../data/defaultData';
-import { pagesService } from '../lib/supabase';
+import { dbPagesService as pagesService } from '../lib/database';
 import type { BioPage } from '../types/bio';
 
 interface PublicBioPageProps {

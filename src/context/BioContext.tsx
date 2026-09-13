@@ -18,11 +18,11 @@ import {
 } from '../data/defaultData';
 import { TRANSLATIONS, type Language } from '../utils/translations';
 import { 
-  pagesService, 
-  membersService, 
-  webhooksService, 
-  masterService 
-} from '../lib/supabase';
+  dbPagesService as pagesService, 
+  dbMembersService as membersService, 
+  dbWebhooksService as webhooksService, 
+  dbMasterService as masterService 
+} from '../lib/database';
 
 interface BioContextType {
   pages: BioPage[];
