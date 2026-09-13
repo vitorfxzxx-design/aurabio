@@ -17,7 +17,7 @@ const PLATFORMS: { id: SocialPlatform; name: string; placeholder: string }[] = [
 ];
 
 export const SocialTab: React.FC = () => {
-  const { activePage, addSocialLink, updateSocialLink, deleteSocialLink, showNotification } = useBio();
+  const { activePage, updateActivePage, addSocialLink, updateSocialLink, deleteSocialLink, showNotification } = useBio();
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<SocialPlatform>('instagram');
   const [urlInput, setUrlInput] = useState('');
@@ -85,7 +85,7 @@ export const SocialTab: React.FC = () => {
 
                   <button
                     onClick={() => deleteSocialLink(soc.id)}
-                    className="p-1.5 text-zinc-400 hover:text-red-600 rounded-lg transition-colors"
+                    className="p-1.5 text-zinc-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
                     title="Remover rede"
                   >
                     <Trash2 size={16} />
@@ -99,7 +99,7 @@ export const SocialTab: React.FC = () => {
         {/* Add Network Button */}
         <button
           onClick={() => setShowAddModal(true)}
-          className="w-full py-3 px-4 border border-dashed border-zinc-300 rounded-xl hover:border-zinc-400 hover:bg-zinc-50 flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-zinc-700 transition-colors"
+          className="w-full py-3 px-4 border border-dashed border-zinc-300 rounded-xl hover:border-zinc-400 hover:bg-zinc-50 flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-zinc-700 transition-colors cursor-pointer"
         >
           <Plus size={16} />
           <span>Adicionar rede</span>
@@ -109,8 +109,11 @@ export const SocialTab: React.FC = () => {
       {/* Save Button */}
       <div className="flex justify-end pt-2">
         <button
-          onClick={() => showNotification('Redes sociais salvas com sucesso!')}
-          className="px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"
+          onClick={() => {
+            updateActivePage(curr => ({ ...curr }));
+            showNotification('Redes sociais salvas com sucesso!');
+          }}
+          className="px-6 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98 cursor-pointer"
         >
           Salvar Alterações
         </button>
