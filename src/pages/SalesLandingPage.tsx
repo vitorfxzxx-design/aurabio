@@ -96,7 +96,7 @@ export const SalesLandingPage: React.FC = () => {
               Entrar
             </a>
             <a 
-              href={CHECKOUT_URL}
+              href="#precos"
               className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white hover:bg-zinc-200 text-black font-bold text-xs sm:text-sm transition-all shadow-[0_0_25px_rgba(255,255,255,0.25)] hover:scale-105 active:scale-95 cursor-pointer"
             >
               <span>Testar 7 Dias Grátis</span>
@@ -136,7 +136,7 @@ export const SalesLandingPage: React.FC = () => {
         {/* CTA Buttons */}
         <div className="mt-8 sm:mt-9 flex flex-col items-center gap-3.5 w-full sm:w-auto">
           <a
-            href={CHECKOUT_URL}
+            href="#precos"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base transition-all shadow-[0_0_35px_rgba(255,255,255,0.35)] hover:scale-105 active:scale-95 cursor-pointer group"
           >
             <span>Experimente 7 dias grátis</span>
@@ -550,7 +550,7 @@ export const SalesLandingPage: React.FC = () => {
 
           {/* Big CTA Button */}
           <a
-            href={CHECKOUT_URL}
+            href="#precos"
             className="mt-7 sm:mt-8 w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_35px_rgba(255,255,255,0.35)] hover:scale-105 active:scale-95 cursor-pointer text-center"
           >
             <span>Experimente 7 dias grátis</span>
@@ -572,7 +572,7 @@ export const SalesLandingPage: React.FC = () => {
           <span className="text-xs font-extrabold text-white">Depois R$19/mês</span>
         </div>
         <a
-          href={CHECKOUT_URL}
+          href="#precos"
           className="flex-1 py-3 px-4 rounded-full bg-white text-black font-black text-xs flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(255,255,255,0.4)] active:scale-95 transition-all"
         >
           <span>Testar Grátis</span>
