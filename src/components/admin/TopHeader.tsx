@@ -53,17 +53,6 @@ export const TopHeader: React.FC<TopHeaderProps> = ({ onOpenMobileMenu, onOpenMo
           <span className="hidden xs:inline">Prévia</span>
         </button>
 
-        <a
-          href="#/pv"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-xs font-bold text-purple-700 transition-colors shadow-2xs cursor-pointer"
-          title="Ver Página de Vendas Oficial"
-        >
-          <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
-          <span>Ver PV</span>
-        </a>
-
         <button
           onClick={handleCopyLink}
           className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-50 text-xs font-bold text-zinc-700 transition-colors shadow-2xs cursor-pointer"
