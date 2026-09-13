@@ -19,7 +19,7 @@ interface UpsellPageProps {
 export const UpsellPage: React.FC<UpsellPageProps> = ({ 
   onAccept, 
   onDecline,
-  checkoutUrl = 'https://pay.kiwify.com.br'
+  checkoutUrl = 'https://checkout.aurabio.link/subscribe/aurabio-principal-upsell/1click'
 }) => {
   // 15 minutes countdown timer (900 seconds)
   const [timeLeft, setTimeLeft] = useState<number>(() => {

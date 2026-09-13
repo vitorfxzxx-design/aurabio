@@ -425,13 +425,13 @@ export const SalesLandingPage: React.FC = () => {
           </ul>
 
           {/* Big CTA Button */}
-          <button
-            onClick={handleGoToApp}
-            className="w-full mt-8 py-4 px-6 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-102 active:scale-98 cursor-pointer"
+          <a
+            href="https://checkout.aurabio.link/subscribe/aurabio-principal"
+            className="w-full mt-8 py-4 px-6 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-102 active:scale-98 cursor-pointer text-center"
           >
             <span>Assinar — 12x R$16</span>
             <ArrowRight size={18} />
-          </button>
+          </a>
 
           <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-zinc-500 text-center">
             <Lock size={12} className="text-emerald-500" />
@@ -526,13 +526,13 @@ export const SalesLandingPage: React.FC = () => {
           </p>
 
           {/* Big CTA Button */}
-          <button
-            onClick={handleGoToApp}
-            className="mt-8 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_35px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 cursor-pointer"
+          <a
+            href="https://checkout.aurabio.link/subscribe/aurabio-principal"
+            className="mt-8 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_35px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 cursor-pointer text-center"
           >
             <span>Criar minha conta agora</span>
             <ArrowRight size={18} />
-          </button>
+          </a>
 
           <p className="mt-4 text-[11px] text-zinc-500">
             Garantia de 7 dias · Cancele quando quiser
