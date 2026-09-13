@@ -446,13 +446,9 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       {/* ------------------------------------------------------------- */}
       {/* HIGH CONVERSION LINK CARDS */}
       {/* ------------------------------------------------------------- */}
-      <section className="w-full max-w-[440px] px-4 flex flex-col gap-3.5 mt-2 relative z-10">
-        {activeLinks.length === 0 ? (
-          <div className="text-center py-8 opacity-40 text-xs font-medium">
-            {dict.no_links}
-          </div>
-        ) : (
-          activeLinks.map((link) => {
+      {activeLinks.length > 0 && (
+        <section className="w-full max-w-[440px] px-4 flex flex-col gap-3.5 mt-2 relative z-10">
+          {activeLinks.map((link) => {
             const isRectangular = link.format === 'rectangular';
             const isFeatured = !!link.isFeatured;
 
@@ -594,9 +590,9 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                 )}
               </a>
             );
-          })
-        )}
-      </section>
+          })}
+        </section>
+      )}
       </div>
 
       {/* ------------------------------------------------------------- */}
