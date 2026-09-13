@@ -5,7 +5,7 @@ import { Upload, Trash2, ShieldCheck, Image as ImageIcon, Save, Check } from 'lu
 import { compressImageFile } from '../../../utils/imageOptimizer';
 
 export const ProfileHeroTab: React.FC = () => {
-  const { activePage, updateActivePage, showNotification } = useBio();
+  const { activePage, updateActivePage, showNotification, t } = useBio();
   const [slugInput, setSlugInput] = useState(activePage.slug);
   const [nameInput, setNameInput] = useState(activePage.name);
   const [bioInput, setBioInput] = useState(activePage.bio);
@@ -265,7 +265,7 @@ export const ProfileHeroTab: React.FC = () => {
         <div>
           <div className="flex items-center justify-between mb-1">
             <label className="block text-xs font-semibold text-zinc-700">
-              Chamada acima dos cards
+              {t('call_above_cards') || 'Biografia acima dos cards'}
             </label>
             <span className="text-[11px] text-zinc-400 font-mono">
               {bioInput.length}/200
@@ -279,7 +279,7 @@ export const ProfileHeroTab: React.FC = () => {
               setBioInput(e.target.value);
               updateActivePage({ bio: e.target.value });
             }}
-            placeholder={`🩺 Weight Loss Specialist\n⚡ Metabolic Health & Weight Management Expert\n⭐ 37,000+ Patients guided worldwide`}
+            placeholder={`🏡 Luxury Real Estate Advisor | Miami & NY\n✨ Over $120M+ in Premium Property Sales\n🔑 Exclusive Penthouses & Private Estates`}
             className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-xs sm:text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-zinc-900 text-zinc-900"
           />
           <p className="text-[11px] text-zinc-400 mt-1">

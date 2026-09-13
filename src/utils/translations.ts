@@ -102,7 +102,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     remove_image: 'Remover',
     identity_title: 'Identidade',
     two_lines_tip: 'Use um espaço para quebrar em duas linhas.',
-    call_above_cards: 'Chamada acima dos cards',
+    call_above_cards: 'Biografia acima dos cards',
     newline_tip: 'Use o "Enter" para quebrar linhas.',
     verified_badge: 'Selo de Verificado',
     verified_badge_sub: 'Exibe o ícone de credibilidade na foto',
