@@ -23,21 +23,18 @@ export const PublicBioPage: React.FC<PublicBioPageProps> = ({ slug }) => {
   useEffect(() => {
     let isMounted = true;
     if (cleanSlug) {
-      if (localPage && localPage.name !== 'SEU NOME') {
-        setIsLoading(false);
-      } else {
-        setIsLoading(true);
-        pagesService.getPageBySlug(cleanSlug).then((fetched) => {
-          if (isMounted) {
-            if (fetched) {
-              setCloudPage(fetched);
-            }
-            setIsLoading(false);
+      setIsLoading(true);
+      pagesService.getPageBySlug(cleanSlug).then((fetched) => {
+        if (isMounted) {
+          if (fetched) {
+            setCloudPage(fetched);
           }
-        }).catch(() => {
-          if (isMounted) setIsLoading(false);
-        });
-      }
+          setIsLoading(false);
+        }
+      }).catch((err) => {
+        console.warn('[aurabio] Error fetching slug from cloud:', err);
+        if (isMounted) setIsLoading(false);
+      });
     } else {
       setIsLoading(false);
     }
