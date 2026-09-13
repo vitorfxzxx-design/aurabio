@@ -254,49 +254,69 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* 4. MINIMAL MONO LAYOUT */}
+      {/* 4. OBSIDIAN MINIMALIST LAYOUT (Ultra-Luxo & Alta Conversão) */}
       {/* ------------------------------------------------------------- */}
       {isMinimal && (
-        <header className="w-full pt-8 pb-4 px-6 flex flex-col items-center text-center relative z-10 font-mono">
-          <div className="relative mb-3">
-            <div className="w-18 h-18 rounded-full border-2 border-zinc-700 p-0.5 bg-zinc-900 shadow-md overflow-hidden">
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt={page.name}
-                  className="w-full h-full rounded-full object-cover grayscale contrast-125"
-                  style={{
-                    objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
-                    transform: `scale(${page.avatarZoom ?? 1})`
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full rounded-full flex items-center justify-center text-zinc-600 bg-zinc-950">
-                  <UserIcon size={24} />
-                </div>
-              )}
+        <header className="w-full pt-9 pb-3 px-6 flex flex-col items-center text-center relative z-10 font-sans">
+          {/* Subtle Glow Accent Behind Avatar */}
+          <div 
+            className="absolute top-4 w-36 h-36 rounded-full pointer-events-none blur-3xl opacity-25"
+            style={{ backgroundColor: accentColor }}
+          />
+
+          {/* Luxury Rounded Avatar Container */}
+          <div className="relative mb-3.5 group z-10">
+            <div 
+              className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden p-0.5 bg-gradient-to-b from-white/20 via-white/5 to-transparent shadow-2xl transition-transform duration-300 group-hover:scale-105"
+            >
+              <div className="w-full h-full rounded-[14px] overflow-hidden bg-zinc-950 flex items-center justify-center">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={page.name}
+                    className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: `${page.avatarPosition?.x ?? 50}% ${page.avatarPosition?.y ?? 50}%`,
+                      transform: `scale(${page.avatarZoom ?? 1})`
+                    }}
+                  />
+                ) : (
+                  <UserIcon size={30} className="text-zinc-600" />
+                )}
+              </div>
             </div>
+
             {page.verified && (
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-black flex items-center justify-center">
-                <CheckCircle size={11} className="text-black stroke-[3]" />
+              <div 
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-white shadow-xl border-2 border-black"
+                style={{ backgroundColor: page.badgeColor || accentColor }}
+                title={dict.official_badge}
+              >
+                <CheckCircle size={13} className="fill-white text-black stroke-[2.5]" />
               </div>
             )}
           </div>
 
-          <div className="inline-flex items-center gap-1 text-[10px] text-zinc-500 mb-1">
-            <span>root@aurabio:~#</span>
-            <span className="w-1.5 h-3 bg-emerald-400 animate-pulse" />
+          {/* Status Badge Pill */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-2 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: accentColor || '#10b981' }} />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-300">
+              Perfil Oficial
+            </span>
           </div>
 
+          {/* Nome do Perfil */}
           <h1 
-            className="text-lg sm:text-xl font-bold uppercase tracking-widest"
-            style={{ color: textColor }}
+            className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white drop-shadow-sm leading-tight"
           >
             {page.name || 'SEU NOME'}
           </h1>
 
+          {/* Bio Description */}
           {page.bio && (
-            <div className="mt-2 text-[11px] sm:text-xs text-zinc-400 font-mono whitespace-pre-line max-w-[420px] w-full leading-relaxed border-l-2 border-zinc-700 pl-3 text-left opacity-90 mx-auto">
+            <div 
+              className="mt-2.5 max-w-[420px] w-full text-xs sm:text-[13px] font-normal leading-relaxed whitespace-pre-line text-center px-4 opacity-90 text-zinc-300"
+            >
               {page.bio}
             </div>
           )}
@@ -465,7 +485,7 @@ export const BioPageRenderer: React.FC<BioPageRendererProps> = ({
                     : isEditorial
                     ? 'rounded-[26px] border border-zinc-800/80 shadow-2xl hover:border-zinc-500 hover:scale-[1.015]'
                     : isMinimal
-                    ? 'rounded-none border border-zinc-700 hover:border-emerald-400 hover:bg-zinc-900/90'
+                    ? 'rounded-2xl border border-zinc-800/80 shadow-xl hover:border-zinc-500 hover:scale-[1.015] hover:shadow-2xl'
                     : 'rounded-2xl border border-zinc-800/80 shadow-lg hover:border-zinc-600 hover:scale-[1.02]'
                 }`}
                 style={{

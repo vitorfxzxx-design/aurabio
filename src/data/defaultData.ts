@@ -110,9 +110,9 @@ export const LAYOUT_PRESETS = [
   },
   {
     id: 'minimal-mono',
-    name: 'Minimal Mono',
-    description: 'Tipografia monoespaçada, avatar pequeno e cards sóbrios sem imagens.',
-    icon: 'Terminal',
+    name: 'Obsidian Minimal',
+    description: 'Estética escura de ultra-luxo, foto com borda chanfrada, selo oficial e cards modernos de alta conversão.',
+    icon: 'Layers',
   },
   {
     id: 'neon-glow',

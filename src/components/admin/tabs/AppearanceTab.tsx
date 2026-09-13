@@ -161,11 +161,10 @@ export const AppearanceTab: React.FC = () => {
                   )}
 
                   {layout.id === 'minimal-mono' && (
-                    <div className="flex flex-col items-center gap-1.5 w-full font-mono">
-                      <div className="w-6 h-6 rounded-full bg-zinc-400/50 border border-zinc-600" />
-                      <div className="w-16 h-1 bg-zinc-400/80" />
-                      <div className="w-full h-3 bg-zinc-400/20 border border-zinc-400/40" />
-                      <div className="w-full h-3 bg-zinc-400/20 border border-zinc-400/40" />
+                    <div className="flex flex-col items-center gap-1.5 w-full">
+                      <div className="w-7 h-7 rounded-xl bg-zinc-300 ring-2 ring-zinc-700/60 shadow-lg" />
+                      <div className="w-20 h-1.5 bg-zinc-300 rounded-full" />
+                      <div className="w-full h-4 bg-zinc-800/80 rounded-lg border border-zinc-700" />
                     </div>
                   )}
 
