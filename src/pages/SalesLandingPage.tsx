@@ -422,12 +422,12 @@ export const SalesLandingPage: React.FC = () => {
 
               {/* Price */}
               <div className="mt-6 mb-2">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">R$ 0</span>
-                  <span className="text-xs sm:text-sm text-emerald-400 font-bold">nos primeiros 7 dias</span>
+                <div className="flex items-baseline gap-1.5 flex-wrap">
+                  <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">12x de R$ 19,70</span>
+                  <span className="text-xs sm:text-sm text-zinc-400 font-bold">/ano</span>
                 </div>
                 <p className="text-xs text-zinc-400 font-medium mt-1.5">
-                  Após os 7 dias: 12x de <strong className="text-white font-bold">R$ 19,70</strong> ou R$ 197/ano
+                  ou <strong className="text-zinc-300 font-bold">R$ 197</strong> à vista
                 </p>
               </div>
 
@@ -476,7 +476,7 @@ export const SalesLandingPage: React.FC = () => {
                 href={CHECKOUT_URL_3}
                 className="w-full py-4 px-6 rounded-2xl bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_25px_rgba(255,255,255,0.2)] hover:scale-102 active:scale-98 cursor-pointer text-center"
               >
-                <span>Experimente 7 dias grátis</span>
+                <span>Testar 7 dias grátis</span>
                 <ArrowRight size={16} />
               </a>
 
@@ -512,12 +512,12 @@ export const SalesLandingPage: React.FC = () => {
 
               {/* Price */}
               <div className="mt-6 mb-2">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">R$ 0</span>
-                  <span className="text-xs sm:text-sm text-emerald-400 font-bold">nos primeiros 7 dias</span>
+                <div className="flex items-baseline gap-1.5 flex-wrap">
+                  <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">12x de R$ 39,70</span>
+                  <span className="text-xs sm:text-sm text-zinc-400 font-bold">/ano</span>
                 </div>
                 <p className="text-xs text-zinc-400 font-medium mt-1.5">
-                  Após os 7 dias: 12x de <strong className="text-white font-bold">R$ 39,70</strong> ou R$ 397/ano
+                  ou <strong className="text-zinc-300 font-bold">R$ 397</strong> à vista
                 </p>
               </div>
 
@@ -570,7 +570,7 @@ export const SalesLandingPage: React.FC = () => {
                 href={CHECKOUT_URL_10}
                 className="w-full py-4 px-6 rounded-2xl bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_35px_rgba(255,255,255,0.35)] hover:scale-102 active:scale-98 cursor-pointer text-center"
               >
-                <span>Experimente 7 dias grátis</span>
+                <span>Testar 7 dias grátis</span>
                 <ArrowRight size={16} />
               </a>
 
