@@ -69,6 +69,16 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [newMemberSlug, setNewMemberSlug] = useState('');
   const [newMemberPlan, setNewMemberPlan] = useState('PRO Anual');
 
+  // Email Provider State
+  const [emailProvider, setEmailProvider] = useState<'resend' | 'smtp'>('resend');
+  const [resendApiKey, setResendApiKey] = useState('re_123456789_abcdefghijklmnopqrstuvwxyz');
+  const [smtpHost, setSmtpHost] = useState('smtp.hostinger.com');
+  const [smtpPort, setSmtpPort] = useState('465');
+  const [smtpUser, setSmtpUser] = useState('suporte@aurabio.link');
+  const [smtpPass, setSmtpPass] = useState('••••••••••••');
+  const [senderName, setSenderName] = useState('Aurabio Suporte');
+  const [senderEmail, setSenderEmail] = useState('suporte@aurabio.link');
+
   // Webhook URL (Guru default)
   const webhookUrl = "https://aurabio.link/api/webhooks/sale?secret=s15pzrtdw6AvUXzvjf4YInUafi0JW8MaOutKEQtTHz6Jnz7B";
 
@@ -575,63 +585,127 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
             </div>
 
             {/* Provider Selection */}
-            <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/70 space-y-3">
+            <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/70 space-y-4">
               <label className="block text-xs font-bold text-zinc-800">
                 Provedor de Envio de E-mails
               </label>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <div className="p-3 rounded-xl border-2 border-zinc-900 bg-white shadow-xs">
-                  <div className="flex items-center justify-between mb-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Resend Option */}
+                <div 
+                  onClick={() => setEmailProvider('resend')}
+                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    emailProvider === 'resend'
+                      ? 'border-zinc-950 bg-white shadow-md ring-2 ring-zinc-950/10'
+                      : 'border-zinc-200 bg-white/70 hover:bg-white hover:border-zinc-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
                     <span className="text-xs font-black text-zinc-900">Resend (Recomendado)</span>
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-100 text-emerald-800">API Rápida</span>
+                    <span className="px-2 py-0.5 rounded text-[9px] font-extrabold bg-emerald-100 text-emerald-800">API Rápida</span>
                   </div>
-                  <p className="text-[11px] text-zinc-500">
-                    Até 3.000 e-mails/mês grátis com altíssima taxa de entrega na caixa de entrada.
+                  <p className="text-[11px] text-zinc-500 leading-relaxed">
+                    Até 3.000 e-mails/mês grátis com altíssima taxa de entrega na caixa de entrada sem cair em spam.
                   </p>
                 </div>
 
-                <div className="p-3 rounded-xl border border-zinc-200 bg-white">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-zinc-800">SMTP Próprio</span>
+                {/* SMTP Option */}
+                <div 
+                  onClick={() => setEmailProvider('smtp')}
+                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    emailProvider === 'smtp'
+                      ? 'border-zinc-950 bg-white shadow-md ring-2 ring-zinc-950/10'
+                      : 'border-zinc-200 bg-white/70 hover:bg-white hover:border-zinc-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-bold text-zinc-900">SMTP Próprio</span>
+                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-zinc-100 text-zinc-600">Servidor</span>
                   </div>
-                  <p className="text-[11px] text-zinc-500">
-                    Hostinger, Gmail Workspace, SendGrid ou Amazon SES.
-                  </p>
-                </div>
-
-                <div className="p-3 rounded-xl border border-zinc-200 bg-white">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-zinc-800">Pelo Checkout</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-500">
-                    Disparo automático nativo da própria Guru / Kiwify / Hotmart.
+                  <p className="text-[11px] text-zinc-500 leading-relaxed">
+                    Hostinger, Gmail Workspace, SendGrid, Titan Mail ou Amazon SES.
                   </p>
                 </div>
               </div>
 
               {/* Resend API Key Input */}
-              <div className="pt-2">
-                <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
-                  Chave de API do Resend (API Key)
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="password"
-                    defaultValue="re_123456789_abcdefghijklmnopqrstuvwxyz"
-                    placeholder="re_..."
-                    className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                  />
-                  <a
-                    href="https://resend.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="px-3.5 py-2 text-xs font-bold text-zinc-700 bg-zinc-200/80 hover:bg-zinc-300 rounded-xl transition-colors shrink-0"
-                  >
-                    Obter Chave
-                  </a>
+              {emailProvider === 'resend' ? (
+                <div className="pt-2 animate-in fade-in duration-200">
+                  <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+                    Chave de API do Resend (API Key)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="password"
+                      value={resendApiKey}
+                      onChange={(e) => setResendApiKey(e.target.value)}
+                      placeholder="re_123456789_..."
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                    <a
+                      href="https://resend.com/api-keys"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-4 py-2.5 text-xs font-bold text-zinc-700 bg-zinc-200/80 hover:bg-zinc-300 rounded-xl transition-colors shrink-0 flex items-center gap-1.5"
+                    >
+                      <span>Obter Chave</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* SMTP Credentials Input */
+                <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 animate-in fade-in duration-200">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+                      Servidor SMTP (Host)
+                    </label>
+                    <input
+                      type="text"
+                      value={smtpHost}
+                      onChange={(e) => setSmtpHost(e.target.value)}
+                      placeholder="smtp.hostinger.com"
+                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+                      Porta SMTP
+                    </label>
+                    <input
+                      type="text"
+                      value={smtpPort}
+                      onChange={(e) => setSmtpPort(e.target.value)}
+                      placeholder="465 ou 587"
+                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+                      Usuário SMTP
+                    </label>
+                    <input
+                      type="text"
+                      value={smtpUser}
+                      onChange={(e) => setSmtpUser(e.target.value)}
+                      placeholder="suporte@aurabio.link"
+                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+                      Senha SMTP
+                    </label>
+                    <input
+                      type="password"
+                      value={smtpPass}
+                      onChange={(e) => setSmtpPass(e.target.value)}
+                      placeholder="Sua senha SMTP"
+                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Template Fields */}
@@ -643,7 +717,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                   </label>
                   <input
                     type="text"
-                    defaultValue="Aurabio Suporte"
+                    value={senderName}
+                    onChange={(e) => setSenderName(e.target.value)}
                     className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs focus:outline-none focus:ring-1 focus:ring-zinc-900"
                   />
                 </div>
@@ -654,7 +729,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                   </label>
                   <input
                     type="email"
-                    defaultValue="suporte@aurabio.app"
+                    value={senderEmail}
+                    onChange={(e) => setSenderEmail(e.target.value)}
                     className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs focus:outline-none focus:ring-1 focus:ring-zinc-900"
                   />
                 </div>
