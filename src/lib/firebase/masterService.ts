@@ -36,6 +36,8 @@ export const firebaseMasterService = {
         senderEmail: data.senderEmail || '',
         welcomeEmailSubject: data.welcomeEmailSubject || '',
         welcomeEmailBody: data.welcomeEmailBody || '',
+        recoveryEmailSubject: data.recoveryEmailSubject || '',
+        recoveryEmailBody: data.recoveryEmailBody || '',
       };
     } catch (err) {
       console.warn('[aurabio:firebase] Error fetching master branding:', err);
@@ -69,6 +71,8 @@ export const firebaseMasterService = {
         senderEmail: branding.senderEmail,
         welcomeEmailSubject: branding.welcomeEmailSubject,
         welcomeEmailBody: branding.welcomeEmailBody,
+        recoveryEmailSubject: branding.recoveryEmailSubject,
+        recoveryEmailBody: branding.recoveryEmailBody,
         updatedAt: new Date().toISOString(),
       }, { merge: true });
 

@@ -82,9 +82,18 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [smtpUser, setSmtpUser] = useState(() => masterBranding?.smtpUser || 'suporte@aurabio.link');
   const [smtpPass, setSmtpPass] = useState(() => masterBranding?.smtpPass || '');
   const [senderName, setSenderName] = useState(() => masterBranding?.senderName || 'Aurabio Suporte');
-  const [senderEmail, setSenderEmail] = useState(() => masterBranding?.senderEmail || 'suporte@aurabio.link');
-  const [welcomeEmailSubject, setWelcomeEmailSubject] = useState(() => masterBranding?.welcomeEmailSubject || 'Seu link na bio Aurabio está pronto! Acesso imediato');
-  const [welcomeEmailBody, setWelcomeEmailBody] = useState(() => masterBranding?.welcomeEmailBody || 'Olá {nome},\n\nSua conta no Aurabio foi ativada com sucesso!\nSeu endereço exclusivo: aurabio.link/{slug}\n\nPara acessar e personalizar sua bio:\nhttps://aurabio.link/painel\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.');
+  const [senderEmail, setSenderEmail] = useState(() => masterBranding?.senderEmail || 'contato@aurabio.link');
+  const DEFAULT_WELCOME_SUBJECT = 'Seu link na bio Aurabio está pronto! Acesso imediato 🚀';
+  const DEFAULT_WELCOME_BODY = 'Olá {nome},\n\nSeja muito bem-vindo ao Aurabio! Sua conta foi ativada com sucesso.\n\nAqui estão os detalhes do seu acesso:\n🔗 Seu Link na Bio exclusivo: https://aurabio.link/{slug}\n🔑 E-mail de login: {email}\n\nAcesse seu painel agora para personalizar sua página, cores e links:\n👉 https://aurabio.link/\n\nPrecisa de ajuda ou suporte?\nBasta responder a este e-mail ou contatar nosso time em Corefysystems@gmail.com.\n\nEquipe Aurabio\nhttps://aurabio.link';
+
+  const DEFAULT_RECOVERY_SUBJECT = 'Redefinição de senha — Aurabio 🔐';
+  const DEFAULT_RECOVERY_BODY = 'Olá {nome},\n\nRecebemos uma solicitação para redefinir a senha da sua conta no Aurabio ({email}).\n\nPara cadastrar uma nova senha com segurança, clique no link abaixo:\n👉 https://aurabio.link/recuperar-senha?email={email}\n\nSe você não fez esta solicitação, desconsidere este e-mail. Sua conta continua 100% segura.\n\nEquipe Aurabio\nhttps://aurabio.link';
+
+  const [emailTemplateTab, setEmailTemplateTab] = useState<'welcome' | 'recovery'>('welcome');
+  const [welcomeEmailSubject, setWelcomeEmailSubject] = useState(() => masterBranding?.welcomeEmailSubject || DEFAULT_WELCOME_SUBJECT);
+  const [welcomeEmailBody, setWelcomeEmailBody] = useState(() => masterBranding?.welcomeEmailBody || DEFAULT_WELCOME_BODY);
+  const [recoveryEmailSubject, setRecoveryEmailSubject] = useState(() => masterBranding?.recoveryEmailSubject || DEFAULT_RECOVERY_SUBJECT);
+  const [recoveryEmailBody, setRecoveryEmailBody] = useState(() => masterBranding?.recoveryEmailBody || DEFAULT_RECOVERY_BODY);
   const [testEmailInput, setTestEmailInput] = useState('vitorfxzxx@gmail.com');
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [showResendApiKey, setShowResendApiKey] = useState(false);
@@ -102,6 +111,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
       if (masterBranding.senderEmail) setSenderEmail(masterBranding.senderEmail);
       if (masterBranding.welcomeEmailSubject) setWelcomeEmailSubject(masterBranding.welcomeEmailSubject);
       if (masterBranding.welcomeEmailBody) setWelcomeEmailBody(masterBranding.welcomeEmailBody);
+      if (masterBranding.recoveryEmailSubject) setRecoveryEmailSubject(masterBranding.recoveryEmailSubject);
+      if (masterBranding.recoveryEmailBody) setRecoveryEmailBody(masterBranding.recoveryEmailBody);
     }
   }, [masterBranding]);
 
@@ -176,8 +187,10 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
         senderEmail: senderEmail.trim(),
         welcomeEmailSubject: welcomeEmailSubject.trim(),
         welcomeEmailBody: welcomeEmailBody.trim(),
+        recoveryEmailSubject: recoveryEmailSubject.trim(),
+        recoveryEmailBody: recoveryEmailBody.trim(),
       });
-      showNotification('Configurações de e-mail salvas com sucesso!');
+      showNotification('Configurações e templates de e-mail salvos com sucesso!');
     } catch (err) {
       console.error('Erro ao salvar e-mail:', err);
       showNotification('Erro ao salvar configurações de e-mail.');
@@ -195,6 +208,10 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
       return;
     }
 
+    const isWelcome = emailTemplateTab === 'welcome';
+    const currentSubject = isWelcome ? welcomeEmailSubject : recoveryEmailSubject;
+    const currentBody = isWelcome ? welcomeEmailBody : recoveryEmailBody;
+
     setIsSendingTest(true);
     try {
       // 1. Try serverless endpoint
@@ -203,10 +220,10 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           to: testEmailInput.trim(),
-          subject: welcomeEmailSubject,
-          body: welcomeEmailBody,
-          senderName: senderName || 'Aurabio',
-          senderEmail: senderEmail || 'onboarding@resend.dev',
+          subject: currentSubject,
+          body: currentBody,
+          senderName: senderName || 'Aurabio Suporte',
+          senderEmail: senderEmail || 'contato@aurabio.link',
           resendApiKey: resendApiKey.trim(),
           name: 'Vitor (Teste)',
           slug: 'teste-aurabio',
@@ -216,17 +233,17 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
-        showNotification(result.note || result.message || 'E-mail de teste enviado com sucesso!');
+        showNotification(result.message || result.note || 'E-mail de teste enviado com sucesso!');
       } else {
         // Fallback: direct Resend API call if local or custom
         if (emailProvider === 'resend' && resendApiKey) {
           try {
-            const parsedSubject = (welcomeEmailSubject || 'Acesso liberado — Aurabio')
+            const parsedSubject = (currentSubject || 'Acesso liberado — Aurabio')
               .replace(/\{nome\}/gi, 'Vitor (Teste)')
               .replace(/\{slug\}/gi, 'teste-aurabio')
               .replace(/\{email\}/gi, testEmailInput.trim());
 
-            const parsedBodyText = (welcomeEmailBody || 'Olá {nome},\n\nSua conta no Aurabio foi criada com sucesso!')
+            const parsedBodyText = (currentBody || 'Olá {nome},\n\nSua conta no Aurabio foi criada com sucesso!')
               .replace(/\{nome\}/gi, 'Vitor (Teste)')
               .replace(/\{slug\}/gi, 'teste-aurabio')
               .replace(/\{email\}/gi, testEmailInput.trim());
@@ -238,8 +255,9 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                from: `${senderName || 'Aurabio'} <onboarding@resend.dev>`,
+                from: `${senderName || 'Aurabio Suporte'} <contato@mail.aurabio.link>`,
                 to: [testEmailInput.trim().toLowerCase()],
+                reply_to: senderEmail || 'contato@aurabio.link',
                 subject: parsedSubject,
                 text: parsedBodyText,
               }),
@@ -267,34 +285,6 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
       }
     } catch (err: any) {
       console.error('Erro ao enviar e-mail de teste:', err);
-      // Fallback
-      if (emailProvider === 'resend' && resendApiKey) {
-        try {
-          const directRes = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${resendApiKey.trim()}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              from: `${senderName || 'Aurabio'} <onboarding@resend.dev>`,
-              to: [testEmailInput.trim().toLowerCase()],
-              subject: welcomeEmailSubject.replace(/\{nome\}/gi, 'Vitor (Teste)').replace(/\{slug\}/gi, 'teste-aurabio'),
-              text: welcomeEmailBody.replace(/\{nome\}/gi, 'Vitor (Teste)').replace(/\{slug\}/gi, 'teste-aurabio').replace(/\{email\}/gi, testEmailInput.trim()),
-            }),
-          });
-          const directData = await directRes.json().catch(() => ({}));
-          if (directRes.ok) {
-            showNotification('E-mail de teste enviado com sucesso via Resend!');
-            return;
-          } else if (directData?.message) {
-            showNotification(`Resend: ${directData.message}`);
-            return;
-          }
-        } catch (e) {
-          // ignore
-        }
-      }
       showNotification('Erro de conexão ao enviar e-mail de teste.');
     } finally {
       setIsSendingTest(false);
@@ -920,40 +910,129 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                  Assunto do E-mail de Boas-Vindas
-                </label>
-                <input
-                  type="text"
-                  value={welcomeEmailSubject}
-                  onChange={(e) => setWelcomeEmailSubject(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                />
+              {/* Template Tabs Selector */}
+              <div className="pt-2 border-t border-zinc-100">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold text-zinc-900">Templates de E-mails Transacionais</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (emailTemplateTab === 'welcome') {
+                        setWelcomeEmailSubject(DEFAULT_WELCOME_SUBJECT);
+                        setWelcomeEmailBody(DEFAULT_WELCOME_BODY);
+                        showNotification('Template de Boas-Vindas restaurado para o padrão!');
+                      } else {
+                        setRecoveryEmailSubject(DEFAULT_RECOVERY_SUBJECT);
+                        setRecoveryEmailBody(DEFAULT_RECOVERY_BODY);
+                        showNotification('Template de Recuperação de Senha restaurado para o padrão!');
+                      }
+                    }}
+                    className="text-[11px] font-bold text-zinc-600 hover:text-zinc-950 underline cursor-pointer"
+                  >
+                    Restaurar Padrão do Template
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2 p-1 bg-zinc-100 rounded-xl max-w-md">
+                  <button
+                    type="button"
+                    onClick={() => setEmailTemplateTab('welcome')}
+                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      emailTemplateTab === 'welcome'
+                        ? 'bg-white text-zinc-950 shadow-xs'
+                        : 'text-zinc-500 hover:text-zinc-900'
+                    }`}
+                  >
+                    🚀 Acesso Liberado
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEmailTemplateTab('recovery')}
+                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      emailTemplateTab === 'recovery'
+                        ? 'bg-white text-zinc-950 shadow-xs'
+                        : 'text-zinc-500 hover:text-zinc-900'
+                    }`}
+                  >
+                    🔐 Recuperação de Senha
+                  </button>
+                </div>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-semibold text-zinc-700">
-                    Corpo do E-mail
-                  </label>
-                  <span className="text-[10px] text-zinc-400">
-                    Tags dinâmicas: <code className="text-zinc-600 font-mono font-bold">{'{nome}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{slug}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{email}'}</code>
-                  </span>
+              {/* Template Inputs */}
+              {emailTemplateTab === 'welcome' ? (
+                <div className="space-y-3 animate-in fade-in duration-200">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                      Assunto do E-mail (Boas-Vindas & Acesso)
+                    </label>
+                    <input
+                      type="text"
+                      value={welcomeEmailSubject}
+                      onChange={(e) => setWelcomeEmailSubject(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-semibold text-zinc-700">
+                        Corpo do E-mail de Boas-Vindas
+                      </label>
+                      <span className="text-[10px] text-zinc-400">
+                        Tags: <code className="text-zinc-600 font-mono font-bold">{'{nome}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{slug}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{email}'}</code>
+                      </span>
+                    </div>
+                    <textarea
+                      rows={7}
+                      value={welcomeEmailBody}
+                      onChange={(e) => setWelcomeEmailBody(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-zinc-900 leading-relaxed"
+                    />
+                  </div>
                 </div>
-                <textarea
-                  rows={6}
-                  value={welcomeEmailBody}
-                  onChange={(e) => setWelcomeEmailBody(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-zinc-900 leading-relaxed"
-                />
-              </div>
+              ) : (
+                <div className="space-y-3 animate-in fade-in duration-200">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                      Assunto do E-mail (Recuperação de Senha)
+                    </label>
+                    <input
+                      type="text"
+                      value={recoveryEmailSubject}
+                      onChange={(e) => setRecoveryEmailSubject(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-semibold text-zinc-700">
+                        Corpo do E-mail de Recuperação
+                      </label>
+                      <span className="text-[10px] text-zinc-400">
+                        Tags: <code className="text-zinc-600 font-mono font-bold">{'{nome}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{email}'}</code>
+                      </span>
+                    </div>
+                    <textarea
+                      rows={7}
+                      value={recoveryEmailBody}
+                      onChange={(e) => setRecoveryEmailBody(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-zinc-900 leading-relaxed"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Test Sender */}
               <div className="p-4 rounded-xl border border-dashed border-zinc-300 bg-zinc-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex-1">
-                  <span className="block text-xs font-bold text-zinc-800">Testar Disparo</span>
-                  <span className="block text-[11px] text-zinc-500">Envie um e-mail de teste com este template para verificar a entrega.</span>
+                  <span className="block text-xs font-bold text-zinc-800">
+                    Testar Disparo ({emailTemplateTab === 'welcome' ? 'Acesso Liberado' : 'Recuperação de Senha'})
+                  </span>
+                  <span className="block text-[11px] text-zinc-500">
+                    Envie um e-mail de teste com este template para verificar a entrega.
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2">

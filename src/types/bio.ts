@@ -139,4 +139,6 @@ export interface MasterBrandingConfig {
   senderEmail?: string;
   welcomeEmailSubject?: string;
   welcomeEmailBody?: string;
+  recoveryEmailSubject?: string;
+  recoveryEmailBody?: string;
 }

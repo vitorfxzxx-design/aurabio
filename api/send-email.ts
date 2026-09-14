@@ -65,10 +65,19 @@ ${parsedBodyText}
       </div>
     `;
 
-    // Attempt 1: Send with configured sender email
-    const fromAddress = senderEmail && senderEmail.includes('@') && !senderEmail.includes('resend.dev')
-      ? `${senderName} <${senderEmail}>`
-      : `${senderName} <onboarding@resend.dev>`;
+    // Format fromAddress and reply_to based on verified Resend domain (mail.aurabio.link)
+    let fromAddress = `${senderName} <contato@mail.aurabio.link>`;
+    let replyToAddress = senderEmail && senderEmail.includes('@') ? senderEmail.trim() : 'contato@aurabio.link';
+
+    if (senderEmail && senderEmail.endsWith('@mail.aurabio.link')) {
+      fromAddress = `${senderName} <${senderEmail.trim()}>`;
+    } else if (senderEmail && senderEmail.includes('@') && !senderEmail.includes('resend.dev')) {
+      // Map user@aurabio.link -> user@mail.aurabio.link for DKIM/SPF passing
+      const username = senderEmail.split('@')[0];
+      fromAddress = `${senderName} <${username}@mail.aurabio.link>`;
+    } else {
+      fromAddress = `${senderName} <onboarding@resend.dev>`;
+    }
 
     let resendResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -79,6 +88,7 @@ ${parsedBodyText}
       body: JSON.stringify({
         from: fromAddress,
         to: [to.trim().toLowerCase()],
+        reply_to: replyToAddress,
         subject: parsedSubject,
         text: parsedBodyText,
         html: htmlContent,
@@ -87,9 +97,9 @@ ${parsedBodyText}
 
     let resendData = await resendResponse.json();
 
-    // If failed due to unverified custom domain on Resend, try fallback to onboarding@resend.dev
+    // If failed, try fallback with onboarding@resend.dev
     if (!resendResponse.ok && (resendData?.message?.includes('domain') || resendData?.name === 'validation_error' || resendData?.statusCode === 403)) {
-      console.warn('[Resend API] Custom domain or permission notice, trying fallback with onboarding@resend.dev...', resendData);
+      console.warn('[Resend API] Domain or permission notice, trying fallback...', resendData);
       
       const fallbackResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -100,6 +110,7 @@ ${parsedBodyText}
         body: JSON.stringify({
           from: `${senderName} <onboarding@resend.dev>`,
           to: [to.trim().toLowerCase()],
+          reply_to: replyToAddress,
           subject: parsedSubject,
           text: parsedBodyText,
           html: htmlContent,

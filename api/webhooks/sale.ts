@@ -130,9 +130,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const parsedSubj = subjectTemplate.replace(/\{nome\}/gi, name).replace(/\{slug\}/gi, slug).replace(/\{email\}/gi, email);
             const parsedBody = bodyTemplate.replace(/\{nome\}/gi, name).replace(/\{slug\}/gi, slug).replace(/\{email\}/gi, email);
 
-            const fromAddress = senderEmail.includes('@') && !senderEmail.includes('resend.dev')
-              ? `${senderName} <${senderEmail}>`
-              : `${senderName} <onboarding@resend.dev>`;
+            let fromAddress = `${senderName} <contato@mail.aurabio.link>`;
+            let replyToAddress = senderEmail && senderEmail.includes('@') ? senderEmail.trim() : 'contato@aurabio.link';
+
+            if (senderEmail && senderEmail.endsWith('@mail.aurabio.link')) {
+              fromAddress = `${senderName} <${senderEmail.trim()}>`;
+            } else if (senderEmail && senderEmail.includes('@') && !senderEmail.includes('resend.dev')) {
+              const username = senderEmail.split('@')[0];
+              fromAddress = `${senderName} <${username}@mail.aurabio.link>`;
+            }
 
             await fetch('https://api.resend.com/emails', {
               method: 'POST',
@@ -143,6 +149,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               body: JSON.stringify({
                 from: fromAddress,
                 to: [email],
+                reply_to: replyToAddress,
                 subject: parsedSubj,
                 text: parsedBody,
                 html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #18181b;"><h2 style="font-weight: 800;">Aurabio</h2><div style="font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${parsedBody}</div><hr style="border: none; border-top: 1px solid #e4e4e7; margin: 20px 0;" /><p style="font-size: 11px; color: #71717a;">Aurabio — Sua página de links profissional.</p></div>`
