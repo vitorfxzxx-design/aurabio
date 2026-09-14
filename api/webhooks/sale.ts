@@ -57,10 +57,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const memberStatus = isCancelled ? 'suspended' : 'active';
     const plan = payload.product?.name || payload.subscription?.name || 'Aura Pro V.I.P';
 
-    // Save/Update in Firestore via REST API
-    const firestoreDocumentUrl = `${FIRESTORE_BASE_URL}/aurabio_members/${memberId}`;
+    // Save/Update Member in Firestore via REST API
+    const memberDocumentUrl = `${FIRESTORE_BASE_URL}/aurabio_members/${memberId}`;
 
-    const firestoreFields = {
+    const memberFields = {
       fields: {
         id: { stringValue: memberId },
         email: { stringValue: email },
@@ -73,20 +73,48 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     };
 
-    const firestoreResponse = await fetch(firestoreDocumentUrl, {
+    const memberResponse = await fetch(memberDocumentUrl, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(firestoreFields)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(memberFields)
     });
 
-    if (!firestoreResponse.ok) {
-      const errorText = await firestoreResponse.text();
-      console.error('[Webhook] Firestore save error:', errorText);
+    if (!memberResponse.ok) {
+      const errorText = await memberResponse.text();
+      console.error('[Webhook] Firestore Member save error:', errorText);
     }
 
-    console.log(`[Webhook] Success: Member ${email} set to status "${memberStatus}"`);
+    // If new active/trial member, also ensure initial Bio Page is created in Firestore
+    if (memberStatus === 'active') {
+      const pageId = `page_${slug}`;
+      const pageDocumentUrl = `${FIRESTORE_BASE_URL}/aurabio_pages/${pageId}`;
+      
+      const pageFields = {
+        fields: {
+          id: { stringValue: pageId },
+          slug: { stringValue: slug },
+          name: { stringValue: name.toUpperCase() },
+          userEmail: { stringValue: email },
+          avatarUrl: { stringValue: '' },
+          bio: { stringValue: 'Bem-vindo ao meu link na bio oficial.' },
+          layout: { stringValue: 'creator-portrait' },
+          theme: { stringValue: 'cinema-noir' },
+          language: { stringValue: 'pt' },
+          verified: { booleanValue: false },
+          hideBranding: { booleanValue: false },
+          updatedAt: { stringValue: new Date().toISOString() },
+          createdAt: { stringValue: new Date().toISOString() }
+        }
+      };
+
+      await fetch(pageDocumentUrl, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pageFields)
+      }).catch(err => console.warn('[Webhook] Page creation note:', err));
+    }
+
+    console.log(`[Webhook] Success: Access granted for ${email} with status "${memberStatus}"`);
 
     return res.status(200).json({
       success: true,
