@@ -70,14 +70,31 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [newMemberPlan, setNewMemberPlan] = useState('PRO Anual');
 
   // Email Provider State
-  const [emailProvider, setEmailProvider] = useState<'resend' | 'smtp'>('resend');
-  const [resendApiKey, setResendApiKey] = useState('re_123456789_abcdefghijklmnopqrstuvwxyz');
-  const [smtpHost, setSmtpHost] = useState('smtp.hostinger.com');
-  const [smtpPort, setSmtpPort] = useState('465');
-  const [smtpUser, setSmtpUser] = useState('suporte@aurabio.link');
-  const [smtpPass, setSmtpPass] = useState('••••••••••••');
-  const [senderName, setSenderName] = useState('Aurabio Suporte');
-  const [senderEmail, setSenderEmail] = useState('suporte@aurabio.link');
+  const [emailProvider, setEmailProvider] = useState<'resend' | 'smtp'>(() => masterBranding?.emailProvider || 'resend');
+  const [resendApiKey, setResendApiKey] = useState(() => masterBranding?.resendApiKey || '');
+  const [smtpHost, setSmtpHost] = useState(() => masterBranding?.smtpHost || 'smtp.hostinger.com');
+  const [smtpPort, setSmtpPort] = useState(() => masterBranding?.smtpPort || '465');
+  const [smtpUser, setSmtpUser] = useState(() => masterBranding?.smtpUser || 'suporte@aurabio.link');
+  const [smtpPass, setSmtpPass] = useState(() => masterBranding?.smtpPass || '');
+  const [senderName, setSenderName] = useState(() => masterBranding?.senderName || 'Aurabio Suporte');
+  const [senderEmail, setSenderEmail] = useState(() => masterBranding?.senderEmail || 'suporte@aurabio.link');
+  const [welcomeEmailSubject, setWelcomeEmailSubject] = useState(() => masterBranding?.welcomeEmailSubject || 'Seu link na bio Aurabio está pronto! Acesso imediato');
+  const [welcomeEmailBody, setWelcomeEmailBody] = useState(() => masterBranding?.welcomeEmailBody || 'Olá {nome},\n\nSua conta no Aurabio foi ativada com sucesso!\nSeu endereço exclusivo: aurabio.link/{slug}\n\nPara acessar e personalizar sua bio:\nhttps://aurabio.link/painel\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.');
+
+  React.useEffect(() => {
+    if (masterBranding) {
+      if (masterBranding.emailProvider) setEmailProvider(masterBranding.emailProvider);
+      if (masterBranding.resendApiKey) setResendApiKey(masterBranding.resendApiKey);
+      if (masterBranding.smtpHost) setSmtpHost(masterBranding.smtpHost);
+      if (masterBranding.smtpPort) setSmtpPort(masterBranding.smtpPort);
+      if (masterBranding.smtpUser) setSmtpUser(masterBranding.smtpUser);
+      if (masterBranding.smtpPass) setSmtpPass(masterBranding.smtpPass);
+      if (masterBranding.senderName) setSenderName(masterBranding.senderName);
+      if (masterBranding.senderEmail) setSenderEmail(masterBranding.senderEmail);
+      if (masterBranding.welcomeEmailSubject) setWelcomeEmailSubject(masterBranding.welcomeEmailSubject);
+      if (masterBranding.welcomeEmailBody) setWelcomeEmailBody(masterBranding.welcomeEmailBody);
+    }
+  }, [masterBranding]);
 
   // Webhook URL (Guru default)
   const webhookUrl = "https://aurabio.link/api/webhooks/sale?secret=s15pzrtdw6AvUXzvjf4YInUafi0JW8MaOutKEQtTHz6Jnz7B";
@@ -135,6 +152,27 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     e.preventDefault();
     updateMasterBranding(brandingForm);
     showNotification('Branding & SEO salvos com sucesso!');
+  };
+
+  const handleSaveEmailSettings = async () => {
+    try {
+      await updateMasterBranding({
+        emailProvider,
+        resendApiKey: resendApiKey.trim(),
+        smtpHost: smtpHost.trim(),
+        smtpPort: smtpPort.trim(),
+        smtpUser: smtpUser.trim(),
+        smtpPass: smtpPass.trim(),
+        senderName: senderName.trim(),
+        senderEmail: senderEmail.trim(),
+        welcomeEmailSubject: welcomeEmailSubject.trim(),
+        welcomeEmailBody: welcomeEmailBody.trim(),
+      });
+      showNotification('Configurações de e-mail salvas com sucesso!');
+    } catch (err) {
+      console.error('Erro ao salvar e-mail:', err);
+      showNotification('Erro ao salvar configurações de e-mail.');
+    }
   };
 
   const handleImageUpload = (field: 'logoUrl' | 'faviconUrl' | 'ogImageUrl', e: React.ChangeEvent<HTMLInputElement>) => {
@@ -742,7 +780,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                 </label>
                 <input
                   type="text"
-                  defaultValue="Seu link na bio Aurabio está pronto! Acesso imediato"
+                  value={welcomeEmailSubject}
+                  onChange={(e) => setWelcomeEmailSubject(e.target.value)}
                   className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900"
                 />
               </div>
@@ -758,7 +797,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                 </div>
                 <textarea
                   rows={6}
-                  defaultValue={`Olá {nome},\n\nSua conta no Aurabio foi ativada com sucesso!\nSeu endereço exclusivo: aurabio.link/{slug}\n\nPara acessar e personalizar sua bio:\nhttps://aurabio.link/painel\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.`}
+                  value={welcomeEmailBody}
+                  onChange={(e) => setWelcomeEmailBody(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-zinc-900 leading-relaxed"
                 />
               </div>
@@ -790,7 +830,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
               <div className="flex justify-end pt-2">
                 <button
                   type="button"
-                  onClick={() => showNotification('Configurações de e-mail salvas com sucesso!')}
+                  onClick={handleSaveEmailSettings}
                   className="px-6 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
                 >
                   Salvar Configurações de E-mail

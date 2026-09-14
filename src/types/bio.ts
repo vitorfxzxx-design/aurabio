@@ -128,4 +128,15 @@ export interface MasterBrandingConfig {
   footerText: string;
   supportEmail: string;
   customDomain: string;
+  // Email Integration Settings
+  emailProvider?: 'resend' | 'smtp';
+  resendApiKey?: string;
+  smtpHost?: string;
+  smtpPort?: string;
+  smtpUser?: string;
+  smtpPass?: string;
+  senderName?: string;
+  senderEmail?: string;
+  welcomeEmailSubject?: string;
+  welcomeEmailBody?: string;
 }

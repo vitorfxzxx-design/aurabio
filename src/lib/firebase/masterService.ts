@@ -26,6 +26,16 @@ export const firebaseMasterService = {
         footerText: data.footerText || DEFAULT_MASTER_BRANDING.footerText,
         supportEmail: data.supportEmail || DEFAULT_MASTER_BRANDING.supportEmail,
         customDomain: data.customDomain || DEFAULT_MASTER_BRANDING.customDomain,
+        emailProvider: data.emailProvider || 'resend',
+        resendApiKey: data.resendApiKey || '',
+        smtpHost: data.smtpHost || '',
+        smtpPort: data.smtpPort || '',
+        smtpUser: data.smtpUser || '',
+        smtpPass: data.smtpPass || '',
+        senderName: data.senderName || '',
+        senderEmail: data.senderEmail || '',
+        welcomeEmailSubject: data.welcomeEmailSubject || '',
+        welcomeEmailBody: data.welcomeEmailBody || '',
       };
     } catch (err) {
       console.warn('[aurabio:firebase] Error fetching master branding:', err);
@@ -49,6 +59,16 @@ export const firebaseMasterService = {
         footerText: branding.footerText,
         supportEmail: branding.supportEmail,
         customDomain: branding.customDomain,
+        emailProvider: branding.emailProvider,
+        resendApiKey: branding.resendApiKey,
+        smtpHost: branding.smtpHost,
+        smtpPort: branding.smtpPort,
+        smtpUser: branding.smtpUser,
+        smtpPass: branding.smtpPass,
+        senderName: branding.senderName,
+        senderEmail: branding.senderEmail,
+        welcomeEmailSubject: branding.welcomeEmailSubject,
+        welcomeEmailBody: branding.welcomeEmailBody,
         updatedAt: new Date().toISOString(),
       }, { merge: true });
 
