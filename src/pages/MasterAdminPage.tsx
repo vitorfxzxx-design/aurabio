@@ -17,7 +17,9 @@ import {
   Save,
   KeyRound,
   Loader2,
-  Check
+  Check,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { MASTER_ADMIN_PASSWORD, DEFAULT_MASTER_BRANDING } from '../data/defaultData';
 import type { MasterBrandingConfig } from '../types/bio';
@@ -85,6 +87,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [welcomeEmailBody, setWelcomeEmailBody] = useState(() => masterBranding?.welcomeEmailBody || 'Olá {nome},\n\nSua conta no Aurabio foi ativada com sucesso!\nSeu endereço exclusivo: aurabio.link/{slug}\n\nPara acessar e personalizar sua bio:\nhttps://aurabio.link/painel\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.');
   const [testEmailInput, setTestEmailInput] = useState('vitorfxzxx@gmail.com');
   const [isSendingTest, setIsSendingTest] = useState(false);
+  const [showResendApiKey, setShowResendApiKey] = useState(false);
+  const [showSmtpPass, setShowSmtpPass] = useState(false);
 
   React.useEffect(() => {
     if (masterBranding) {
@@ -795,18 +799,28 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                     Chave de API do Resend (API Key)
                   </label>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="password"
-                      value={resendApiKey}
-                      onChange={(e) => setResendApiKey(e.target.value)}
-                      placeholder="re_123456789_..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                    />
+                    <div className="relative flex-1">
+                      <input
+                        type={showResendApiKey ? "text" : "password"}
+                        value={resendApiKey}
+                        onChange={(e) => setResendApiKey(e.target.value)}
+                        placeholder="re_123456789_..."
+                        className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowResendApiKey(!showResendApiKey)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                        title={showResendApiKey ? "Ocultar chave" : "Mostrar chave"}
+                      >
+                        {showResendApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                     <a
                       href="https://resend.com/api-keys"
                       target="_blank"
                       rel="noreferrer"
-                      className="px-4 py-2.5 text-xs font-bold text-zinc-700 bg-zinc-200/80 hover:bg-zinc-300 rounded-xl transition-colors shrink-0 flex items-center gap-1.5"
+                      className="px-4 py-2.5 text-xs font-bold text-zinc-700 bg-zinc-200/80 hover:bg-zinc-300 rounded-xl transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
                     >
                       <span>Obter Chave</span>
                       <ExternalLink size={12} />
@@ -856,13 +870,23 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                     <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
                       Senha SMTP
                     </label>
-                    <input
-                      type="password"
-                      value={smtpPass}
-                      onChange={(e) => setSmtpPass(e.target.value)}
-                      placeholder="Sua senha SMTP"
-                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showSmtpPass ? "text" : "password"}
+                        value={smtpPass}
+                        onChange={(e) => setSmtpPass(e.target.value)}
+                        placeholder="Sua senha SMTP"
+                        className="w-full pl-3.5 pr-10 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowSmtpPass(!showSmtpPass)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                        title={showSmtpPass ? "Ocultar senha" : "Mostrar senha"}
+                      >
+                        {showSmtpPass ? <EyeOff size={14} /> : <Eye size={14} />}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
