@@ -16,7 +16,8 @@ import {
   Upload,
   Save,
   KeyRound,
-  Loader2
+  Loader2,
+  Check
 } from 'lucide-react';
 import { MASTER_ADMIN_PASSWORD, DEFAULT_MASTER_BRANDING } from '../data/defaultData';
 import type { MasterBrandingConfig } from '../types/bio';
@@ -39,6 +40,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     updateMasterBranding,
     totalMasterVisits,
     totalMasterClicks,
+    notification,
     showNotification
   } = useBio();
 
@@ -244,7 +246,13 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
               showNotification('E-mail de teste enviado com sucesso via Resend!');
               return;
             } else if (directData?.message) {
-              showNotification(`Resend: ${directData.message}`);
+              let msg = directData.message;
+              if (msg.includes('You can only send testing emails to your own email address')) {
+                const match = msg.match(/\(([^)]+)\)/);
+                const allowedEmail = match ? match[1] : 'seu e-mail do Resend (ex: contato@aurabio.link)';
+                msg = `Resend (Modo Teste): Envie para ${allowedEmail} ou valide seu domínio em resend.com/domains.`;
+              }
+              showNotification(msg);
               return;
             }
           } catch (errFallback) {
@@ -1304,6 +1312,16 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* Floating Toast Notification */}
+      {notification && (
+        <div className="fixed bottom-6 right-6 z-[9999] bg-zinc-950 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-semibold border border-zinc-800 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <Check size={13} strokeWidth={3} />
+          </div>
+          <span className="max-w-md">{notification}</span>
         </div>
       )}
     </div>

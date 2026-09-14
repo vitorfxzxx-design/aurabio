@@ -88,8 +88,8 @@ ${parsedBodyText}
     let resendData = await resendResponse.json();
 
     // If failed due to unverified custom domain on Resend, try fallback to onboarding@resend.dev
-    if (!resendResponse.ok && (resendData?.message?.includes('domain') || resendData?.name === 'validation_error')) {
-      console.warn('[Resend API] Custom domain failed, trying fallback with onboarding@resend.dev...', resendData);
+    if (!resendResponse.ok && (resendData?.message?.includes('domain') || resendData?.name === 'validation_error' || resendData?.statusCode === 403)) {
+      console.warn('[Resend API] Custom domain or permission notice, trying fallback with onboarding@resend.dev...', resendData);
       
       const fallbackResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -111,20 +111,34 @@ ${parsedBodyText}
         return res.status(200).json({
           success: true,
           id: fallbackData.id,
-          note: 'E-mail enviado via onboarding@resend.dev (para usar seu próprio domínio @aurabio.link, verifique seu domínio no Resend).',
+          message: 'E-mail de teste enviado com sucesso via onboarding@resend.dev!',
         });
       } else {
+        const errorMsg = fallbackData.message || resendData.message || 'Erro ao enviar e-mail via Resend.';
+        let userFriendlyMsg = errorMsg;
+        if (errorMsg.includes('You can only send testing emails to your own email address')) {
+          const match = errorMsg.match(/\(([^)]+)\)/);
+          const allowedEmail = match ? match[1] : 'seu e-mail da conta Resend';
+          userFriendlyMsg = `Resend (Modo Teste): Envie o teste para ${allowedEmail}, ou valide seu domínio em resend.com/domains para enviar a qualquer destinatário.`;
+        }
         return res.status(400).json({
           success: false,
-          error: fallbackData.message || resendData.message || 'Erro ao enviar e-mail via Resend.',
+          error: userFriendlyMsg,
         });
       }
     }
 
     if (!resendResponse.ok) {
+      const errorMsg = resendData.message || 'Erro ao enviar e-mail via Resend. Verifique a chave de API.';
+      let userFriendlyMsg = errorMsg;
+      if (errorMsg.includes('You can only send testing emails to your own email address')) {
+        const match = errorMsg.match(/\(([^)]+)\)/);
+        const allowedEmail = match ? match[1] : 'seu e-mail da conta Resend';
+        userFriendlyMsg = `Resend (Modo Teste): Envie o teste para ${allowedEmail}, ou valide seu domínio em resend.com/domains para enviar a qualquer destinatário.`;
+      }
       return res.status(400).json({
         success: false,
-        error: resendData.message || 'Erro ao enviar e-mail via Resend. Verifique a chave de API.',
+        error: userFriendlyMsg,
       });
     }
 
