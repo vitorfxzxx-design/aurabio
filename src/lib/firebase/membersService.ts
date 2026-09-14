@@ -24,6 +24,7 @@ export const firebaseMembersService = {
           email: row.email || '',
           name: row.name || '',
           slug: row.slug || '',
+          password: row.password || '',
           status: (row.status as 'active' | 'suspended') || 'active',
           plan: row.plan || 'Aura Pro V.I.P',
           createdAt: row.createdAt ? new Date(row.createdAt).toLocaleDateString('pt-BR') : '',
@@ -40,7 +41,7 @@ export const firebaseMembersService = {
   async upsertMember(member: MasterMember): Promise<boolean> {
     try {
       const docRef = doc(db, COLLECTION, member.id);
-      await setDoc(docRef, {
+      const dataToSave: Record<string, any> = {
         id: member.id,
         email: member.email,
         name: member.name,
@@ -50,7 +51,13 @@ export const firebaseMembersService = {
         visits: member.visits || 0,
         clicks: member.clicks || 0,
         updatedAt: new Date().toISOString(),
-      }, { merge: true });
+      };
+
+      if (member.password !== undefined) {
+        dataToSave.password = member.password;
+      }
+
+      await setDoc(docRef, dataToSave, { merge: true });
 
       return true;
     } catch (err) {

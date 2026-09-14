@@ -98,6 +98,7 @@ export interface MasterMember {
   email: string;
   name: string;
   slug: string;
+  password?: string;
   status: 'active' | 'suspended';
   plan: string;
   createdAt: string;

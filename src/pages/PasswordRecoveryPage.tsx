@@ -7,7 +7,7 @@ interface PasswordRecoveryPageProps {
 }
 
 export const PasswordRecoveryPage: React.FC<PasswordRecoveryPageProps> = ({ onBackToLogin }) => {
-  const { masterBranding, notification, showNotification, loginUser } = useBio();
+  const { masterBranding, notification, showNotification, loginUser, members, updateMember } = useBio();
   
   const [mode, setMode] = useState<'request' | 'reset'>('request');
   const [email, setEmail] = useState('');
@@ -133,10 +133,12 @@ export const PasswordRecoveryPage: React.FC<PasswordRecoveryPageProps> = ({ onBa
     setIsLoading(true);
 
     try {
-      // Simular delay de processamento seguro
-      await new Promise((r) => setTimeout(r, 600));
+      // Atualizar no registro do membro se encontrado
+      const targetMember = members.find(m => m.email?.toLowerCase().trim() === email.toLowerCase().trim());
+      if (targetMember) {
+        updateMember(targetMember.id, { password: newPassword });
+      }
 
-      // Guardar a nova credencial / atualizar localmente e notificar
       setIsResetSuccess(true);
       showNotification('Senha alterada com sucesso!');
     } catch (err) {

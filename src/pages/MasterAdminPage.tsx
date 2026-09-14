@@ -80,6 +80,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [newMemberName, setNewMemberName] = useState('');
   const [newMemberSlug, setNewMemberSlug] = useState('');
   const [newMemberPlan, setNewMemberPlan] = useState('Plano Creator (Até 3 Perfis)');
+  const [newMemberPassword, setNewMemberPassword] = useState('');
+  const [showNewMemberPassword, setShowNewMemberPassword] = useState(false);
 
   // Edit Member Modal State
   const [editingMember, setEditingMember] = useState<MasterMember | null>(null);
@@ -88,6 +90,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [editMemberSlug, setEditMemberSlug] = useState('');
   const [editMemberPlan, setEditMemberPlan] = useState('Plano Creator (Até 3 Perfis)');
   const [editMemberStatus, setEditMemberStatus] = useState<'active' | 'suspended'>('active');
+  const [editMemberPassword, setEditMemberPassword] = useState('');
+  const [showEditMemberPassword, setShowEditMemberPassword] = useState(false);
 
   const handleOpenEditMemberModal = (member: MasterMember) => {
     setEditingMember(member);
@@ -96,6 +100,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     setEditMemberSlug(member.slug || '');
     setEditMemberPlan(member.plan || 'Plano Creator (Até 3 Perfis)');
     setEditMemberStatus(member.status || 'active');
+    setEditMemberPassword(member.password || '');
+    setShowEditMemberPassword(false);
   };
 
   const handleSaveEditMember = (e: React.FormEvent) => {
@@ -106,14 +112,19 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
       return;
     }
 
-    updateMember(editingMember.id, {
+    const updates: Partial<MasterMember> = {
       email: editMemberEmail.trim(),
       name: editMemberName.trim(),
       slug: editMemberSlug.trim().toLowerCase().replace(/[^a-z0-9_-]/g, ''),
       plan: editMemberPlan,
       status: editMemberStatus,
-    });
+    };
 
+    if (editMemberPassword !== undefined) {
+      updates.password = editMemberPassword.trim();
+    }
+
+    updateMember(editingMember.id, updates);
     setEditingMember(null);
   };
 
@@ -219,6 +230,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
       email: newMemberEmail.trim(),
       name: newMemberName.trim() || newMemberSlug.trim(),
       slug: newMemberSlug.trim().toLowerCase().replace(/[^a-z0-9_-]/g, ''),
+      password: newMemberPassword.trim() || undefined,
       status: 'active',
       plan: newMemberPlan,
       visits: 0,
@@ -229,6 +241,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     setNewMemberEmail('');
     setNewMemberName('');
     setNewMemberSlug('');
+    setNewMemberPassword('');
   };
 
   const copyToClipboard = (text: string, label: string) => {
@@ -1567,6 +1580,28 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                 </select>
               </div>
 
+              <div>
+                <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                  Senha Inicial (Opcional)
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type={showNewMemberPassword ? 'text' : 'password'}
+                    value={newMemberPassword}
+                    onChange={(e) => setNewMemberPassword(e.target.value)}
+                    placeholder="Defina uma senha (ou deixe em branco)"
+                    className="w-full px-3.5 pr-10 py-2 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewMemberPassword(!showNewMemberPassword)}
+                    className="absolute right-3 text-zinc-400 hover:text-zinc-600 cursor-pointer p-1"
+                  >
+                    {showNewMemberPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
               <div className="flex items-center justify-end gap-2.5 pt-2">
                 <button
                   type="button"
@@ -1596,7 +1631,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
             <div className="flex items-center justify-between pb-2 border-b border-zinc-100">
               <div>
                 <h3 className="text-lg font-bold text-zinc-900">Editar Membro</h3>
-                <p className="text-xs text-zinc-400">Atualize os dados e o plano do cliente.</p>
+                <p className="text-xs text-zinc-400">Atualize os dados, senha e plano do cliente.</p>
               </div>
               <button
                 onClick={() => setEditingMember(null)}
@@ -1644,6 +1679,31 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                   onChange={(e) => setEditMemberSlug(e.target.value)}
                   className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-zinc-900"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                  Senha do Usuário
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type={showEditMemberPassword ? 'text' : 'password'}
+                    value={editMemberPassword}
+                    onChange={(e) => setEditMemberPassword(e.target.value)}
+                    placeholder="Digite a nova senha do usuário"
+                    className="w-full px-3.5 pr-10 py-2 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowEditMemberPassword(!showEditMemberPassword)}
+                    className="absolute right-3 text-zinc-400 hover:text-zinc-600 cursor-pointer p-1"
+                  >
+                    {showEditMemberPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <p className="text-[11px] text-zinc-400 mt-1">
+                  Defina ou altere a senha que o cliente utiliza para fazer login no painel.
+                </p>
               </div>
 
               <div>

@@ -282,11 +282,26 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [masterBranding]);
 
   const loginUser = (email: string, pass?: string): boolean => {
-    const cleanEmail = email.trim();
+    const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail) {
       showNotification('Por favor, informe seu e-mail de acesso.');
       return false;
     }
+
+    const foundMember = members.find(m => m.email?.toLowerCase().trim() === cleanEmail);
+    if (foundMember) {
+      if (foundMember.status === 'suspended') {
+        showNotification('Esta conta está suspensa. Entre em contato com o suporte.');
+        return false;
+      }
+      if (foundMember.password && foundMember.password.trim().length > 0) {
+        if (pass !== foundMember.password) {
+          showNotification('Senha incorreta.');
+          return false;
+        }
+      }
+    }
+
     if (!pass || pass.length < 3) {
       showNotification('Senha inválida.');
       return false;
