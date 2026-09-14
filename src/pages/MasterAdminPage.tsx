@@ -70,7 +70,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [newMemberPlan, setNewMemberPlan] = useState('PRO Anual');
 
   // Webhook URL (Guru default)
-  const webhookUrl = "https://aurabio.link/api/public/webhooks/sale?secret=s15pzrtdw6AvUXzvjf4YInUafi0JW8MaOutKEQtTHz6Jnz7B";
+  const webhookUrl = "https://aurabio.link/api/webhooks/sale?secret=s15pzrtdw6AvUXzvjf4YInUafi0JW8MaOutKEQtTHz6Jnz7B";
 
   // Refresh action
   const handleRefresh = () => {
