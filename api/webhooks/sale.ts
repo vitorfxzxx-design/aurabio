@@ -41,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const status = (payload.status || payload.event || '').toLowerCase();
     
     // Determine action from status
-    const isApproved = status.includes('approv') || status.includes('active') || status.includes('paid') || status.includes('paga');
+    const isApproved = status.includes('approv') || status.includes('active') || status.includes('paid') || status.includes('paga') || status.includes('trial');
     const isCancelled = status.includes('cancel') || status.includes('expir') || status.includes('inact') || status.includes('refund') || status.includes('chargeback');
 
     if (!email) {
