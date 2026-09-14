@@ -67,5 +67,35 @@ export const firebaseWebhooksService = {
       console.warn('[aurabio:firebase] Error deleting webhook:', err);
       return false;
     }
+  },
+
+  async getWebhookLogs(): Promise<import('../../types/bio').WebhookLog[]> {
+    try {
+      const colRef = collection(db, 'aurabio_webhook_logs');
+      const snapshot = await getDocs(colRef);
+      if (snapshot.empty) return [];
+
+      const list = snapshot.docs.map((docSnap): import('../../types/bio').WebhookLog => {
+        const row = docSnap.data();
+        return {
+          id: row.id || docSnap.id,
+          event: row.event || 'subscription_event',
+          email: row.email || '',
+          name: row.name || '',
+          slug: row.slug || '',
+          status: row.status || 'success',
+          memberStatus: row.memberStatus || 'active',
+          plan: row.plan || 'Plano Guru',
+          payload: row.payload,
+          createdAt: row.createdAt || new Date().toISOString(),
+        };
+      });
+
+      // Sort descending by date
+      return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (err) {
+      console.warn('[aurabio:firebase] Error fetching webhook logs:', err);
+      return [];
+    }
   }
 };

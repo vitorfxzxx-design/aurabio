@@ -19,10 +19,15 @@ import {
   Loader2,
   Check,
   Eye,
-  EyeOff
+  EyeOff,
+  Activity,
+  FileText,
+  X,
+  Clock
 } from 'lucide-react';
 import { MASTER_ADMIN_PASSWORD, DEFAULT_MASTER_BRANDING } from '../data/defaultData';
-import type { MasterBrandingConfig } from '../types/bio';
+import type { MasterBrandingConfig, WebhookLog } from '../types/bio';
+import { firebaseWebhooksService } from '../lib/firebase/webhooksService';
 
 interface MasterAdminPageProps {
   onBackToCreatorPanel: () => void;
@@ -118,9 +123,35 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   // Webhook URL (Guru default)
   const webhookUrl = "https://aurabio.link/api/webhooks/sale?secret=s15pzrtdw6AvUXzvjf4YInUafi0JW8MaOutKEQtTHz6Jnz7B";
 
+  // Webhook Logs State
+  const [webhookLogs, setWebhookLogs] = useState<WebhookLog[]>([]);
+  const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+  const [selectedLogPayload, setSelectedLogPayload] = useState<WebhookLog | null>(null);
+
+  const fetchWebhookLogs = async () => {
+    setIsLoadingLogs(true);
+    try {
+      const logs = await firebaseWebhooksService.getWebhookLogs();
+      setWebhookLogs(logs);
+    } catch (err) {
+      console.error('Erro ao carregar logs:', err);
+    } finally {
+      setIsLoadingLogs(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (activeTab === 'webhooks') {
+      fetchWebhookLogs();
+    }
+  }, [activeTab]);
+
   // Refresh action
   const handleRefresh = () => {
     setIsRefreshing(true);
+    if (activeTab === 'webhooks') {
+      fetchWebhookLogs();
+    }
     setTimeout(() => {
       setIsRefreshing(false);
       showNotification('Administração Master atualizada com sucesso!');
@@ -500,7 +531,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
             }`}
           >
             <Zap size={16} />
-            <span>Webhooks de venda</span>
+            <span>Webhooks de Assinatura</span>
           </button>
 
           <button
@@ -639,22 +670,22 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
         )}
 
         {/* ------------------------------------------------------------- */}
-        {/* TAB 2: WEBHOOKS DE VENDA (GURU INTEGRATION) */}
+        {/* TAB 2: WEBHOOKS DE ASSINATURA & LOGS */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'webhooks' && (
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* Card 1: Integrar Digital Manager Guru */}
             <div className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-sm space-y-4">
               <div>
                 <h3 className="text-base font-bold text-zinc-900">Integrar Digital Manager Guru</h3>
                 <p className="text-xs text-zinc-500 mt-1">
-                  Configure os webhooks da Guru para liberar e revogar o acesso automaticamente conforme o status da assinatura.
+                  Configure o webhook de assinaturas da Guru para liberar e revogar o acesso dos clientes automaticamente.
                 </p>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-zinc-700 mb-1.5">
-                  URL do webhook (já com o seu segredo)
+                  URL do webhook (já com o seu segredo configurado)
                 </label>
                 <div className="flex items-center gap-2">
                   <input
@@ -672,55 +703,239 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                   </button>
                 </div>
                 <p className="text-[11px] text-zinc-400 mt-1.5">
-                  Use esta mesma URL para Vendas e Assinaturas. Cole exatamente como está — já vem pronta.
+                  Cole esta URL no painel da Guru em Webhooks de Assinaturas.
                 </p>
               </div>
             </div>
 
-            {/* Card 2: 1) Webhook de Vendas */}
+            {/* Card 2: Instruções de Webhook de Assinaturas */}
             <div className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-sm space-y-3">
               <div>
-                <h4 className="text-sm font-bold text-zinc-900">1) Webhook de Vendas (liberação inicial)</h4>
+                <h4 className="text-sm font-bold text-zinc-900">Webhook de Assinaturas (liberação, renovação e cancelamento)</h4>
                 <p className="text-xs text-zinc-500 mt-0.5">
-                  Cria a conta do comprador na hora que a venda for aprovada.
+                  Mantém o acesso liberado enquanto a assinatura estiver ativa e suspende automaticamente quando cancelada ou expirada.
                 </p>
               </div>
 
-              <ol className="text-xs text-zinc-600 space-y-2 list-decimal list-inside leading-relaxed">
-                <li>No painel da Guru: <span className="font-semibold text-zinc-900">Configurações → Webhooks → Vendas → Adicionar</span>.</li>
-                <li>Em <span className="font-semibold text-zinc-900">Nome:</span> <code className="bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-800">Vendas — AuraBio</code>.</li>
-                <li>Em <span className="font-semibold text-zinc-900">URL:</span> cole a URL acima (com o segredo real).</li>
-                <li>Em <span className="font-semibold text-zinc-900">Status:</span> marque pelo menos <span className="font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Aprovada</span>.</li>
-                <li>Em <span className="font-semibold text-zinc-900">Filtrar por: Produtos</span> — selecione o produto do AuraBio.</li>
-                <li>Deixe <span className="font-semibold text-zinc-900">Ativo</span>, salve e envie um teste. O log deve mostrar <code className="text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded font-mono font-bold">success</code>.</li>
-              </ol>
-            </div>
-
-            {/* Card 3: 2) Webhook de Assinaturas */}
-            <div className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-sm space-y-3">
-              <div>
-                <h4 className="text-sm font-bold text-zinc-900">2) Webhook de Assinaturas (renovação e cancelamento)</h4>
-                <p className="text-xs text-zinc-500 mt-0.5">
-                  Mantém o acesso liberado enquanto a assinatura estiver ativa e suspende automaticamente quando o cliente cancela ou a cobrança expira.
-                </p>
-              </div>
-
-              <ol className="text-xs text-zinc-600 space-y-2 list-decimal list-inside leading-relaxed">
+              <ol className="text-xs text-zinc-600 space-y-2.5 list-decimal list-inside leading-relaxed">
                 <li>No painel da Guru: <span className="font-semibold text-zinc-900">Configurações → Webhooks → Assinaturas → Adicionar</span>.</li>
-                <li>Em <span className="font-semibold text-zinc-900">Nome:</span> <code className="bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-800">Assinaturas — AuraBio</code>.</li>
-                <li>Em <span className="font-semibold text-zinc-900">URL:</span> cole a mesma URL do webhook acima.</li>
+                <li>Em <span className="font-semibold text-zinc-900">Nome:</span> <code className="bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-800 font-mono">Assinaturas — AuraBio</code>.</li>
+                <li>Em <span className="font-semibold text-zinc-900">URL:</span> cole a URL do webhook acima.</li>
                 <li>
-                  Em <span className="font-semibold text-zinc-900">Status</span>, marque estes quatro:
-                  <div className="inline-flex items-center gap-1.5 ml-2">
+                  Em <span className="font-semibold text-zinc-900">Status</span>, marque os eventos desejados:
+                  <div className="inline-flex flex-wrap items-center gap-1.5 ml-2 mt-1 sm:mt-0">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Ativa</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Aprovada</span>
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Cancelada</span>
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Expirada</span>
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Inativa</span>
                   </div>
                 </li>
-                <li><span className="text-zinc-500">Ativa mantém/reativa o acesso. Cancelada, Expirada e Inativa suspendem automaticamente.</span></li>
                 <li>Em <span className="font-semibold text-zinc-900">Filtrar por: Produtos</span> — selecione o produto do AuraBio.</li>
+                <li>Salve no painel da Guru. Pronto! O acesso do cliente será gerenciado de forma 100% automatizada.</li>
               </ol>
+            </div>
+
+            {/* Card 3: Logs de Webhooks Recebidos */}
+            <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden space-y-0">
+              <div className="p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-700">
+                    <Activity size={18} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-bold text-zinc-900">Logs de Webhooks Recebidos</h4>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-zinc-100 text-zinc-700 border border-zinc-200">
+                        {webhookLogs.length} {webhookLogs.length === 1 ? 'evento' : 'eventos'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      Histórico em tempo real das notificações enviadas pela Digital Manager Guru.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={fetchWebhookLogs}
+                    disabled={isLoadingLogs}
+                    className="px-3.5 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  >
+                    <RefreshCw size={12} className={isLoadingLogs ? 'animate-spin' : ''} />
+                    <span>Atualizar Logs</span>
+                  </button>
+                </div>
+              </div>
+
+              {webhookLogs.length === 0 ? (
+                <div className="py-12 px-6 text-center space-y-3">
+                  <div className="w-12 h-12 bg-zinc-100 rounded-2xl flex items-center justify-center mx-auto text-zinc-400">
+                    <Clock size={24} />
+                  </div>
+                  <p className="text-xs font-bold text-zinc-800">Nenhum log de webhook registrado ainda</p>
+                  <p className="text-[11px] text-zinc-500 max-w-sm mx-auto">
+                    Assim que a Guru disparar um evento de assinatura ou compra, os dados detalhados do webhook aparecerão aqui automaticamente.
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs sm:text-sm">
+                    <thead className="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-extrabold text-[10px] uppercase tracking-wider">
+                      <tr>
+                        <th className="px-5 py-3">DATA / HORA</th>
+                        <th className="px-5 py-3">EVENTO GURU</th>
+                        <th className="px-5 py-3">CLIENTE</th>
+                        <th className="px-5 py-3">PLANO</th>
+                        <th className="px-5 py-3">ACESSO APP</th>
+                        <th className="px-5 py-3 text-right">DETALHES</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-100">
+                      {webhookLogs.map((log) => {
+                        const eventLower = log.event.toLowerCase();
+                        const isPositive = eventLower.includes('active') || eventLower.includes('ativa') || eventLower.includes('approv') || eventLower.includes('paid');
+                        const isNegative = eventLower.includes('cancel') || eventLower.includes('expir') || eventLower.includes('inact') || eventLower.includes('refund');
+
+                        return (
+                          <tr key={log.id} className="hover:bg-zinc-50/70 transition-colors">
+                            <td className="px-5 py-3.5 text-xs text-zinc-600 font-mono whitespace-nowrap">
+                              {new Date(log.createdAt).toLocaleString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                              })}
+                            </td>
+
+                            <td className="px-5 py-3.5 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                                isPositive 
+                                  ? 'bg-emerald-100 text-emerald-800' 
+                                  : isNegative 
+                                  ? 'bg-rose-100 text-rose-800' 
+                                  : 'bg-zinc-100 text-zinc-700'
+                              }`}>
+                                {log.event}
+                              </span>
+                            </td>
+
+                            <td className="px-5 py-3.5 font-medium text-zinc-900">
+                              <div className="flex flex-col">
+                                <span className="font-bold text-xs text-zinc-900">{log.name || 'Cliente'}</span>
+                                <span className="text-[11px] text-zinc-500 font-mono">{log.email}</span>
+                              </div>
+                            </td>
+
+                            <td className="px-5 py-3.5 text-xs text-zinc-700 whitespace-nowrap">
+                              {log.plan || 'Plano Pro'}
+                            </td>
+
+                            <td className="px-5 py-3.5 whitespace-nowrap">
+                              {log.memberStatus === 'active' ? (
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                  Liberado
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                                  Suspenso
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedLogPayload(log)}
+                                className="px-2.5 py-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 hover:text-zinc-950 rounded-lg text-[11px] font-bold transition-all cursor-pointer inline-flex items-center gap-1"
+                              >
+                                <FileText size={12} />
+                                <span>Ver Payload</span>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Payload Inspection Modal */}
+        {selectedLogPayload && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 text-white">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <FileText size={16} className="text-zinc-400" />
+                  <h3 className="text-sm font-bold text-white">
+                    Detalhes do Webhook Guru ({selectedLogPayload.event})
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedLogPayload(null)}
+                  className="p-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white cursor-pointer"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="space-y-2 text-xs">
+                <div className="grid grid-cols-2 gap-2 p-3 bg-zinc-950 rounded-xl border border-zinc-800 text-[11px]">
+                  <div><span className="text-zinc-500">Cliente:</span> <span className="font-bold text-zinc-200">{selectedLogPayload.name}</span></div>
+                  <div><span className="text-zinc-500">E-mail:</span> <span className="font-bold text-zinc-200">{selectedLogPayload.email}</span></div>
+                  <div><span className="text-zinc-500">Evento:</span> <span className="font-bold text-emerald-400">{selectedLogPayload.event}</span></div>
+                  <div><span className="text-zinc-500">Data:</span> <span className="text-zinc-300">{new Date(selectedLogPayload.createdAt).toLocaleString('pt-BR')}</span></div>
+                </div>
+
+                <div>
+                  <span className="block text-[11px] font-bold text-zinc-400 mb-1">Payload JSON Bruto:</span>
+                  <pre className="p-3.5 bg-zinc-950 rounded-xl border border-zinc-800 text-[11px] font-mono text-emerald-400 overflow-x-auto max-h-64 leading-relaxed">
+                    {typeof selectedLogPayload.payload === 'string'
+                      ? (() => {
+                          try {
+                            return JSON.stringify(JSON.parse(selectedLogPayload.payload), null, 2);
+                          } catch {
+                            return selectedLogPayload.payload;
+                          }
+                        })()
+                      : JSON.stringify(selectedLogPayload.payload || selectedLogPayload, null, 2)}
+                  </pre>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      typeof selectedLogPayload.payload === 'string'
+                        ? selectedLogPayload.payload
+                        : JSON.stringify(selectedLogPayload.payload, null, 2)
+                    );
+                    showNotification('JSON do payload copiado!');
+                  }}
+                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
+                >
+                  Copiar JSON
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedLogPayload(null)}
+                  className="px-4 py-2 bg-white text-zinc-950 hover:bg-zinc-200 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                >
+                  Fechar
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -142,3 +142,16 @@ export interface MasterBrandingConfig {
   recoveryEmailSubject?: string;
   recoveryEmailBody?: string;
 }
+
+export interface WebhookLog {
+  id: string;
+  event: string;
+  email: string;
+  name: string;
+  slug?: string;
+  status: 'success' | 'error';
+  memberStatus: 'active' | 'suspended';
+  plan?: string;
+  payload?: any;
+  createdAt: string;
+}

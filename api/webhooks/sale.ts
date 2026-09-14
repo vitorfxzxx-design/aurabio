@@ -162,6 +162,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // Save Webhook Log to Firestore
+    try {
+      const logId = `log_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const logDocumentUrl = `${FIRESTORE_BASE_URL}/aurabio_webhook_logs/${logId}`;
+      const logFields = {
+        fields: {
+          id: { stringValue: logId },
+          event: { stringValue: status || 'subscription_event' },
+          email: { stringValue: email },
+          name: { stringValue: name },
+          slug: { stringValue: slug },
+          status: { stringValue: 'success' },
+          memberStatus: { stringValue: memberStatus },
+          plan: { stringValue: plan },
+          payload: { stringValue: JSON.stringify(payload).substring(0, 2000) },
+          createdAt: { stringValue: new Date().toISOString() }
+        }
+      };
+      await fetch(logDocumentUrl, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(logFields)
+      }).catch(e => console.warn('[Webhook] Log save notice:', e));
+    } catch (logErr) {
+      console.warn('[Webhook] Log error:', logErr);
+    }
+
     console.log(`[Webhook] Success: Access granted for ${email} with status "${memberStatus}"`);
 
     return res.status(200).json({
