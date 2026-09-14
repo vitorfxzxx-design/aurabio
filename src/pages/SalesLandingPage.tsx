@@ -10,7 +10,8 @@ import {
   Link2, 
   ShieldCheck, 
   ExternalLink,
-  Lock
+  Lock,
+  Crown
 } from 'lucide-react';
 
 export const SalesLandingPage: React.FC = () => {
@@ -63,7 +64,8 @@ export const SalesLandingPage: React.FC = () => {
     }
   ];
 
-  const CHECKOUT_URL = "https://checkout.aurabio.link/subscribe/aurabio-principal";
+  const CHECKOUT_URL_3 = "https://checkout.aurabio.link/subscribe/aurabio-3-perfis";
+  const CHECKOUT_URL_10 = "https://checkout.aurabio.link/subscribe/aurabio-10-perfis";
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-rose-600 selection:text-white font-sans antialiased overflow-x-hidden pb-20 sm:pb-0">
@@ -83,7 +85,7 @@ export const SalesLandingPage: React.FC = () => {
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
             <a href="#recursos" className="hover:text-white transition-colors">Recursos</a>
             <a href="#formatos" className="hover:text-white transition-colors">Exemplos</a>
-            <a href="#precos" className="hover:text-white transition-colors">Preços</a>
+            <a href="#precos" className="hover:text-white transition-colors">Planos</a>
             <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
           </nav>
 
@@ -99,7 +101,7 @@ export const SalesLandingPage: React.FC = () => {
               href="#precos"
               className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white hover:bg-zinc-200 text-black font-bold text-xs sm:text-sm transition-all shadow-[0_0_25px_rgba(255,255,255,0.25)] hover:scale-105 active:scale-95 cursor-pointer"
             >
-              <span>Testar 7 Dias Grátis</span>
+              <span>Ver Planos</span>
               <ArrowRight size={14} />
             </a>
           </div>
@@ -116,7 +118,7 @@ export const SalesLandingPage: React.FC = () => {
         {/* Top Tag */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[11px] sm:text-xs font-medium text-zinc-300 mb-6 sm:mb-8 shadow-inner animate-pulse">
           <Sparkles size={13} className="text-purple-400" />
-          <span>7 Dias de Teste Grátis · Cancele Quando Quiser</span>
+          <span>Acesso Imediato · Planos com 3 ou até 10 Perfis</span>
         </div>
 
         {/* Big Impact Headline */}
@@ -130,7 +132,7 @@ export const SalesLandingPage: React.FC = () => {
 
         {/* Subtitle */}
         <p className="mt-5 sm:mt-6 max-w-2xl text-sm sm:text-lg text-zinc-400 font-normal leading-relaxed px-2">
-          Página cinematográfica, cards estilo banner, cores 100% suas, trackeamento e Meta Pixel. Até <strong className="text-white font-bold">3 perfis diferentes</strong> na mesma conta.
+          Páginas cinematográficas, cards estilo banner, cores 100% suas, trackeamento e Meta Pixel. Escolha planos de <strong className="text-white font-bold">até 3 ou 10 perfis</strong> na mesma conta.
         </p>
 
         {/* CTA Buttons */}
@@ -139,28 +141,28 @@ export const SalesLandingPage: React.FC = () => {
             href="#precos"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base transition-all shadow-[0_0_35px_rgba(255,255,255,0.35)] hover:scale-105 active:scale-95 cursor-pointer group"
           >
-            <span>Experimente 7 dias grátis</span>
+            <span>Escolha o seu plano</span>
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
 
         <p className="mt-3 text-[11px] text-zinc-500">
-          7 dias de teste gratuito sem cobrança imediata · Cobrança automática no cartão após o teste · Cancele em 1 clique
+          Acesso anual completo · Em até 12x no cartão · Liberação instantânea no seu e-mail
         </p>
 
         {/* Trust Badges */}
         <div className="mt-7 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] sm:text-sm font-medium text-zinc-400">
           <span className="flex items-center gap-1.5">
             <Check size={15} className="text-emerald-400" />
-            7 dias grátis
+            Até 3 ou 10 perfis inclusos
           </span>
           <span className="flex items-center gap-1.5">
             <Check size={15} className="text-emerald-400" />
-            Cancele a qualquer momento
+            Links & Cliques ilimitados
           </span>
           <span className="flex items-center gap-1.5">
             <Check size={15} className="text-emerald-400" />
-            Até 3 perfis inclusos
+            Domínio próprio e Pixel integrado
           </span>
         </div>
 
@@ -251,12 +253,12 @@ export const SalesLandingPage: React.FC = () => {
             <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-zinc-500 mt-1">CLIQUES / MÊS</div>
           </div>
           <div className="p-3">
-            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">7 DIAS</div>
-            <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-400 mt-1">TESTE 100% GRÁTIS</div>
+            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">3 OU 10</div>
+            <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-400 mt-1">PERFIS POR CONTA</div>
           </div>
           <div className="p-3">
-            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">3 PERFIS</div>
-            <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-zinc-500 mt-1">NA MESMA CONTA</div>
+            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">100%</div>
+            <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-zinc-500 mt-1">SEM ANÚNCIOS</div>
           </div>
         </div>
       </section>
@@ -271,7 +273,7 @@ export const SalesLandingPage: React.FC = () => {
             Tudo o que outras plataformas cobram <span className="text-zinc-600">R$50/mês.</span>
           </h2>
           <p className="text-zinc-400 text-xs sm:text-base mt-3">
-            Experimente grátis por 7 dias. Depois apenas R$19/mês para manter ativo.
+            Design cinematográfico, múltiplas páginas, métricas completas e liberdade total.
           </p>
         </div>
 
@@ -292,9 +294,9 @@ export const SalesLandingPage: React.FC = () => {
             <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
               <Layers size={22} />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">3 perfis por conta</h3>
+            <h3 className="text-lg font-bold text-white mb-2">Múltiplos perfis por conta</h3>
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-              Marca pessoal, negócio, projeto paralelo — tudo separado, mesma assinatura.
+              Marca pessoal, negócio, projetos paralelos ou clientes — tudo separado na mesma assinatura.
             </p>
           </div>
 
@@ -381,85 +383,188 @@ export const SalesLandingPage: React.FC = () => {
       </section>
 
       {/* ------------------------------------------------------------- */}
-      {/* PRICING & CHECKOUT SECTION */}
+      {/* PRICING & CHECKOUT SECTION (2 PLANS) */}
       {/* ------------------------------------------------------------- */}
-      <section id="precos" className="py-20 sm:py-32 px-5 sm:px-6 max-w-4xl mx-auto text-center relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-purple-900/20 blur-[100px] sm:blur-[140px] rounded-full pointer-events-none" />
+      <section id="precos" className="py-20 sm:py-32 px-5 sm:px-6 max-w-5xl mx-auto text-center relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[550px] h-[350px] sm:h-[550px] bg-purple-900/20 blur-[100px] sm:blur-[140px] rounded-full pointer-events-none" />
 
-        <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">TESTE SEM RISCO</span>
+        <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">PLANOS & PREÇOS</span>
         <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mt-3">
-          7 Dias Grátis. <span className="text-zinc-500">Depois R$19/mês.</span>
+          Escolha o plano ideal <br className="hidden sm:inline" /> para os seus links.
         </h2>
-        <p className="text-zinc-400 text-xs sm:text-base mt-3 max-w-md mx-auto">
-          Crie seus perfis e teste todos os recursos sem pagar nada hoje. Cancele quando quiser com 1 clique.
+        <p className="text-zinc-400 text-xs sm:text-base mt-3 max-w-lg mx-auto">
+          Crie suas páginas de alta conversão sem mensalidades abusivas. Cancele ou altere quando quiser.
         </p>
 
-        {/* Pricing Card */}
-        <div className="mt-10 sm:mt-12 max-w-md mx-auto p-6 sm:p-8 rounded-3xl bg-zinc-950 border-2 border-purple-500/40 shadow-[0_0_50px_rgba(168,85,247,0.15)] ring-1 ring-white/10 text-left relative z-10">
-          <div className="flex items-center justify-between mb-4">
-            <div className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30">
-              7 DIAS DE TESTE GRÁTIS
+        {/* 2 PRICING CARDS GRID */}
+        <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-stretch relative z-10 text-left">
+          
+          {/* PLANO 1: ATÉ 3 PERFIS */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 shadow-2xl flex flex-col justify-between relative transition-all duration-300">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="inline-block px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 text-[10px] font-black uppercase tracking-wider border border-zinc-700">
+                  CREATOR
+                </div>
+                <span className="text-xs text-zinc-400 font-semibold">Até 3 Perfis</span>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-black text-white">
+                Até 3 Perfis
+              </h3>
+              <p className="text-xs text-zinc-400 mt-1">
+                Ideal para criadores, freelancers e negócios individuais.
+              </p>
+
+              {/* Price */}
+              <div className="mt-6 mb-2">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xs font-semibold text-zinc-400">12x de</span>
+                  <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">R$ 19,70</span>
+                </div>
+                <p className="text-xs text-emerald-400 font-medium mt-1">ou R$ 197 / ano à vista</p>
+              </div>
+
+              <div className="w-full h-px bg-zinc-900 my-6" />
+
+              {/* Feature List */}
+              <ul className="space-y-3 text-xs sm:text-sm text-zinc-300">
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Até <strong>3 perfis / páginas</strong> independentes</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Links e botões <strong>ilimitados</strong></span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span><strong>5 formatos</strong> cinematográficos & minimalistas</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Trackeamento completo (visitas, cliques, CTR)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Meta Pixel integrado (PageView & Lead)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>URLs exclusivas <strong>aurabio.link/seunome</strong></span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Sem marca d'água e sem anúncios</span>
+                </li>
+              </ul>
             </div>
-            <span className="text-xs text-zinc-400 font-medium">3 Perfis</span>
+
+            {/* CTA Button */}
+            <div className="mt-8 pt-4">
+              <a
+                href={CHECKOUT_URL_3}
+                className="w-full py-4 px-6 rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 border border-zinc-700 transition-all hover:scale-102 active:scale-98 cursor-pointer text-center"
+              >
+                <span>Garantir Plano 3 Perfis</span>
+                <ArrowRight size={16} />
+              </a>
+
+              <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-zinc-500 text-center">
+                <Lock size={12} className="text-emerald-500" />
+                <span>Pagamento seguro · Acesso imediato</span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-baseline gap-1">
-            <span className="text-4xl sm:text-6xl font-black text-white tracking-tight">R$0</span>
-            <span className="text-emerald-400 font-bold text-sm sm:text-base">nos primeiros 7 dias</span>
+          {/* PLANO 2: ATÉ 10 PERFIS (DESTACADO) */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950 border-2 border-purple-500/60 shadow-[0_0_60px_rgba(168,85,247,0.2)] ring-1 ring-purple-400/30 flex flex-col justify-between relative transition-all duration-300">
+            {/* Top Recommended Tag */}
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1">
+              <Crown size={12} />
+              <span>MAIS RECOMENDADO</span>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-4 mt-2">
+                <div className="inline-block px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-black uppercase tracking-wider border border-purple-500/30">
+                  PRO & AGÊNCIA
+                </div>
+                <span className="text-xs text-purple-300 font-bold">Até 10 Perfis</span>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-black text-white">
+                Até 10 Perfis
+              </h3>
+              <p className="text-xs text-zinc-400 mt-1">
+                Para quem gerencia múltiplos projetos, marcas ou clientes de agência.
+              </p>
+
+              {/* Price */}
+              <div className="mt-6 mb-2">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xs font-semibold text-zinc-400">12x de</span>
+                  <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">R$ 39,70</span>
+                </div>
+                <p className="text-xs text-emerald-400 font-medium mt-1">ou R$ 397 / ano à vista</p>
+              </div>
+
+              <div className="w-full h-px bg-zinc-900 my-6" />
+
+              {/* Feature List */}
+              <ul className="space-y-3 text-xs sm:text-sm text-zinc-300">
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Até <strong>10 perfis / páginas</strong> independentes</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Links e botões <strong>ilimitados</strong> em cada página</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span><strong>5 formatos</strong> cinematográficos & minimalistas</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Trackeamento individualizado nos 10 perfis</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Meta Pixel dedicado para cada perfil</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span><strong>10 URLs exclusivas</strong> aurabio.link/...</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-emerald-400 shrink-0" />
+                  <span>Sem marca d'água e sem anúncios</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={16} className="text-purple-400 shrink-0" />
+                  <span><strong>Suporte Prioritário VIP</strong></span>
+                </li>
+              </ul>
+            </div>
+
+            {/* CTA Button */}
+            <div className="mt-8 pt-4">
+              <a
+                href={CHECKOUT_URL_10}
+                className="w-full py-4 px-6 rounded-2xl bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_30px_rgba(255,255,255,0.35)] hover:scale-102 active:scale-98 cursor-pointer text-center"
+              >
+                <span>Garantir Plano 10 Perfis</span>
+                <ArrowRight size={16} />
+              </a>
+
+              <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-zinc-500 text-center">
+                <Lock size={12} className="text-emerald-500" />
+                <span>Pagamento seguro · Acesso imediato</span>
+              </div>
+            </div>
           </div>
-          <p className="text-xs text-zinc-400 mt-1">Após os 7 dias, apenas R$19/mês no plano anual (12x R$19)</p>
 
-          <div className="w-full h-px bg-zinc-900 my-5 sm:my-6" />
-
-          {/* Feature List */}
-          <ul className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm text-zinc-300">
-            <li className="flex items-center gap-3">
-              <Check size={16} className="text-emerald-400 shrink-0" />
-              <span><strong>7 dias de teste gratuito</strong> sem cobrança hoje</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check size={16} className="text-emerald-400 shrink-0" />
-              <span>Até <strong>3 perfis / páginas</strong> diferentes</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check size={16} className="text-emerald-400 shrink-0" />
-              <span>Links <strong>ilimitados</strong> por página</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check size={16} className="text-emerald-400 shrink-0" />
-              <span><strong>5 formatos</strong> cinematográficos e minimalistas</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check size={16} className="text-emerald-400 shrink-0" />
-              <span>Trackeamento completo (visitas, cliques, CTR)</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check size={16} className="text-emerald-400 shrink-0" />
-              <span>Meta Pixel integrado com PageView e Lead</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check size={16} className="text-emerald-400 shrink-0" />
-              <span>URL exclusiva <strong>aurabio.link/seunome</strong></span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check size={16} className="text-emerald-400 shrink-0" />
-              <span>Sem marca d'água, sem anúncios</span>
-            </li>
-          </ul>
-
-          {/* Big CTA Button */}
-          <a
-            href={CHECKOUT_URL}
-            className="w-full mt-7 sm:mt-8 py-4 px-6 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_30px_rgba(255,255,255,0.35)] hover:scale-102 active:scale-98 cursor-pointer text-center"
-          >
-            <span>Experimente 7 dias grátis</span>
-            <ArrowRight size={18} />
-          </a>
-
-          <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-zinc-500 text-center">
-            <Lock size={12} className="text-emerald-500" />
-            <span>Ambiente seguro · Cancele em 1 clique a qualquer momento</span>
-          </div>
         </div>
       </section>
 
@@ -479,28 +584,24 @@ export const SalesLandingPage: React.FC = () => {
         <div className="rounded-3xl bg-zinc-950 border border-zinc-900 divide-y divide-zinc-900 overflow-hidden shadow-2xl">
           {[
             {
-              q: 'Como funciona o teste gratuito de 7 dias?',
-              a: 'Você cria sua conta e tem 7 dias completos para testar todos os recursos, criar até 3 páginas e publicar seu link. Nenhuma cobrança é feita hoje. Se gostar, a assinatura continua automaticamente por apenas R$19/mês. Se não quiser continuar, basta cancelar antes dos 7 dias em 1 clique no painel sem pagar nada.'
+              q: 'Qual a diferença entre o plano de 3 perfis e o de 10 perfis?',
+              a: 'O plano de até 3 perfis (R$ 197/ano ou 12x de R$ 19,70) permite gerenciar até 3 páginas/slugs na mesma conta. Já o plano de até 10 perfis (R$ 397/ano ou 12x de R$ 39,70) permite até 10 páginas simultâneas e suporte VIP, perfeito para quem tem mais projetos ou gerencia links para clientes.'
             },
             {
-              q: 'Como funcionam os 3 perfis?',
-              a: 'Você cria até 3 páginas independentes na mesma conta — cada uma com seu próprio slug, cores, links e trackeamento. Ideal pra quem tem marca pessoal + negócio + projeto paralelo.'
+              q: 'Como funcionam os múltiplos perfis na mesma conta?',
+              a: 'Você cria suas páginas independentes na mesma conta do Aurabio — cada uma com seu próprio slug (aurabio.link/seunome), cores, fotos, links e trackeamento de cliques separado.'
             },
             {
-              q: 'Posso cancelar quando quiser?',
-              a: 'Sim. Um clique dentro do painel e a assinatura cancela no fim do ciclo. Sem burocracia, sem retenção agressiva.'
+              q: 'Como recebo o meu acesso após a compra?',
+              a: 'O envio é imediato e 100% automático. Assim que o pagamento é aprovado, você recebe um e-mail com o link direto e suas credenciais para entrar no painel e começar a personalizar suas bios.'
             },
             {
-              q: 'Meus dados ficam salvos se eu cancelar?',
-              a: 'Sua página fica offline após o cancelamento, mas os dados são preservados por 90 dias caso você queira voltar.'
+              q: 'Funciona no Instagram, TikTok, WhatsApp e YouTube?',
+              a: 'Sim! Basta colar o link da sua bio (ex: aurabio.link/seunome) no perfil de qualquer rede social ou enviar por mensagem.'
             },
             {
-              q: 'Funciona no Instagram, TikTok e YouTube?',
-              a: 'Sim. É só colar o link do seu perfil Aurabio na bio de qualquer rede social.'
-            },
-            {
-              q: 'Precisa de conhecimento técnico?',
-              a: 'Zero. É clicar, arrastar e editar. A gente cuida do resto — hospedagem, SSL, performance, tudo incluído.'
+              q: 'Precisa de conhecimento técnico ou programador?',
+              a: 'Zero. O painel do Aurabio é totalmente visual, intuitivo e rápido: você clica, edita em tempo real e salva na hora com visualização idêntica ao celular.'
             }
           ].map((faq, idx) => (
             <div key={idx} className="transition-colors">
@@ -545,7 +646,7 @@ export const SalesLandingPage: React.FC = () => {
           </h2>
 
           <p className="mt-4 text-xs sm:text-sm text-zinc-400 font-medium max-w-md">
-            Experimente 7 dias grátis. Depois apenas R$19/mês. 3 perfis. Trackeamento real. Sem compromisso.
+            Planos anuais a partir de 12x de R$ 19,70. Até 3 ou 10 perfis. Trackeamento real e design cinematográfico.
           </p>
 
           {/* Big CTA Button */}
@@ -553,12 +654,12 @@ export const SalesLandingPage: React.FC = () => {
             href="#precos"
             className="mt-7 sm:mt-8 w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-white hover:bg-zinc-200 text-black font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_35px_rgba(255,255,255,0.35)] hover:scale-105 active:scale-95 cursor-pointer text-center"
           >
-            <span>Experimente 7 dias grátis</span>
+            <span>Escolha o seu plano</span>
             <ArrowRight size={18} />
           </a>
 
           <p className="mt-4 text-[11px] text-zinc-500">
-            Sem cobrança hoje · Cancele em 1 clique quando quiser
+            Liberação instantânea · Acesso anual seguro
           </p>
         </div>
       </section>
@@ -568,14 +669,14 @@ export const SalesLandingPage: React.FC = () => {
       {/* ------------------------------------------------------------- */}
       <div className="sm:hidden fixed bottom-0 inset-x-0 z-50 p-3 bg-black/90 backdrop-blur-xl border-t border-white/10 flex items-center justify-between gap-3 shadow-2xl">
         <div className="flex flex-col">
-          <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">7 DIAS GRÁTIS</span>
-          <span className="text-xs font-extrabold text-white">Depois R$19/mês</span>
+          <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">PLANOS ANUAIS</span>
+          <span className="text-xs font-extrabold text-white">A partir de 12x R$ 19,70</span>
         </div>
         <a
           href="#precos"
           className="flex-1 py-3 px-4 rounded-full bg-white text-black font-black text-xs flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(255,255,255,0.4)] active:scale-95 transition-all"
         >
-          <span>Testar Grátis</span>
+          <span>Ver Planos</span>
           <ArrowRight size={14} />
         </a>
       </div>
@@ -591,7 +692,7 @@ export const SalesLandingPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-6 text-zinc-400">
-            <a href="#precos" className="hover:text-white transition-colors">Preços</a>
+            <a href="#precos" className="hover:text-white transition-colors">Planos</a>
             <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
             <a href="/" className="hover:text-white transition-colors cursor-pointer">
               Entrar
@@ -602,3 +703,4 @@ export const SalesLandingPage: React.FC = () => {
     </div>
   );
 };
+
