@@ -103,6 +103,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onOpenPublicView }) => {
                   <Lock size={16} />
                 </div>
               </div>
+              <div className="flex justify-end mt-1.5">
+                <a
+                  href="/recuperar-senha"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.hash = '#/recuperar-senha';
+                  }}
+                  className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  Esqueci minha senha
+                </a>
+              </div>
             </div>
 
             <button

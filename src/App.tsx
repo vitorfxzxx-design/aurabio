@@ -6,15 +6,23 @@ import { MasterAdminPage } from './pages/MasterAdminPage';
 import { SalesLandingPage } from './pages/SalesLandingPage';
 import { UpsellPage } from './pages/UpsellPage';
 import { ThankYouPage } from './pages/ThankYouPage';
+import { PasswordRecoveryPage } from './pages/PasswordRecoveryPage';
 
 export function App() {
-  const [currentRoute, setCurrentRoute] = useState<'admin' | 'master' | 'public' | 'pv' | 'upsell' | 'obrigado'>('admin');
+  const [currentRoute, setCurrentRoute] = useState<'admin' | 'master' | 'public' | 'pv' | 'upsell' | 'obrigado' | 'recuperar-senha'>('admin');
   const [routeSlug, setRouteSlug] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const handleRouteChange = () => {
       const cleanPath = window.location.pathname.replace(/\/$/, '').toLowerCase();
       const rawHash = window.location.hash.replace('#/', '').replace('#', '').toLowerCase();
+
+      // Check for Password Recovery (/recuperar-senha)
+      if (cleanPath === '/recuperar-senha' || cleanPath.startsWith('/recuperar-senha') || rawHash === 'recuperar-senha' || rawHash.startsWith('recuperar-senha') || cleanPath === '/esqueci-senha' || rawHash === 'esqueci-senha') {
+        setCurrentRoute('recuperar-senha');
+        setRouteSlug(undefined);
+        return;
+      }
 
       // Check for Thank You Page (/obrigado)
       if (cleanPath === '/obrigado' || cleanPath.startsWith('/obrigado') || rawHash === 'obrigado' || rawHash.startsWith('obrigado') || cleanPath === '/thank-you' || rawHash === 'thank-you') {
@@ -95,7 +103,9 @@ export function App() {
 
   return (
     <BioProvider>
-      {currentRoute === 'obrigado' ? (
+      {currentRoute === 'recuperar-senha' ? (
+        <PasswordRecoveryPage onBackToLogin={handleBackToAdmin} />
+      ) : currentRoute === 'obrigado' ? (
         <ThankYouPage />
       ) : currentRoute === 'upsell' ? (
         <UpsellPage onDecline={handleBackToAdmin} />
