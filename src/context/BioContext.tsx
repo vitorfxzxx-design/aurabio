@@ -223,6 +223,10 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return auth === 'true';
   });
 
+  useEffect(() => {
+    localStorage.setItem(MASTER_AUTH_KEY, isMasterAuthenticated ? 'true' : 'false');
+  }, [isMasterAuthenticated]);
+
   const [members, setMembers] = useState<MasterMember[]>(() => {
     const saved = localStorage.getItem(MEMBERS_KEY);
     if (saved) {
