@@ -15,7 +15,8 @@ import {
   LayoutDashboard,
   Upload,
   Save,
-  KeyRound
+  KeyRound,
+  Loader2
 } from 'lucide-react';
 import { MASTER_ADMIN_PASSWORD, DEFAULT_MASTER_BRANDING } from '../data/defaultData';
 import type { MasterBrandingConfig } from '../types/bio';
@@ -80,6 +81,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [senderEmail, setSenderEmail] = useState(() => masterBranding?.senderEmail || 'suporte@aurabio.link');
   const [welcomeEmailSubject, setWelcomeEmailSubject] = useState(() => masterBranding?.welcomeEmailSubject || 'Seu link na bio Aurabio está pronto! Acesso imediato');
   const [welcomeEmailBody, setWelcomeEmailBody] = useState(() => masterBranding?.welcomeEmailBody || 'Olá {nome},\n\nSua conta no Aurabio foi ativada com sucesso!\nSeu endereço exclusivo: aurabio.link/{slug}\n\nPara acessar e personalizar sua bio:\nhttps://aurabio.link/painel\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.');
+  const [testEmailInput, setTestEmailInput] = useState('vitorfxzxx@gmail.com');
+  const [isSendingTest, setIsSendingTest] = useState(false);
 
   React.useEffect(() => {
     if (masterBranding) {
@@ -172,6 +175,117 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     } catch (err) {
       console.error('Erro ao salvar e-mail:', err);
       showNotification('Erro ao salvar configurações de e-mail.');
+    }
+  };
+
+  const handleSendTestEmail = async () => {
+    if (!testEmailInput.trim() || !testEmailInput.includes('@')) {
+      showNotification('Digite um e-mail de destino válido para o envio de teste.');
+      return;
+    }
+
+    if (emailProvider === 'resend' && (!resendApiKey || !resendApiKey.trim().startsWith('re_'))) {
+      showNotification('Cole uma chave de API do Resend válida (re_...) e clique em Salvar.');
+      return;
+    }
+
+    setIsSendingTest(true);
+    try {
+      // 1. Try serverless endpoint
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: testEmailInput.trim(),
+          subject: welcomeEmailSubject,
+          body: welcomeEmailBody,
+          senderName: senderName || 'Aurabio',
+          senderEmail: senderEmail || 'onboarding@resend.dev',
+          resendApiKey: resendApiKey.trim(),
+          name: 'Vitor (Teste)',
+          slug: 'teste-aurabio',
+        }),
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (response.ok && result.success) {
+        showNotification(result.note || result.message || 'E-mail de teste enviado com sucesso!');
+      } else {
+        // Fallback: direct Resend API call if local or custom
+        if (emailProvider === 'resend' && resendApiKey) {
+          try {
+            const parsedSubject = (welcomeEmailSubject || 'Acesso liberado — Aurabio')
+              .replace(/\{nome\}/gi, 'Vitor (Teste)')
+              .replace(/\{slug\}/gi, 'teste-aurabio')
+              .replace(/\{email\}/gi, testEmailInput.trim());
+
+            const parsedBodyText = (welcomeEmailBody || 'Olá {nome},\n\nSua conta no Aurabio foi criada com sucesso!')
+              .replace(/\{nome\}/gi, 'Vitor (Teste)')
+              .replace(/\{slug\}/gi, 'teste-aurabio')
+              .replace(/\{email\}/gi, testEmailInput.trim());
+
+            const directRes = await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${resendApiKey.trim()}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                from: `${senderName || 'Aurabio'} <onboarding@resend.dev>`,
+                to: [testEmailInput.trim().toLowerCase()],
+                subject: parsedSubject,
+                text: parsedBodyText,
+              }),
+            });
+
+            const directData = await directRes.json().catch(() => ({}));
+            if (directRes.ok) {
+              showNotification('E-mail de teste enviado com sucesso via Resend!');
+              return;
+            } else if (directData?.message) {
+              showNotification(`Resend: ${directData.message}`);
+              return;
+            }
+          } catch (errFallback) {
+            console.warn('Fallback error:', errFallback);
+          }
+        }
+        showNotification(result.error || 'Erro ao enviar e-mail de teste. Verifique a chave Resend.');
+      }
+    } catch (err: any) {
+      console.error('Erro ao enviar e-mail de teste:', err);
+      // Fallback
+      if (emailProvider === 'resend' && resendApiKey) {
+        try {
+          const directRes = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${resendApiKey.trim()}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              from: `${senderName || 'Aurabio'} <onboarding@resend.dev>`,
+              to: [testEmailInput.trim().toLowerCase()],
+              subject: welcomeEmailSubject.replace(/\{nome\}/gi, 'Vitor (Teste)').replace(/\{slug\}/gi, 'teste-aurabio'),
+              text: welcomeEmailBody.replace(/\{nome\}/gi, 'Vitor (Teste)').replace(/\{slug\}/gi, 'teste-aurabio').replace(/\{email\}/gi, testEmailInput.trim()),
+            }),
+          });
+          const directData = await directRes.json().catch(() => ({}));
+          if (directRes.ok) {
+            showNotification('E-mail de teste enviado com sucesso via Resend!');
+            return;
+          } else if (directData?.message) {
+            showNotification(`Resend: ${directData.message}`);
+            return;
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+      showNotification('Erro de conexão ao enviar e-mail de teste.');
+    } finally {
+      setIsSendingTest(false);
     }
   };
 
@@ -813,16 +927,20 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                 <div className="flex items-center gap-2">
                   <input
                     type="email"
-                    defaultValue="vitorfxzxx@gmail.com"
+                    value={testEmailInput}
+                    onChange={(e) => setTestEmailInput(e.target.value)}
                     placeholder="seuemail@gmail.com"
-                    className="px-3 py-1.5 rounded-lg border border-zinc-300 text-xs bg-white focus:outline-none"
+                    disabled={isSendingTest}
+                    className="px-3 py-1.5 rounded-lg border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900 disabled:opacity-50"
                   />
                   <button
                     type="button"
-                    onClick={() => showNotification('E-mail de teste enviado com sucesso!')}
-                    className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs"
+                    onClick={handleSendTestEmail}
+                    disabled={isSendingTest}
+                    className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-700 text-white rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs flex items-center gap-1.5"
                   >
-                    Enviar Teste
+                    {isSendingTest && <Loader2 size={13} className="animate-spin" />}
+                    <span>{isSendingTest ? 'Enviando...' : 'Enviar Teste'}</span>
                   </button>
                 </div>
               </div>

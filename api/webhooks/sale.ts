@@ -112,6 +112,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pageFields)
       }).catch(err => console.warn('[Webhook] Page creation note:', err));
+
+      // Attempt to dispatch Welcome Email via Resend if configured
+      try {
+        const configDocUrl = `${FIRESTORE_BASE_URL}/aurabio_master_settings/global_master_config`;
+        const configResp = await fetch(configDocUrl);
+        if (configResp.ok) {
+          const configJson = await configResp.json();
+          const f = configJson.fields || {};
+          const resendApiKey = f.resendApiKey?.stringValue;
+          const senderName = f.senderName?.stringValue || 'Aurabio';
+          const senderEmail = f.senderEmail?.stringValue || 'onboarding@resend.dev';
+          const subjectTemplate = f.welcomeEmailSubject?.stringValue || 'Seu link na bio Aurabio está pronto! Acesso imediato';
+          const bodyTemplate = f.welcomeEmailBody?.stringValue || 'Olá {nome},\n\nSua conta no Aurabio foi ativada com sucesso!\nSeu endereço exclusivo: aurabio.link/{slug}\n\nPara acessar e personalizar sua bio:\nhttps://aurabio.link/painel\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.';
+
+          if (resendApiKey && resendApiKey.startsWith('re_')) {
+            const parsedSubj = subjectTemplate.replace(/\{nome\}/gi, name).replace(/\{slug\}/gi, slug).replace(/\{email\}/gi, email);
+            const parsedBody = bodyTemplate.replace(/\{nome\}/gi, name).replace(/\{slug\}/gi, slug).replace(/\{email\}/gi, email);
+
+            const fromAddress = senderEmail.includes('@') && !senderEmail.includes('resend.dev')
+              ? `${senderName} <${senderEmail}>`
+              : `${senderName} <onboarding@resend.dev>`;
+
+            await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${resendApiKey.trim()}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                from: fromAddress,
+                to: [email],
+                subject: parsedSubj,
+                text: parsedBody,
+                html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #18181b;"><h2 style="font-weight: 800;">Aurabio</h2><div style="font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${parsedBody}</div><hr style="border: none; border-top: 1px solid #e4e4e7; margin: 20px 0;" /><p style="font-size: 11px; color: #71717a;">Aurabio — Sua página de links profissional.</p></div>`
+              })
+            }).catch(e => console.warn('[Webhook] Resend delivery notice:', e));
+          }
+        }
+      } catch (emailErr) {
+        console.warn('[Webhook] Welcome email dispatch warning:', emailErr);
+      }
     }
 
     console.log(`[Webhook] Success: Access granted for ${email} with status "${memberStatus}"`);
