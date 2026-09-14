@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import { 
   CheckCircle2, 
-  Sparkles, 
   ArrowRight, 
   Mail, 
-  KeyRound, 
-  Layers, 
-  Smartphone, 
   Copy, 
   Check 
 } from 'lucide-react';
@@ -121,46 +117,6 @@ export const ThankYouPage: React.FC = () => {
               <p className="text-[11px] text-zinc-400 leading-relaxed">
                 Copie seu link exclusivo e cole na bio do Instagram, TikTok, YouTube ou WhatsApp.
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* How It Works & Included Features */}
-        <div className="w-full mt-6 p-6 sm:p-8 rounded-3xl bg-zinc-950 border border-zinc-900 text-left">
-          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">O QUE ESTÁ LIBERADO NA SUA CONTA</span>
-          <h2 className="text-lg sm:text-xl font-black text-white mt-1 mb-5">Tudo o que você pode fazer agora</h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs text-zinc-300">
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/40 border border-zinc-800/50">
-              <Layers size={16} className="text-purple-400 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-white block">Até 3 Páginas Independentes</strong>
-                <span className="text-zinc-400 text-[11px]">Crie links separados para marca pessoal, empresa ou projetos.</span>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/40 border border-zinc-800/50">
-              <Sparkles size={16} className="text-pink-400 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-white block">5 Formatos Cinematográficos</strong>
-                <span className="text-zinc-400 text-[11px]">Alterne a estética a qualquer momento sem perder seus links.</span>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/40 border border-zinc-800/50">
-              <Smartphone size={16} className="text-emerald-400 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-white block">Sincronização em Tempo Real</strong>
-                <span className="text-zinc-400 text-[11px]">Tudo o que você edita reflete no mesmo segundo para os visitantes.</span>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/40 border border-zinc-800/50">
-              <KeyRound size={16} className="text-amber-400 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-white block">Meta Pixel & Trackeamento Real</strong>
-                <span className="text-zinc-400 text-[11px]">Dispare PageView e Lead automático para seus anúncios.</span>
-              </div>
             </div>
           </div>
         </div>
