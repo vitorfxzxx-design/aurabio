@@ -22,7 +22,7 @@ export const ThankYouPage: React.FC = () => {
   };
 
   const handleGoToLogin = () => {
-    window.location.href = '/#/admin';
+    window.location.href = '/admin';
   };
 
   return (
@@ -99,7 +99,7 @@ export const ThankYouPage: React.FC = () => {
               </div>
               <h3 className="text-xs font-bold text-white mb-1">Faça Login</h3>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Acesse o painel em <span className="text-zinc-200 font-mono">aurabio.link/#/admin</span> com seu e-mail e senha.
+                Acesse o painel em <span className="text-zinc-200 font-mono">aurabio.link/admin</span> com seu e-mail e senha.
               </p>
             </div>
 
@@ -212,7 +212,7 @@ export const ThankYouPage: React.FC = () => {
           </button>
 
           <p className="mt-3 text-[11px] text-zinc-500">
-            Link direto de login: <span className="font-mono text-zinc-400">https://aurabio.link/#/admin</span>
+            Link direto de login: <span className="font-mono text-zinc-400">https://aurabio.link/admin</span>
           </p>
         </div>
 
