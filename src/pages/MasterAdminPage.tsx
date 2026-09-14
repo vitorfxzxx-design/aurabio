@@ -97,7 +97,6 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [testEmailInput, setTestEmailInput] = useState('vitorfxzxx@gmail.com');
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [showResendApiKey, setShowResendApiKey] = useState(false);
-  const [showSmtpPass, setShowSmtpPass] = useState(false);
 
   React.useEffect(() => {
     if (masterBranding) {
@@ -738,148 +737,56 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
               </p>
             </div>
 
-            {/* Provider Selection */}
-            <div className="p-4 rounded-xl border border-zinc-200 bg-zinc-50/70 space-y-4">
-              <label className="block text-xs font-bold text-zinc-800">
-                Provedor de Envio de E-mails
-              </label>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Resend Option */}
-                <div 
-                  onClick={() => setEmailProvider('resend')}
-                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                    emailProvider === 'resend'
-                      ? 'border-zinc-950 bg-white shadow-md ring-2 ring-zinc-950/10'
-                      : 'border-zinc-200 bg-white/70 hover:bg-white hover:border-zinc-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-black text-zinc-900">Resend (Recomendado)</span>
-                    <span className="px-2 py-0.5 rounded text-[9px] font-extrabold bg-emerald-100 text-emerald-800">API Rápida</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-500 leading-relaxed">
-                    Até 3.000 e-mails/mês grátis com altíssima taxa de entrega na caixa de entrada sem cair em spam.
+            {/* Resend Configuration */}
+            <div className="p-5 rounded-2xl border border-zinc-200 bg-zinc-50/70 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="block text-xs font-bold text-zinc-900">
+                    Integração Resend
+                  </label>
+                  <p className="text-[11px] text-zinc-500 mt-0.5">
+                    Envio de e-mails transacionais em alta velocidade com autenticação SPF e DKIM.
                   </p>
                 </div>
-
-                {/* SMTP Option */}
-                <div 
-                  onClick={() => setEmailProvider('smtp')}
-                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                    emailProvider === 'smtp'
-                      ? 'border-zinc-950 bg-white shadow-md ring-2 ring-zinc-950/10'
-                      : 'border-zinc-200 bg-white/70 hover:bg-white hover:border-zinc-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-bold text-zinc-900">SMTP Próprio</span>
-                    <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-zinc-100 text-zinc-600">Servidor</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-500 leading-relaxed">
-                    Hostinger, Gmail Workspace, SendGrid, Titan Mail ou Amazon SES.
-                  </p>
-                </div>
+                <span className="px-2.5 py-1 rounded-lg text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ✓ Ativo & Integrado
+                </span>
               </div>
 
               {/* Resend API Key Input */}
-              {emailProvider === 'resend' ? (
-                <div className="pt-2 animate-in fade-in duration-200">
-                  <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
-                    Chave de API do Resend (API Key)
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex-1">
-                      <input
-                        type={showResendApiKey ? "text" : "password"}
-                        value={resendApiKey}
-                        onChange={(e) => setResendApiKey(e.target.value)}
-                        placeholder="re_123456789_..."
-                        className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowResendApiKey(!showResendApiKey)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
-                        title={showResendApiKey ? "Ocultar chave" : "Mostrar chave"}
-                      >
-                        {showResendApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
-                    </div>
-                    <a
-                      href="https://resend.com/api-keys"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-4 py-2.5 text-xs font-bold text-zinc-700 bg-zinc-200/80 hover:bg-zinc-300 rounded-xl transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
+              <div className="pt-1">
+                <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+                  Chave de API do Resend (API Key)
+                </label>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type={showResendApiKey ? "text" : "password"}
+                      value={resendApiKey}
+                      onChange={(e) => setResendApiKey(e.target.value)}
+                      placeholder="re_123456789_..."
+                      className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowResendApiKey(!showResendApiKey)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                      title={showResendApiKey ? "Ocultar chave" : "Mostrar chave"}
                     >
-                      <span>Obter Chave</span>
-                      <ExternalLink size={12} />
-                    </a>
+                      {showResendApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
                   </div>
+                  <a
+                    href="https://resend.com/api-keys"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2.5 text-xs font-bold text-zinc-700 bg-zinc-200/80 hover:bg-zinc-300 rounded-xl transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Obter Chave</span>
+                    <ExternalLink size={12} />
+                  </a>
                 </div>
-              ) : (
-                /* SMTP Credentials Input */
-                <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 animate-in fade-in duration-200">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
-                      Servidor SMTP (Host)
-                    </label>
-                    <input
-                      type="text"
-                      value={smtpHost}
-                      onChange={(e) => setSmtpHost(e.target.value)}
-                      placeholder="smtp.hostinger.com"
-                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
-                      Porta SMTP
-                    </label>
-                    <input
-                      type="text"
-                      value={smtpPort}
-                      onChange={(e) => setSmtpPort(e.target.value)}
-                      placeholder="465 ou 587"
-                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
-                      Usuário SMTP
-                    </label>
-                    <input
-                      type="text"
-                      value={smtpUser}
-                      onChange={(e) => setSmtpUser(e.target.value)}
-                      placeholder="suporte@aurabio.link"
-                      className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
-                      Senha SMTP
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showSmtpPass ? "text" : "password"}
-                        value={smtpPass}
-                        onChange={(e) => setSmtpPass(e.target.value)}
-                        placeholder="Sua senha SMTP"
-                        className="w-full pl-3.5 pr-10 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowSmtpPass(!showSmtpPass)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
-                        title={showSmtpPass ? "Ocultar senha" : "Mostrar senha"}
-                      >
-                        {showSmtpPass ? <EyeOff size={14} /> : <Eye size={14} />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
 
             {/* Template Fields */}
