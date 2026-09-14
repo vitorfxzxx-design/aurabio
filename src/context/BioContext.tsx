@@ -64,6 +64,7 @@ interface BioContextType {
   logoutMaster: () => void;
   members: MasterMember[];
   addMember: (data: Omit<MasterMember, 'id' | 'createdAt'>) => void;
+  updateMember: (memberId: string, updates: Partial<MasterMember>) => void;
   toggleMemberStatus: (memberId: string) => void;
   deleteMember: (memberId: string) => void;
   webhooks: WebhookIntegration[];
@@ -335,6 +336,20 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setMembers(prev => [newMember, ...prev]);
     membersService.upsertMember(newMember);
     showNotification(`Membro ${data.name} adicionado com sucesso!`);
+  };
+
+  const updateMember = (memberId: string, updates: Partial<MasterMember>) => {
+    setMembers(prev =>
+      prev.map(m => {
+        if (m.id === memberId) {
+          const updated = { ...m, ...updates };
+          membersService.upsertMember(updated);
+          showNotification(`Membro ${updated.name || updated.email} atualizado com sucesso!`);
+          return updated;
+        }
+        return m;
+      })
+    );
   };
 
   const toggleMemberStatus = (memberId: string) => {
@@ -727,6 +742,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         logoutMaster,
         members,
         addMember,
+        updateMember,
         toggleMemberStatus,
         deleteMember,
         webhooks,

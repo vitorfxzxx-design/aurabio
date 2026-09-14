@@ -23,10 +23,11 @@ import {
   Activity,
   FileText,
   X,
-  Clock
+  Clock,
+  Pencil
 } from 'lucide-react';
 import { MASTER_ADMIN_PASSWORD, DEFAULT_MASTER_BRANDING } from '../data/defaultData';
-import type { MasterBrandingConfig, WebhookLog } from '../types/bio';
+import type { MasterBrandingConfig, WebhookLog, MasterMember } from '../types/bio';
 import { firebaseWebhooksService } from '../lib/firebase/webhooksService';
 
 interface MasterAdminPageProps {
@@ -41,6 +42,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     logoutMaster,
     members,
     addMember,
+    updateMember,
     toggleMemberStatus,
     deleteMember,
     masterBranding,
@@ -78,6 +80,42 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [newMemberName, setNewMemberName] = useState('');
   const [newMemberSlug, setNewMemberSlug] = useState('');
   const [newMemberPlan, setNewMemberPlan] = useState('Plano Creator (Até 3 Perfis)');
+
+  // Edit Member Modal State
+  const [editingMember, setEditingMember] = useState<MasterMember | null>(null);
+  const [editMemberEmail, setEditMemberEmail] = useState('');
+  const [editMemberName, setEditMemberName] = useState('');
+  const [editMemberSlug, setEditMemberSlug] = useState('');
+  const [editMemberPlan, setEditMemberPlan] = useState('Plano Creator (Até 3 Perfis)');
+  const [editMemberStatus, setEditMemberStatus] = useState<'active' | 'suspended'>('active');
+
+  const handleOpenEditMemberModal = (member: MasterMember) => {
+    setEditingMember(member);
+    setEditMemberEmail(member.email || '');
+    setEditMemberName(member.name || '');
+    setEditMemberSlug(member.slug || '');
+    setEditMemberPlan(member.plan || 'Plano Creator (Até 3 Perfis)');
+    setEditMemberStatus(member.status || 'active');
+  };
+
+  const handleSaveEditMember = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingMember) return;
+    if (!editMemberEmail.trim() || !editMemberSlug.trim()) {
+      showNotification('Preencha o e-mail e o slug do membro.');
+      return;
+    }
+
+    updateMember(editingMember.id, {
+      email: editMemberEmail.trim(),
+      name: editMemberName.trim(),
+      slug: editMemberSlug.trim().toLowerCase().replace(/[^a-z0-9_-]/g, ''),
+      plan: editMemberPlan,
+      status: editMemberStatus,
+    });
+
+    setEditingMember(null);
+  };
 
   // Email Provider State
   const [emailProvider, setEmailProvider] = useState<'resend' | 'smtp'>(() => masterBranding?.emailProvider || 'resend');
@@ -626,6 +664,15 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
 
                         <td className="px-5 py-4 text-right">
                           <div className="inline-flex items-center gap-2">
+                            <button
+                              onClick={() => handleOpenEditMemberModal(member)}
+                              className="px-3 py-1.5 rounded-lg border border-zinc-200 hover:border-zinc-300 text-zinc-700 hover:bg-zinc-50 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                              title="Editar dados e plano do membro"
+                            >
+                              <Pencil size={13} className="text-zinc-500" />
+                              <span>Editar</span>
+                            </button>
+
                             <button
                               onClick={() => toggleMemberStatus(member.id)}
                               className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
@@ -1533,6 +1580,114 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                   className="px-5 py-2 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold cursor-pointer"
                 >
                   Criar Membro
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* MODAL: EDITAR MEMBRO */}
+      {/* ------------------------------------------------------------- */}
+      {editingMember && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border border-zinc-200 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-zinc-100">
+              <div>
+                <h3 className="text-lg font-bold text-zinc-900">Editar Membro</h3>
+                <p className="text-xs text-zinc-400">Atualize os dados e o plano do cliente.</p>
+              </div>
+              <button
+                onClick={() => setEditingMember(null)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditMember} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                  E-mail do Membro
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={editMemberEmail}
+                  onChange={(e) => setEditMemberEmail(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                  Nome / Marca
+                </label>
+                <input
+                  type="text"
+                  value={editMemberName}
+                  onChange={(e) => setEditMemberName(e.target.value)}
+                  placeholder="Nome do Cliente"
+                  className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                  Slug Principal (/slug)
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editMemberSlug}
+                  onChange={(e) => setEditMemberSlug(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl border border-zinc-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                  Plano & Limite de Perfis
+                </label>
+                <select
+                  value={editMemberPlan}
+                  onChange={(e) => setEditMemberPlan(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900 font-medium"
+                >
+                  <option value="Plano Creator (Até 3 Perfis)">Plano Creator (Até 3 Perfis)</option>
+                  <option value="Plano PRO (Até 10 Perfis)">Plano PRO (Até 10 Perfis)</option>
+                  <option value="MASTER Vitalício (Ilimitado)">MASTER Vitalício (Ilimitado)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                  Status do Acesso
+                </label>
+                <select
+                  value={editMemberStatus}
+                  onChange={(e) => setEditMemberStatus(e.target.value as 'active' | 'suspended')}
+                  className="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900 font-medium"
+                >
+                  <option value="active">Ativo (Acesso Liberado)</option>
+                  <option value="suspended">Suspenso (Acesso Bloqueado)</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-zinc-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingMember(null)}
+                  className="px-4 py-2 rounded-xl border border-zinc-200 text-xs font-bold text-zinc-600 hover:bg-zinc-50 cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl text-xs font-bold cursor-pointer shadow-sm"
+                >
+                  Salvar Alterações
                 </button>
               </div>
             </form>
