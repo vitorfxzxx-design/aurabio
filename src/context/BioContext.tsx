@@ -392,6 +392,61 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     localStorage.setItem(MASTER_BRANDING_KEY, JSON.stringify(masterBranding));
+
+    // Dynamically apply SEO and Branding to the browser <head>
+    if (masterBranding) {
+      if (masterBranding.seoTitle) {
+        document.title = masterBranding.seoTitle;
+      }
+
+      if (masterBranding.seoDescription) {
+        let metaDesc = document.querySelector('meta[name="description"]');
+        if (!metaDesc) {
+          metaDesc = document.createElement('meta');
+          metaDesc.setAttribute('name', 'description');
+          document.head.appendChild(metaDesc);
+        }
+        metaDesc.setAttribute('content', masterBranding.seoDescription);
+
+        let ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) ogDesc.setAttribute('content', masterBranding.seoDescription);
+
+        let twitterDesc = document.querySelector('meta[name="twitter:description"]');
+        if (twitterDesc) twitterDesc.setAttribute('content', masterBranding.seoDescription);
+      }
+
+      if (masterBranding.seoTitle) {
+        let ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', masterBranding.seoTitle);
+
+        let twitterTitle = document.querySelector('meta[name="twitter:title"]');
+        if (twitterTitle) twitterTitle.setAttribute('content', masterBranding.seoTitle);
+      }
+
+      if (masterBranding.keywords) {
+        let metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (!metaKeywords) {
+          metaKeywords = document.createElement('meta');
+          metaKeywords.setAttribute('name', 'keywords');
+          document.head.appendChild(metaKeywords);
+        }
+        metaKeywords.setAttribute('content', masterBranding.keywords);
+      }
+
+      if (masterBranding.faviconUrl) {
+        let faviconLink = document.querySelector('link[rel="icon"]');
+        if (faviconLink) {
+          faviconLink.setAttribute('href', masterBranding.faviconUrl);
+        }
+      }
+
+      if (masterBranding.ogImageUrl) {
+        let ogImg = document.querySelector('meta[property="og:image"]');
+        if (ogImg) ogImg.setAttribute('content', masterBranding.ogImageUrl);
+        let twImg = document.querySelector('meta[name="twitter:image"]');
+        if (twImg) twImg.setAttribute('content', masterBranding.ogImageUrl);
+      }
+    }
   }, [masterBranding]);
 
   const loginUser = (email: string, pass?: string): boolean => {
