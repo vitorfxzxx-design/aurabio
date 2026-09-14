@@ -80,7 +80,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [newMemberName, setNewMemberName] = useState('');
   const [newMemberSlug, setNewMemberSlug] = useState('');
   const [newMemberPlan, setNewMemberPlan] = useState('Plano Creator (Até 3 Perfis)');
-  const [newMemberPassword, setNewMemberPassword] = useState('');
+  const [newMemberPassword, setNewMemberPassword] = useState('123456');
   const [showNewMemberPassword, setShowNewMemberPassword] = useState(false);
 
   // Edit Member Modal State
@@ -100,7 +100,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     setEditMemberSlug(member.slug || '');
     setEditMemberPlan(member.plan || 'Plano Creator (Até 3 Perfis)');
     setEditMemberStatus(member.status || 'active');
-    setEditMemberPassword(member.password || '');
+    setEditMemberPassword(member.password || '123456');
     setShowEditMemberPassword(false);
   };
 
@@ -109,6 +109,11 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     if (!editingMember) return;
     if (!editMemberEmail.trim() || !editMemberSlug.trim()) {
       showNotification('Preencha o e-mail e o slug do membro.');
+      return;
+    }
+
+    if (editMemberPassword.trim().length > 0 && editMemberPassword.trim().length < 6) {
+      showNotification('A senha deve ter no mínimo 6 caracteres.');
       return;
     }
 
@@ -137,8 +142,8 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [smtpPass, setSmtpPass] = useState(() => masterBranding?.smtpPass || '');
   const [senderName, setSenderName] = useState(() => masterBranding?.senderName || 'Aurabio Suporte');
   const [senderEmail, setSenderEmail] = useState(() => masterBranding?.senderEmail || 'contato@aurabio.link');
-  const DEFAULT_WELCOME_SUBJECT = 'Seu link na bio Aurabio está pronto! Acesso imediato';
-  const DEFAULT_WELCOME_BODY = 'Olá {nome},\n\nPara acessar e personalizar sua bio, acesse o site:\nhttps://aurabio.link/\n\nQualquer dúvida, contate nosso time em Corefysystems@gmail.com.\n\nAtenciosamente,\nEquipe Aurabio.';
+  const DEFAULT_WELCOME_SUBJECT = 'Seu acesso ao Aurabio está pronto!';
+  const DEFAULT_WELCOME_BODY = 'Olá {nome},\n\nSua conta no Aurabio foi criada com sucesso!\n\nAcesse o painel com os seguintes dados:\nSite: https://aurabio.link/\nE-mail: {email}\nSenha: {senha}\n\nSeu link na bio: https://aurabio.link/{slug}\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.\n\nAtenciosamente,\nEquipe Aurabio.';
 
   const DEFAULT_RECOVERY_SUBJECT = 'Redefinição de senha — Aurabio';
   const DEFAULT_RECOVERY_BODY = 'Olá {nome},\n\nRecebemos uma solicitação para redefinir a senha da sua conta no Aurabio ({email}).\n\nPara cadastrar uma nova senha, acesse o link:\nhttps://aurabio.link/recuperar-senha?email={email}\n\nSe você não fez esta solicitação, desconsidere este e-mail.\n\nAtenciosamente,\nEquipe Aurabio.';
@@ -226,11 +231,17 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
       return;
     }
 
+    const finalPass = newMemberPassword.trim() || '123456';
+    if (finalPass.length < 6) {
+      showNotification('A senha deve ter no mínimo 6 caracteres.');
+      return;
+    }
+
     addMember({
       email: newMemberEmail.trim(),
       name: newMemberName.trim() || newMemberSlug.trim(),
       slug: newMemberSlug.trim().toLowerCase().replace(/[^a-z0-9_-]/g, ''),
-      password: newMemberPassword.trim() || undefined,
+      password: finalPass,
       status: 'active',
       plan: newMemberPlan,
       visits: 0,
@@ -241,7 +252,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
     setNewMemberEmail('');
     setNewMemberName('');
     setNewMemberSlug('');
-    setNewMemberPassword('');
+    setNewMemberPassword('123456');
   };
 
   const copyToClipboard = (text: string, label: string) => {
@@ -322,12 +333,14 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
             const parsedSubject = (currentSubject || 'Acesso liberado — Aurabio')
               .replace(/\{nome\}/gi, 'Vitor (Teste)')
               .replace(/\{slug\}/gi, 'teste-aurabio')
-              .replace(/\{email\}/gi, testEmailInput.trim());
+              .replace(/\{email\}/gi, testEmailInput.trim())
+              .replace(/\{senha\}/gi, '123456');
 
             const parsedBodyText = (currentBody || 'Olá {nome},\n\nSua conta no Aurabio foi criada com sucesso!')
               .replace(/\{nome\}/gi, 'Vitor (Teste)')
               .replace(/\{slug\}/gi, 'teste-aurabio')
-              .replace(/\{email\}/gi, testEmailInput.trim());
+              .replace(/\{email\}/gi, testEmailInput.trim())
+              .replace(/\{senha\}/gi, '123456');
 
             const directRes = await fetch('https://api.resend.com/emails', {
               method: 'POST',
@@ -1162,7 +1175,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                         Corpo do E-mail de Boas-Vindas
                       </label>
                       <span className="text-[10px] text-zinc-400">
-                        Tags: <code className="text-zinc-600 font-mono font-bold">{'{nome}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{slug}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{email}'}</code>
+                        Tags: <code className="text-zinc-600 font-mono font-bold">{'{nome}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{slug}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{email}'}</code>, <code className="text-zinc-600 font-mono font-bold">{'{senha}'}</code>
                       </span>
                     </div>
                     <textarea
@@ -1582,14 +1595,14 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
 
               <div>
                 <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                  Senha Inicial (Opcional)
+                  Senha Inicial (Padrão: 123456)
                 </label>
                 <div className="relative flex items-center">
                   <input
                     type={showNewMemberPassword ? 'text' : 'password'}
                     value={newMemberPassword}
                     onChange={(e) => setNewMemberPassword(e.target.value)}
-                    placeholder="Defina uma senha (ou deixe em branco)"
+                    placeholder="Mínimo de 6 caracteres (padrão 123456)"
                     className="w-full px-3.5 pr-10 py-2 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900"
                   />
                   <button
@@ -1600,6 +1613,9 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                     {showNewMemberPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
+                <p className="text-[11px] text-zinc-400 mt-1">
+                  Exigência de no mínimo 6 caracteres (sem exigência de símbolos ou maiúsculas).
+                </p>
               </div>
 
               <div className="flex items-center justify-end gap-2.5 pt-2">
@@ -1702,7 +1718,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                   </button>
                 </div>
                 <p className="text-[11px] text-zinc-400 mt-1">
-                  Defina ou altere a senha que o cliente utiliza para fazer login no painel.
+                  Defina a senha do usuário (mínimo de 6 caracteres simples, sem exigência de símbolos).
                 </p>
               </div>
 

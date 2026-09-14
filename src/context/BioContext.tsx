@@ -288,24 +288,28 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return false;
     }
 
+    if (!pass || pass.length < 6) {
+      showNotification('A senha deve ter no mínimo 6 caracteres.');
+      return false;
+    }
+
     const foundMember = members.find(m => m.email?.toLowerCase().trim() === cleanEmail);
     if (foundMember) {
       if (foundMember.status === 'suspended') {
         showNotification('Esta conta está suspensa. Entre em contato com o suporte.');
         return false;
       }
-      if (foundMember.password && foundMember.password.trim().length > 0) {
-        if (pass !== foundMember.password) {
-          showNotification('Senha incorreta.');
-          return false;
-        }
+      
+      const expectedPassword = (foundMember.password && foundMember.password.trim().length > 0)
+        ? foundMember.password.trim()
+        : '123456';
+
+      if (pass !== expectedPassword) {
+        showNotification('Senha incorreta.');
+        return false;
       }
     }
 
-    if (!pass || pass.length < 3) {
-      showNotification('Senha inválida.');
-      return false;
-    }
     setIsUserAuthenticated(true);
     setCurrentUserEmail(cleanEmail);
     showNotification(`Bem-vindo de volta!`);

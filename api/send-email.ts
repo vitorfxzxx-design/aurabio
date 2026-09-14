@@ -25,6 +25,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       resendApiKey,
       name = 'Cliente',
       slug = 'meulink',
+      password = '123456',
     } = req.body || {};
 
     if (!to) {
@@ -42,12 +43,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const parsedSubject = (subject || 'Acesso liberado — Aurabio')
       .replace(/\{nome\}/gi, name)
       .replace(/\{slug\}/gi, slug)
-      .replace(/\{email\}/gi, to);
+      .replace(/\{email\}/gi, to)
+      .replace(/\{senha\}/gi, password);
 
-    const parsedBodyText = (body || 'Olá {nome},\n\nSua conta no Aurabio foi criada com sucesso!')
+    const parsedBodyText = (body || 'Olá {nome},\n\nSua conta no Aurabio foi criada com sucesso!\n\nSeus dados de acesso:\nE-mail: {email}\nSenha: {senha}\n\nSite: https://aurabio.link/')
       .replace(/\{nome\}/gi, name)
       .replace(/\{slug\}/gi, slug)
-      .replace(/\{email\}/gi, to);
+      .replace(/\{email\}/gi, to)
+      .replace(/\{senha\}/gi, password);
 
     // Convert newlines to HTML paragraphs/breaks
     const htmlContent = `

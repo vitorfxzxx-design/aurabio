@@ -62,6 +62,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       plan = payload.product.name;
     }
 
+    // Determine member status
+    let memberStatus: 'active' | 'suspended' = 'active';
+    if (isCancelled && !isApproved) {
+      memberStatus = 'suspended';
+    }
+
+    // Default password for new members
+    const defaultPassword = '123456';
+
     // Save/Update Member in Firestore via REST API
     const memberDocumentUrl = `${FIRESTORE_BASE_URL}/aurabio_members/${memberId}`;
 
@@ -71,6 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         email: { stringValue: email },
         name: { stringValue: name },
         slug: { stringValue: slug },
+        password: { stringValue: defaultPassword },
         status: { stringValue: memberStatus },
         plan: { stringValue: plan },
         updatedAt: { stringValue: new Date().toISOString() },
@@ -128,12 +138,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           const resendApiKey = f.resendApiKey?.stringValue;
           const senderName = f.senderName?.stringValue || 'Aurabio';
           const senderEmail = f.senderEmail?.stringValue || 'onboarding@resend.dev';
-          const subjectTemplate = f.welcomeEmailSubject?.stringValue || 'Seu link na bio Aurabio está pronto! Acesso imediato';
-          const bodyTemplate = f.welcomeEmailBody?.stringValue || 'Olá {nome},\n\nSua conta no Aurabio foi ativada com sucesso!\nSeu endereço exclusivo: aurabio.link/{slug}\n\nPara acessar e personalizar sua bio:\nhttps://aurabio.link/painel\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.';
+          const subjectTemplate = f.welcomeEmailSubject?.stringValue || 'Seu acesso ao Aurabio está pronto!';
+          const bodyTemplate = f.welcomeEmailBody?.stringValue || 'Olá {nome},\n\nSua conta no Aurabio foi ativada com sucesso!\n\nSeus dados de acesso:\nSite: https://aurabio.link/\nE-mail: {email}\nSenha: {senha}\n\nSeu endereço exclusivo: https://aurabio.link/{slug}\n\nQualquer dúvida, responda a este e-mail ou contate nosso time em Corefysystems@gmail.com.';
 
           if (resendApiKey && resendApiKey.startsWith('re_')) {
-            const parsedSubj = subjectTemplate.replace(/\{nome\}/gi, name).replace(/\{slug\}/gi, slug).replace(/\{email\}/gi, email);
-            const parsedBody = bodyTemplate.replace(/\{nome\}/gi, name).replace(/\{slug\}/gi, slug).replace(/\{email\}/gi, email);
+            const parsedSubj = subjectTemplate
+              .replace(/\{nome\}/gi, name)
+              .replace(/\{slug\}/gi, slug)
+              .replace(/\{email\}/gi, email)
+              .replace(/\{senha\}/gi, defaultPassword);
+
+            const parsedBody = bodyTemplate
+              .replace(/\{nome\}/gi, name)
+              .replace(/\{slug\}/gi, slug)
+              .replace(/\{email\}/gi, email)
+              .replace(/\{senha\}/gi, defaultPassword);
 
             let fromAddress = `${senderName} <contato@mail.aurabio.link>`;
             let replyToAddress = senderEmail && senderEmail.includes('@') ? senderEmail.trim() : 'contato@aurabio.link';
