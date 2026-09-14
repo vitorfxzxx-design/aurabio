@@ -52,6 +52,8 @@ interface BioContextType {
   // User Authentication
   isUserAuthenticated: boolean;
   currentUserEmail: string;
+  maxAllowedPages: number;
+  currentMemberPlan: string;
   loginUser: (email: string, pass?: string) => boolean;
   logoutUser: () => void;
 
@@ -470,9 +472,21 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  // Find current logged in member's plan & page limits
+  const currentMember = members.find(
+    m => m.email?.toLowerCase().trim() === currentUserEmail?.toLowerCase().trim()
+  );
+  const isProPlan = !!currentMember && (
+    currentMember.plan?.toLowerCase().includes('pro') || 
+    currentMember.plan?.toLowerCase().includes('10') || 
+    currentMember.plan?.toLowerCase().includes('master')
+  );
+  const maxAllowedPages = isProPlan ? 10 : 3;
+  const currentMemberPlan = currentMember?.plan || (isProPlan ? 'Plano PRO (Até 10 Perfis)' : 'Plano Creator (Até 3 Perfis)');
+
   const createPage = (name: string, slug: string): boolean => {
-    if (pages.length >= 3) {
-      showNotification('Limite de 3 páginas atingido no plano atual.');
+    if (pages.length >= maxAllowedPages) {
+      showNotification(`Limite de ${maxAllowedPages} páginas atingido no ${currentMemberPlan}.`);
       return false;
     }
 
@@ -701,6 +715,8 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         // User Auth
         isUserAuthenticated,
         currentUserEmail,
+        maxAllowedPages,
+        currentMemberPlan,
         loginUser,
         logoutUser,
 

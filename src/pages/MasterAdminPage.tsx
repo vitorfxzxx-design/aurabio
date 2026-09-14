@@ -77,7 +77,7 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [newMemberEmail, setNewMemberEmail] = useState('');
   const [newMemberName, setNewMemberName] = useState('');
   const [newMemberSlug, setNewMemberSlug] = useState('');
-  const [newMemberPlan, setNewMemberPlan] = useState('PRO Anual');
+  const [newMemberPlan, setNewMemberPlan] = useState('Plano Creator (Até 3 Perfis)');
 
   // Email Provider State
   const [emailProvider, setEmailProvider] = useState<'resend' | 'smtp'>(() => masterBranding?.emailProvider || 'resend');
@@ -1514,9 +1514,9 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
                   onChange={(e) => setNewMemberPlan(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-zinc-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900"
                 >
-                  <option value="PRO Anual">PRO Anual</option>
-                  <option value="PRO Mensal">PRO Mensal</option>
-                  <option value="MASTER Vitalício">MASTER Vitalício</option>
+                  <option value="Plano Creator (Até 3 Perfis)">Plano Creator (Até 3 Perfis)</option>
+                  <option value="Plano PRO (Até 10 Perfis)">Plano PRO (Até 10 Perfis)</option>
+                  <option value="MASTER Vitalício (Ilimitado)">MASTER Vitalício (Ilimitado)</option>
                 </select>
               </div>
 

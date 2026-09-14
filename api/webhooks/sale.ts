@@ -54,8 +54,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const memberId = `mem_${email.replace(/[^a-z0-9]/g, '_')}`;
     const slug = email.split('@')[0].replace(/[^a-z0-9_-]/g, '').toLowerCase() || `user_${Date.now()}`;
-    const memberStatus = isCancelled ? 'suspended' : 'active';
-    const plan = payload.product?.name || payload.subscription?.name || 'Aura Pro V.I.P';
+    const rawPlanName = (payload.product?.name || payload.subscription?.name || payload.plan?.name || '').toLowerCase();
+    let plan = 'Plano Creator (Até 3 Perfis)';
+    if (rawPlanName.includes('10') || rawPlanName.includes('pro') || rawPlanName.includes('agencia') || rawPlanName.includes('agência')) {
+      plan = 'Plano PRO (Até 10 Perfis)';
+    } else if (payload.product?.name) {
+      plan = payload.product.name;
+    }
 
     // Save/Update Member in Firestore via REST API
     const memberDocumentUrl = `${FIRESTORE_BASE_URL}/aurabio_members/${memberId}`;

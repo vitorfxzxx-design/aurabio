@@ -3,7 +3,15 @@ import { useBio } from '../../../context/BioContext';
 import { Plus, Trash2, Info, Star, User } from 'lucide-react';
 
 export const AccountsTab: React.FC = () => {
-  const { pages, activePageId, setActivePageId, createPage, deletePage } = useBio();
+  const { 
+    pages, 
+    activePageId, 
+    setActivePageId, 
+    createPage, 
+    deletePage, 
+    maxAllowedPages, 
+    currentMemberPlan 
+  } = useBio();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newName, setNewName] = useState('');
   const [newSlug, setNewSlug] = useState('');
@@ -23,9 +31,14 @@ export const AccountsTab: React.FC = () => {
     <div className="space-y-6">
       {/* Tab Header */}
       <div>
-        <h2 className="text-xl font-bold text-zinc-900 tracking-tight">Contas</h2>
+        <div className="flex items-center gap-2.5">
+          <h2 className="text-xl font-bold text-zinc-900 tracking-tight">Contas</h2>
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-zinc-900 text-zinc-100">
+            {currentMemberPlan}
+          </span>
+        </div>
         <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-          Você pode criar até 3 páginas dentro da mesma conta. Selecione a página que deseja editar.
+          Você pode criar até {maxAllowedPages} perfis/páginas dentro da sua conta. Selecione a página que deseja editar.
         </p>
       </div>
 
@@ -34,7 +47,7 @@ export const AccountsTab: React.FC = () => {
         <div className="flex items-center justify-between text-xs font-semibold text-zinc-500 uppercase tracking-wider">
           <span>Suas páginas</span>
           <span className="bg-zinc-100 text-zinc-700 px-2 py-0.5 rounded-full font-mono">
-            {pages.length}/3
+            {pages.length}/{maxAllowedPages}
           </span>
         </div>
 
@@ -106,13 +119,13 @@ export const AccountsTab: React.FC = () => {
         </div>
 
         {/* Create new page button */}
-        {pages.length < 3 && (
+        {pages.length < maxAllowedPages && (
           <button
             onClick={() => setShowCreateModal(true)}
             className="w-full py-3 px-4 border border-dashed border-zinc-300 rounded-xl hover:border-zinc-400 hover:bg-zinc-50 flex items-center justify-center gap-2 text-sm font-medium text-zinc-700 transition-colors"
           >
             <Plus size={16} />
-            <span>Criar nova página</span>
+            <span>Criar novo perfil ({pages.length}/{maxAllowedPages})</span>
           </button>
         )}
       </div>
@@ -124,9 +137,9 @@ export const AccountsTab: React.FC = () => {
           Como funciona
         </h3>
         <ul className="space-y-2 text-xs text-zinc-600 list-disc list-inside leading-relaxed">
-          <li>Cada conta pode ter até <strong className="text-zinc-900">3 páginas</strong> diferentes.</li>
-          <li>Cada página tem seu próprio endereço (<span className="font-mono text-zinc-800">aurabio.link/nome</span>), links, cores e estatísticas.</li>
-          <li>Selecione uma página aqui e edite nas abas ao lado — todas as mudanças são salvas automaticamente.</li>
+          <li>Sua conta ({currentMemberPlan}) permite ter até <strong className="text-zinc-900">{maxAllowedPages} perfis/páginas</strong> diferentes.</li>
+          <li>Cada perfil tem seu próprio link exclusivo (<span className="font-mono text-zinc-800">aurabio.link/nome</span>), layout, cores, links e métricas independentes.</li>
+          <li>Selecione um perfil acima para alternar e editar — todas as alterações são sincronizadas e salvas automaticamente.</li>
         </ul>
       </div>
 
