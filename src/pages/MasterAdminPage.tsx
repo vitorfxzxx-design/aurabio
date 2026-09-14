@@ -83,11 +83,11 @@ export const MasterAdminPage: React.FC<MasterAdminPageProps> = ({ onBackToCreato
   const [smtpPass, setSmtpPass] = useState(() => masterBranding?.smtpPass || '');
   const [senderName, setSenderName] = useState(() => masterBranding?.senderName || 'Aurabio Suporte');
   const [senderEmail, setSenderEmail] = useState(() => masterBranding?.senderEmail || 'contato@aurabio.link');
-  const DEFAULT_WELCOME_SUBJECT = 'Seu link na bio Aurabio está pronto! Acesso imediato 🚀';
-  const DEFAULT_WELCOME_BODY = 'Olá {nome},\n\nSeja muito bem-vindo ao Aurabio! Sua conta foi ativada com sucesso.\n\nAqui estão os detalhes do seu acesso:\n🔗 Seu Link na Bio exclusivo: https://aurabio.link/{slug}\n🔑 E-mail de login: {email}\n\nAcesse seu painel agora para personalizar sua página, cores e links:\n👉 https://aurabio.link/\n\nPrecisa de ajuda ou suporte?\nBasta responder a este e-mail ou contatar nosso time em Corefysystems@gmail.com.\n\nEquipe Aurabio\nhttps://aurabio.link';
+  const DEFAULT_WELCOME_SUBJECT = 'Seu link na bio Aurabio está pronto! Acesso imediato';
+  const DEFAULT_WELCOME_BODY = 'Olá {nome},\n\nPara acessar e personalizar sua bio, acesse o site:\nhttps://aurabio.link/\n\nQualquer dúvida, contate nosso time em Corefysystems@gmail.com.\n\nAtenciosamente,\nEquipe Aurabio.';
 
-  const DEFAULT_RECOVERY_SUBJECT = 'Redefinição de senha — Aurabio 🔐';
-  const DEFAULT_RECOVERY_BODY = 'Olá {nome},\n\nRecebemos uma solicitação para redefinir a senha da sua conta no Aurabio ({email}).\n\nPara cadastrar uma nova senha com segurança, clique no link abaixo:\n👉 https://aurabio.link/recuperar-senha?email={email}\n\nSe você não fez esta solicitação, desconsidere este e-mail. Sua conta continua 100% segura.\n\nEquipe Aurabio\nhttps://aurabio.link';
+  const DEFAULT_RECOVERY_SUBJECT = 'Redefinição de senha — Aurabio';
+  const DEFAULT_RECOVERY_BODY = 'Olá {nome},\n\nRecebemos uma solicitação para redefinir a senha da sua conta no Aurabio ({email}).\n\nPara cadastrar uma nova senha, acesse o link:\nhttps://aurabio.link/recuperar-senha?email={email}\n\nSe você não fez esta solicitação, desconsidere este e-mail.\n\nAtenciosamente,\nEquipe Aurabio.';
 
   const [emailTemplateTab, setEmailTemplateTab] = useState<'welcome' | 'recovery'>('welcome');
   const [welcomeEmailSubject, setWelcomeEmailSubject] = useState(() => masterBranding?.welcomeEmailSubject || DEFAULT_WELCOME_SUBJECT);
