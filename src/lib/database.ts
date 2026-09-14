@@ -45,6 +45,10 @@ export const dbMembersService = {
     return firebaseMembersService.getAllMembers();
   },
 
+  subscribeToAllMembers(callback: (members: MasterMember[]) => void): () => void {
+    return firebaseMembersService.subscribeToAllMembers(callback);
+  },
+
   async upsertMember(member: MasterMember): Promise<boolean> {
     return firebaseMembersService.upsertMember(member);
   },

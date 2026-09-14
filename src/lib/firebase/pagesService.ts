@@ -21,6 +21,7 @@ const mapDocToBioPage = (docSnap: any): BioPage => {
     id: row.id || docSnap.id,
     slug: row.slug || '',
     name: row.name || 'Sem nome',
+    userEmail: (row.userEmail || row.user_email || '').trim().toLowerCase(),
     avatarUrl: row.avatarUrl || row.avatar_url || '',
     avatarZoom: Number(row.avatarZoom ?? row.avatar_zoom) || 1,
     avatarPosition: row.avatarPosition || row.avatar_position || { x: 50, y: 50 },

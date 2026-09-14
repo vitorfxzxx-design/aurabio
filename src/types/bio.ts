@@ -70,6 +70,7 @@ export interface BioPage {
   id: string;
   slug: string;
   name: string;
+  userEmail?: string;
   avatarUrl: string;
   avatarZoom?: number; // e.g., 1 to 3
   avatarPosition?: { x: number; y: number }; // percentages -100 to 100 or px offset

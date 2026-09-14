@@ -3,7 +3,8 @@ import {
   doc, 
   getDocs, 
   setDoc, 
-  deleteDoc 
+  deleteDoc,
+  onSnapshot
 } from 'firebase/firestore';
 import { db } from './client';
 import type { MasterMember } from '../../types/bio';
@@ -27,7 +28,7 @@ export const firebaseMembersService = {
           password: row.password || '',
           status: (row.status as 'active' | 'suspended') || 'active',
           plan: row.plan || 'Aura Pro V.I.P',
-          createdAt: row.createdAt ? new Date(row.createdAt).toLocaleDateString('pt-BR') : '',
+          createdAt: row.createdAt ? (typeof row.createdAt === 'string' && row.createdAt.includes('/') ? row.createdAt : new Date(row.createdAt).toLocaleDateString('pt-BR')) : '',
           visits: row.visits || 0,
           clicks: row.clicks || 0,
         };
@@ -35,6 +36,35 @@ export const firebaseMembersService = {
     } catch (err) {
       console.warn('[aurabio:firebase] Error fetching members:', err);
       return [];
+    }
+  },
+
+  subscribeToAllMembers(callback: (members: MasterMember[]) => void): () => void {
+    try {
+      const colRef = collection(db, COLLECTION);
+      return onSnapshot(colRef, (snapshot) => {
+        const list = snapshot.docs.map((docSnap): MasterMember => {
+          const row = docSnap.data();
+          return {
+            id: row.id || docSnap.id,
+            email: row.email || '',
+            name: row.name || '',
+            slug: row.slug || '',
+            password: row.password || '',
+            status: (row.status as 'active' | 'suspended') || 'active',
+            plan: row.plan || 'Aura Pro V.I.P',
+            createdAt: row.createdAt ? (typeof row.createdAt === 'string' && row.createdAt.includes('/') ? row.createdAt : new Date(row.createdAt).toLocaleDateString('pt-BR')) : '',
+            visits: row.visits || 0,
+            clicks: row.clicks || 0,
+          };
+        });
+        callback(list);
+      }, (err) => {
+        console.warn('[aurabio:firebase] Realtime members sync error:', err);
+      });
+    } catch (err) {
+      console.warn('[aurabio:firebase] Subscribe all members failed:', err);
+      return () => {};
     }
   },
 

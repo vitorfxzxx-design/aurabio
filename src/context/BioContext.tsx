@@ -87,6 +87,16 @@ const MASTER_AUTH_KEY = 'aurabio_master_auth_v2';
 const USER_AUTH_KEY = 'aurabio_user_auth_v2';
 const USER_EMAIL_KEY = 'aurabio_user_email_v2';
 
+const getStorageKeyForUser = (email: string) => {
+  const clean = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+  return `aurabio_pages_${clean}`;
+};
+
+const getActiveKeyForUser = (email: string) => {
+  const clean = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+  return `aurabio_active_page_${clean}`;
+};
+
 const BioContext = createContext<BioContextType | undefined>(undefined);
 
 export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -97,7 +107,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string>(() => {
-    return localStorage.getItem(USER_EMAIL_KEY) || 'membro@aurabio.link';
+    return localStorage.getItem(USER_EMAIL_KEY) || MASTER_ADMIN_EMAIL;
   });
 
   useEffect(() => {
@@ -108,8 +118,10 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem(USER_EMAIL_KEY, currentUserEmail);
   }, [currentUserEmail]);
 
+  // Initial pages scoped to currentUserEmail
   const [pages, setPages] = useState<BioPage[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const userKey = getStorageKeyForUser(currentUserEmail || MASTER_ADMIN_EMAIL);
+    const saved = localStorage.getItem(userKey);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -118,56 +130,151 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         console.error('Failed to parse saved pages:', e);
       }
     }
-    return DEFAULT_PAGES;
+    // Check legacy global storage if master
+    if (currentUserEmail.toLowerCase() === MASTER_ADMIN_EMAIL.toLowerCase()) {
+      const legacySaved = localStorage.getItem(STORAGE_KEY);
+      if (legacySaved) {
+        try {
+          const parsed = JSON.parse(legacySaved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    return [
+      {
+        ...DEFAULT_PAGES[0],
+        id: `page_${Date.now()}`,
+        userEmail: currentUserEmail.toLowerCase(),
+      }
+    ];
   });
 
   // Fetch and sync data with Firestore in Real-Time
   useEffect(() => {
-    // 1. Subscribe to Real-Time Pages from Cloud
+    const cleanUserEmail = currentUserEmail.trim().toLowerCase();
+    const userStorageKey = getStorageKeyForUser(cleanUserEmail);
+
+    // 1. Subscribe to Real-Time Pages from Cloud and filter for CURRENT USER ONLY
     const unsubscribePages = pagesService.subscribeToAllPages((cloudPages) => {
       if (cloudPages && cloudPages.length > 0) {
-        setPages(currentLocalPages => {
-          // If local is default placeholder, adopt cloud immediately
-          const isLocalDefault = currentLocalPages.length === 1 && 
-            (currentLocalPages[0].name === 'SEU NOME' || currentLocalPages[0].slug === 'suapagina');
-
-          if (isLocalDefault) {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudPages)); } catch {}
-            return cloudPages;
+        // Filter cloud pages specifically owned by this user
+        const userCloudPages = cloudPages.filter(p => {
+          if (!p.userEmail) {
+            // Legacy pages without userEmail belong to MASTER admin
+            return cleanUserEmail === MASTER_ADMIN_EMAIL.toLowerCase();
           }
-
-          // Merge by latest updated time or prefer cloud updates
-          const merged = currentLocalPages.map(localPage => {
-            const cloudMatch = cloudPages.find(cp => cp.id === localPage.id || cp.slug === localPage.slug);
-            if (!cloudMatch) return localPage;
-            
-            const localTime = new Date(localPage.updatedAt || 0).getTime();
-            const cloudTime = new Date(cloudMatch.updatedAt || 0).getTime();
-            if (cloudTime >= localTime) {
-              return cloudMatch;
-            }
-            return localPage;
-          });
-
-          cloudPages.forEach(cp => {
-            if (!merged.some(p => p.id === cp.id || p.slug === cp.slug)) {
-              merged.push(cp);
-            }
-          });
-
-          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch {}
-          return merged;
+          return p.userEmail.toLowerCase().trim() === cleanUserEmail;
         });
+
+        if (userCloudPages.length > 0) {
+          setPages(currentLocalPages => {
+            const isLocalDefault = currentLocalPages.length === 1 && 
+              (currentLocalPages[0].name === 'SEU NOME' || currentLocalPages[0].slug === 'suapagina');
+
+            if (isLocalDefault) {
+              try { localStorage.setItem(userStorageKey, JSON.stringify(userCloudPages)); } catch {}
+              return userCloudPages;
+            }
+
+            // Merge by latest updated time
+            const merged = currentLocalPages.map(localPage => {
+              const cloudMatch = userCloudPages.find(cp => cp.id === localPage.id || cp.slug === localPage.slug);
+              if (!cloudMatch) return localPage;
+              
+              const localTime = new Date(localPage.updatedAt || 0).getTime();
+              const cloudTime = new Date(cloudMatch.updatedAt || 0).getTime();
+              if (cloudTime >= localTime) {
+                return cloudMatch;
+              }
+              return localPage;
+            });
+
+            userCloudPages.forEach(cp => {
+              if (!merged.some(p => p.id === cp.id || p.slug === cp.slug)) {
+                merged.push(cp);
+              }
+            });
+
+            try { localStorage.setItem(userStorageKey, JSON.stringify(merged)); } catch {}
+            return merged;
+          });
+        } else {
+          // New user without cloud pages yet: initialize clean default page for this user
+          setPages(currentLocalPages => {
+            const hasUserPage = currentLocalPages.some(p => p.userEmail === cleanUserEmail);
+            if (!hasUserPage && cleanUserEmail !== MASTER_ADMIN_EMAIL.toLowerCase()) {
+              const defaultSlug = cleanUserEmail.split('@')[0].replace(/[^a-z0-9_-]/g, '').toLowerCase() || `bio_${Date.now()}`;
+              const initialUserPage: BioPage = {
+                ...DEFAULT_PAGES[0],
+                id: `page_${Date.now()}`,
+                slug: defaultSlug,
+                name: 'MEU LINK NA BIO',
+                userEmail: cleanUserEmail,
+                updatedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+              };
+              try { localStorage.setItem(userStorageKey, JSON.stringify([initialUserPage])); } catch {}
+              pagesService.upsertPage(initialUserPage, cleanUserEmail);
+              return [initialUserPage];
+            }
+            return currentLocalPages;
+          });
+        }
+      }
+    });
+
+    // 2. Real-time Members subscription
+    const unsubscribeMembers = membersService.subscribeToAllMembers((cloudMembers) => {
+      if (cloudMembers && cloudMembers.length > 0) {
+        // Ensure MASTER account is ALWAYS included in members
+        const hasMaster = cloudMembers.some(m => m.email?.toLowerCase().trim() === MASTER_ADMIN_EMAIL.toLowerCase());
+        let finalMembers = [...cloudMembers];
+        if (!hasMaster) {
+          const masterMember: MasterMember = {
+            id: 'mem_master_admin',
+            email: MASTER_ADMIN_EMAIL,
+            name: 'Vitor (Master)',
+            slug: 'vitor',
+            password: MASTER_ADMIN_PASSWORD,
+            status: 'active',
+            plan: 'MASTER Vitalício (Ilimitado)',
+            createdAt: '22/07/2026',
+            visits: 53,
+            clicks: 6,
+          };
+          finalMembers = [masterMember, ...cloudMembers];
+          membersService.upsertMember(masterMember);
+        }
+        setMembers(finalMembers);
+        try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(finalMembers)); } catch {}
       }
     });
 
     async function loadInitialCloudData() {
       try {
-        // Members
+        // Members initial fetch
         const cloudMembers = await membersService.getAllMembers();
         if (cloudMembers && cloudMembers.length > 0) {
-          setMembers(cloudMembers);
-          try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(cloudMembers)); } catch {}
+          const hasMaster = cloudMembers.some(m => m.email?.toLowerCase().trim() === MASTER_ADMIN_EMAIL.toLowerCase());
+          let finalMembers = [...cloudMembers];
+          if (!hasMaster) {
+            const masterMember: MasterMember = {
+              id: 'mem_master_admin',
+              email: MASTER_ADMIN_EMAIL,
+              name: 'Vitor (Master)',
+              slug: 'vitor',
+              password: MASTER_ADMIN_PASSWORD,
+              status: 'active',
+              plan: 'MASTER Vitalício (Ilimitado)',
+              createdAt: '22/07/2026',
+              visits: 53,
+              clicks: 6,
+            };
+            finalMembers = [masterMember, ...cloudMembers];
+            membersService.upsertMember(masterMember);
+          }
+          setMembers(finalMembers);
+          try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(finalMembers)); } catch {}
         }
 
         // Webhooks
@@ -192,16 +299,22 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     return () => {
       unsubscribePages();
+      unsubscribeMembers();
     };
   }, [currentUserEmail]);
 
   // Sync pages to Firestore
   const syncPageToCloud = async (pageToSync: BioPage) => {
-    await pagesService.upsertPage(pageToSync, currentUserEmail);
+    const pageWithEmail = {
+      ...pageToSync,
+      userEmail: currentUserEmail.trim().toLowerCase()
+    };
+    await pagesService.upsertPage(pageWithEmail, currentUserEmail.trim().toLowerCase());
   };
 
   const [activePageId, setActivePageIdState] = useState<string>(() => {
-    const savedId = localStorage.getItem(ACTIVE_KEY);
+    const userActiveKey = getActiveKeyForUser(currentUserEmail || MASTER_ADMIN_EMAIL);
+    const savedId = localStorage.getItem(userActiveKey) || localStorage.getItem(ACTIVE_KEY);
     if (savedId && pages.some(p => p.id === savedId)) {
       return savedId;
     }
@@ -469,12 +582,14 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(pages));
-  }, [pages]);
+    const userStorageKey = getStorageKeyForUser(currentUserEmail || MASTER_ADMIN_EMAIL);
+    localStorage.setItem(userStorageKey, JSON.stringify(pages));
+  }, [pages, currentUserEmail]);
 
   useEffect(() => {
-    localStorage.setItem(ACTIVE_KEY, activePageId);
-  }, [activePageId]);
+    const userActiveKey = getActiveKeyForUser(currentUserEmail || MASTER_ADMIN_EMAIL);
+    localStorage.setItem(userActiveKey, activePageId);
+  }, [activePageId, currentUserEmail]);
 
   const setActivePageId = (id: string) => {
     if (pages.some(p => p.id === id)) {
@@ -493,11 +608,13 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const updated: BioPage = { 
         ...current, 
         ...partial, 
+        userEmail: currentUserEmail.trim().toLowerCase(),
         updatedAt: new Date().toISOString() 
       };
       const nextPages = prevPages.map(page => (page.id === current.id ? updated : page));
+      const userStorageKey = getStorageKeyForUser(currentUserEmail || MASTER_ADMIN_EMAIL);
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextPages));
+        localStorage.setItem(userStorageKey, JSON.stringify(nextPages));
       } catch (err) {
         console.warn('LocalStorage save error:', err);
       }
@@ -539,6 +656,7 @@ export const BioProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       id: `page-${Date.now()}`,
       slug: cleanSlug,
       name: name || 'NOVA PÁGINA',
+      userEmail: currentUserEmail.trim().toLowerCase(),
       avatarUrl: '',
       verified: false,
       badgeColor: '#dc2626',
